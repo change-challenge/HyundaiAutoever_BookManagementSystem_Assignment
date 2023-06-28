@@ -14,6 +14,7 @@ const colors = {
   grey7: '#5f6368',
   grey8: '#555555',
   grey9: '#595959',
+  grey10: '#262626',
   blue0: '#cae1ff',
   blue1: '#1a73e8',
   blue2: '#0066cc',

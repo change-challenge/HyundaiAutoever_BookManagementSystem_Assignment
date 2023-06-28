@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 const FooterWrapper = styled.footer`
   box-sizing: content-box;
-  margin: 32px 32px;
+  margin: 0 32px;
   padding: 10px 0;
   display: flex;
   background-color: ${({ theme }) => theme.colors.white};

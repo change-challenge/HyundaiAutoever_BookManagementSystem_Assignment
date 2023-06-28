@@ -1,7 +1,7 @@
 export { default as Login } from './Login/index'
 export { default as Main } from './Main/index'
 export { default as SignUp } from './SignUp/index'
-export { default as Admin } from './Admin/index'
+export { default as Admin } from './Admin/Admin/index'
 export { default as AdminBook } from './Admin/Book/index'
 export { default as AdminRent } from './Admin/Rent/index'
 export { default as AdminUser } from './Admin/User/index'
