@@ -6,7 +6,7 @@ const Container = styled.section`
   align-items: center;
   justify-content: space-between;
   padding: 0 12rem 0 12rem;
-  min-height: 100vh;
+  min-height: 80vh;
   min-width: 50.8rem;
 `
 
