@@ -5,8 +5,6 @@ const Hi = styled.h2`
   font-size: ${({ theme }) => theme.fontSize.sz40};
 `
 
-function Main() {
+export default function Main() {
   return <Hi>Main</Hi>
 }
-
-export default Main
