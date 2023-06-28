@@ -21,6 +21,7 @@ const colors = {
   blue5: '#284b8f',
   red0: '#ffc9c9',
   red1: '#d93025',
+  green1: '#259a35',
 }
 
 const fontSize = {

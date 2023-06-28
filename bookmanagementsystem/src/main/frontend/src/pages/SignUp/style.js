@@ -39,30 +39,62 @@ const ContentWrap = styled.div`
   flex: 1;
 `
 
-const ErrorMessageWrap = styled.div`
+const InputWrap = styled.div`
+  display: flex;
+  border-radius: 8px;
+  padding: 16px;
   margin-top: 8px;
-  color: #ef0000;
-  font-size: 12px;
+  background-color: ${({ theme }) => theme.colors.white};
+  border: 1px solid ${({ theme }) => theme.colors.grey4};
+  margin-top: 15px;
+
+  &:focus-within {
+    border: 1px solid ${({ theme }) => theme.colors.main};
+  }
 `
 
-const LoginButton = styled.button`
+const Input = styled.input`
+  width: 100%;
+  outline: none;
+  border: none;
+  height: 17px;
+  font-size: ${({ theme }) => theme.fontSize.sz14};
+  font-weight: 400;
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors.grey2};
+  }
+`
+
+const OkMessageWrap = styled.div`
+  margin-top: 8px;
+  color: ${({ theme }) => theme.colors.green1};
+  font-size: ${({ theme }) => theme.fontSize.sz12};
+`
+
+const ErrorMessageWrap = styled.div`
+  margin-top: 8px;
+  color: ${({ theme }) => theme.colors.red1};
+  font-size: ${({ theme }) => theme.fontSize.sz12};
+`
+
+const SignUpButton = styled.button`
   width: 100%;
   height: 48px;
   border: none;
   font-weight: 700;
   background-color: ${({ theme }) => theme.colors.main};
   border-radius: 8px;
-  color: ${({ theme }) => theme.colors.white};
+  color: white;
   margin-bottom: 16px;
   cursor: pointer;
 
   &:disabled {
     background-color: #dadada;
-    color: ${({ theme }) => theme.colors.white};
+    color: white;
   }
 `
-
-const SignUpButton = styled.button`
+const ToLoginButton = styled.button`
   width: 100%;
   height: 48px;
   border: 0.5px solid ${({ theme }) => theme.colors.main};
@@ -84,7 +116,10 @@ export {
   InnerContainer,
   TitleWrap,
   ContentWrap,
+  InputWrap,
+  Input,
+  OkMessageWrap,
   ErrorMessageWrap,
-  LoginButton,
   SignUpButton,
+  ToLoginButton,
 }
