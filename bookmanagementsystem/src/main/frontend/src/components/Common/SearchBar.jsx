@@ -2,9 +2,21 @@ import styled from 'styled-components'
 import SearchIcon from '../../assets/searchIcon.svg'
 import { useState } from 'react'
 
+const SearchWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: ${({ width }) => width};
+  max-height: 100%;
+  background-color: #f2f1fa;
+  border-radius: 25px;
+  overflow-y: auto;
+  margin: auto;
+`
+
 const SearchForm = styled.form`
-  width: 100%;
-  height: 50px;
+  width: ${({ width }) => width};
+  height: ${({ width }) => width / 10};
   min-height: 50px;
   padding: 0 16px;
   gap: 16px;
@@ -67,7 +79,7 @@ const IconButton = ({ icon, type = 'button', ...rest }) => {
   )
 }
 
-const SearchBar = ({ onSubmit }) => {
+const SearchBar = ({ onSubmit, placeholder, width }) => {
   const [searchValue, setSearchValue] = useState('')
 
   const handleInputChange = e => {
@@ -79,18 +91,20 @@ const SearchBar = ({ onSubmit }) => {
   }
 
   return (
-    <SearchForm onSubmit={onSubmit}>
-      <SearchInput
-        type="text"
-        value={searchValue}
-        onChange={handleInputChange}
-        placeholder="도셔명을 입력해주세요."
-      />
-      <ClearButton visible={searchValue !== ''} onClick={handleClearClick}>
-        X
-      </ClearButton>
-      <IconButton icon={SearchIcon} type="submit" />
-    </SearchForm>
+    <SearchWrapper width={width}>
+      <SearchForm onSubmit={onSubmit} width={width}>
+        <SearchInput
+          type="text"
+          value={searchValue}
+          onChange={handleInputChange}
+          placeholder={placeholder || '도서명을 입력해주세요.'}
+        />
+        <ClearButton visible={searchValue !== ''} onClick={handleClearClick}>
+          X
+        </ClearButton>
+        <IconButton icon={SearchIcon} type="submit" />
+      </SearchForm>
+    </SearchWrapper>
   )
 }
 

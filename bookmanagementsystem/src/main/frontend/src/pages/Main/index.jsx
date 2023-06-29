@@ -2,6 +2,9 @@ import { SearchBar } from '../../components/index'
 import * as S from './style'
 
 export default function Main() {
+  const handleSubmit = () => {
+    console.log('검색 폼 제출')
+  }
   return (
     <S.Container>
       <S.InnerWrapper>
@@ -15,9 +18,7 @@ export default function Main() {
         </S.SubGuide>
         {/*검색창*/}
         <S.SearchContainer>
-          <S.SearchWrapper>
-            <SearchBar />
-          </S.SearchWrapper>
+          <SearchBar width="500px" onSubmit={handleSubmit} />
         </S.SearchContainer>
         {/*검색창 끝*/}
       </S.InnerWrapper>

@@ -1,7 +1,15 @@
 import styled from 'styled-components'
 
-const AdminTitle = styled.div`
-  margin: 30px 50px;
+const AdminMainContainer = styled.div`
+  width: 90%;
 `
 
-export { AdminTitle }
+const AdminTitle = styled.div`
+  margin: 20px;
+`
+
+const AdminMainWrapper = styled.div`
+  padding-top: 50px;
+`
+
+export { AdminMainContainer, AdminTitle, AdminMainWrapper }

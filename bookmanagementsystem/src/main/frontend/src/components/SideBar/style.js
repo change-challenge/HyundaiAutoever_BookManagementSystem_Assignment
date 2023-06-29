@@ -9,6 +9,8 @@ const Wrapper = styled.aside`
   align-content: flex-start;
   flex-direction: column;
   background-color: ${({ theme }) => theme.colors.grey10};
+  position: sticky;
+  top: 110px;
 `
 
 const MenuWrapper = styled.div`

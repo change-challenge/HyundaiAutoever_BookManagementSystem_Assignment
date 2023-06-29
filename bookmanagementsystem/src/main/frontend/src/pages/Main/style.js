@@ -27,6 +27,7 @@ const UpperLine = styled.div`
 `
 
 const Title = styled.div`
+  font-family: 'Apple SD Gothic Neo';
   font-size: ${({ theme }) => theme.fontSize.sz40};
   text-align: center;
   font-weight: bold;
@@ -34,6 +35,7 @@ const Title = styled.div`
 `
 
 const SubGuide = styled.span`
+  font-family: 'Apple SD Gothic Neo';
   margin-top: 1.6rem;
   margin-bottom: 6rem;
   color: ${({ theme }) => theme.colors.grey4};
@@ -48,24 +50,4 @@ const SearchContainer = styled.div`
   padding-bottom: 15px;
 `
 
-const SearchWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 500px;
-  max-height: 100%;
-  background-color: #f2f1fa;
-  border-radius: 25px;
-  overflow-y: auto;
-  margin: auto;
-`
-
-export {
-  Container,
-  InnerWrapper,
-  UpperLine,
-  Title,
-  SubGuide,
-  SearchContainer,
-  SearchWrapper,
-}
+export { Container, InnerWrapper, UpperLine, Title, SubGuide, SearchContainer }
