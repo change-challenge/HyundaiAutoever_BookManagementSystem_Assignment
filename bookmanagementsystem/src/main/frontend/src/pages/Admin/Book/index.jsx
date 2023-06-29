@@ -1,5 +1,6 @@
 import * as S from '../style'
 import { Text, SearchBar } from '../../../components/index'
+import { default as Table } from './table'
 
 const AdminBook = () => {
   const handleSubmit = () => {
@@ -24,6 +25,9 @@ const AdminBook = () => {
           />
         </S.SearchBarContainer>
       </S.AdminTitle>
+      <S.TableContainer>
+        <Table />
+      </S.TableContainer>
     </S.AdminUserContainer>
   )
 }

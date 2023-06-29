@@ -9,10 +9,15 @@ const AdminTitle = styled.div`
 `
 
 const SearchBarContainer = styled.div`
-  padding-top: 30px;
+  padding: 30px;
   height: 100px;
   justify-content: flex-start;
   flex-direction: row;
 `
 
-export { AdminUserContainer, AdminTitle, SearchBarContainer }
+const TableContainer = styled.div`
+  width: 90%;
+  padding: 0 30px 0 30px;
+`
+
+export { AdminUserContainer, AdminTitle, SearchBarContainer, TableContainer }
