@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 const FooterWrapper = styled.footer`
   box-sizing: content-box;
-  margin: 32px 32px;
+  margin: 0 32px;
   padding: 10px 0;
   display: flex;
   background-color: ${({ theme }) => theme.colors.white};
@@ -20,6 +20,7 @@ const InnerWrapper = styled.div`
 `
 
 const NameContents = styled.div`
+  font-family: 'Apple SD Gothic Neo';
   display: flex;
   flex-direction: column;
   width: fit-content;
@@ -29,6 +30,7 @@ const NameContents = styled.div`
 `
 
 const ContactCopyright = styled.div`
+  font-family: 'Apple SD Gothic Neo';
   padding-left: 2.4rem;
   color: ${({ theme }) => theme.colors.grey9};
   font-size: ${({ theme }) => theme.fontSize.sz12};

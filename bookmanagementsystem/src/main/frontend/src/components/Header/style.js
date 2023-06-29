@@ -3,10 +3,9 @@ import styled from 'styled-components'
 const HeaderContainer = styled.header`
   box-sizing: content-box;
   margin: 0 32px;
-  padding: 10px 0;
+  padding: 20px 0 10px;
   display: flex;
-  background-color: white;
-  padding-top: 20px;
+  background-color: ${({ theme }) => theme.colors.white};
 `
 
 const Layout = styled.div`
