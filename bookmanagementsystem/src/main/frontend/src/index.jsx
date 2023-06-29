@@ -9,7 +9,8 @@ import {
   Main,
   Login,
   SignUp,
-  Admin,
+  AdminLayout,
+  AdminMain,
   AdminBook,
   AdminRent,
   AdminUser,
@@ -28,7 +29,8 @@ root.render(
             <Route path="/" element={<Main />}></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/signup" element={<SignUp />}></Route>
-            <Route path="/admin" element={<Admin />}>
+            <Route path="/admin" element={<AdminLayout />}>
+              <Route path="" element={<AdminMain />} />
               <Route path="user" element={<AdminUser />} />
               <Route path="rent" element={<AdminRent />} />
               <Route path="book" element={<AdminBook />} />

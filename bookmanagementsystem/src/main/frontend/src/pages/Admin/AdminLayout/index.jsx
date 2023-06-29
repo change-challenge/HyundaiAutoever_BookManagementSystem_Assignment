@@ -1,8 +1,8 @@
+import * as S from './style'
 import { Outlet } from 'react-router-dom'
 import { SideBar } from '../../../components/index'
-import * as S from './style'
 
-const Admin = () => {
+const AdminLayout = () => {
   return (
     <S.AdminContainer>
       <S.AdminWrapper>
@@ -13,4 +13,4 @@ const Admin = () => {
   )
 }
 
-export default Admin
+export default AdminLayout
