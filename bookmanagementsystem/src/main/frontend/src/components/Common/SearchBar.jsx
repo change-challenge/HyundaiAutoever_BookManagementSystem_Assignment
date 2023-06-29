@@ -7,17 +7,17 @@ const SearchWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: ${({ width }) => width};
+  height: ${({ height }) => height};
   max-height: 100%;
   background-color: #f2f1fa;
   border-radius: 25px;
   overflow-y: auto;
-  margin: auto;
+  /*margin: auto;*/
 `
 
 const SearchForm = styled.form`
   width: ${({ width }) => width};
-  height: ${({ width }) => width / 10};
-  min-height: 50px;
+  height: ${({ height }) => height};
   padding: 0 16px;
   gap: 16px;
   display: flex;
@@ -79,7 +79,7 @@ const IconButton = ({ icon, type = 'button', ...rest }) => {
   )
 }
 
-const SearchBar = ({ onSubmit, placeholder, width }) => {
+const SearchBar = ({ onSubmit, placeholder, width, height }) => {
   const [searchValue, setSearchValue] = useState('')
 
   const handleInputChange = e => {
@@ -91,8 +91,8 @@ const SearchBar = ({ onSubmit, placeholder, width }) => {
   }
 
   return (
-    <SearchWrapper width={width}>
-      <SearchForm onSubmit={onSubmit} width={width}>
+    <SearchWrapper width={width} height={height}>
+      <SearchForm onSubmit={onSubmit} width={width} height={height}>
         <SearchInput
           type="text"
           value={searchValue}

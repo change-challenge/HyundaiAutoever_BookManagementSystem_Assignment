@@ -18,7 +18,7 @@ export default function Main() {
         </S.SubGuide>
         {/*검색창*/}
         <S.SearchContainer>
-          <SearchBar width="500px" onSubmit={handleSubmit} />
+          <SearchBar width="500px" height="50px" onSubmit={handleSubmit} />
         </S.SearchContainer>
         {/*검색창 끝*/}
       </S.InnerWrapper>

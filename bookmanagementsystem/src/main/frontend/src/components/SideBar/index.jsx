@@ -6,7 +6,7 @@ const menuList = [
   { linkTo: '/admin/user', text: '회원 관리' },
   { linkTo: '/admin/rent', text: '대출 관리' },
   { linkTo: '/admin/book', text: '도서 관리' },
-  { linkTo: '/admin/wishbook', text: '신청도서 관리' },
+  { linkTo: '/admin/wishbook', text: '신청 도서 관리' },
 ]
 
 const SideBar = () => {
