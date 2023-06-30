@@ -13,15 +13,6 @@ const InnerWrapper = styled.div`
   width: 100%;
 `
 
-const SearchContainer = styled.div`
-  position: relative;
-  flex: 1;
-  overflow-y: auto;
-  z-index: 3;
-  margin-bottom: 45px;
-  padding-bottom: 15px;
-`
-
 const MypageTitleWrapper = styled.div`
   min-width: 1000px;
   margin-left: auto;
@@ -55,7 +46,6 @@ export {
   MypageContainer,
   MypageTitleWrapper,
   InnerWrapper,
-  SearchContainer,
   MypageGreetingWrapper,
   MypageTabsWrapper,
 }
