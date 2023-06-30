@@ -1,6 +1,5 @@
 import * as S from './style'
 import { Text } from '../../../components/index'
-import CustomizedTables from './table'
 
 const Admin = () => {
   return (
