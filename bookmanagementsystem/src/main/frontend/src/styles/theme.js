@@ -31,6 +31,7 @@ const fontSize = {
   sz40: '40px',
   sz32: '32px',
   sz24: '24px',
+  sz22: '22px',
   sz20: '20px',
   sz16: '16px',
   sz14: '14px',

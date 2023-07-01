@@ -19,13 +19,14 @@ const categories = [
 const Wrapper = styled.aside`
   width: 256px;
   float: left;
-  background-color: ${({ theme }) => theme.colors.main};
 `
 
 const SideBarTitle = styled.h2`
+  background-color: ${({ theme }) => theme.colors.main};
   font-family: 'Apple SD Gothic Neo';
   text-align: center;
   padding: 30px 0;
+  max-height: 120px;
   font-weight: normal;
   font-size: 1.533em;
   line-height: 60px;
@@ -47,13 +48,6 @@ const CategoryWrapper = styled.div`
   height: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
-  &:hover {
-    font-weight: 800;
-  }
-
-  &:active {
-    font-weight: 800;
-  }
 `
 
 const SideBar = () => {
