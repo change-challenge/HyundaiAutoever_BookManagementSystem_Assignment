@@ -1,4 +1,6 @@
 export { default as Header } from './Header/index'
+export { default as HeaderWithSearchBarLogOut } from './HeaderWithSearchBarLogOut/index'
+export { default as HeaderWithSearchBarLogIn } from './HeaderWithSearchBarLogIn/index'
 export { default as Footer } from './Footer/index'
 export { default as SideBar } from './SideBar/index'
 export { default as Text } from './Common/Text'
