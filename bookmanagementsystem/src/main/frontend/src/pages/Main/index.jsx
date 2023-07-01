@@ -1,9 +1,12 @@
 import { SearchBar } from '../../components/index'
+import { useNavigate } from 'react-router-dom'
 import * as S from './style'
 
 export default function Main() {
+  const navigate = useNavigate()
+
   const handleSubmit = () => {
-    console.log('검색 폼 제출')
+    navigate('/search')
   }
   return (
     <S.Container>

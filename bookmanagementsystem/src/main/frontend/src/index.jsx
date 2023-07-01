@@ -21,6 +21,7 @@ import {
   AdminUser,
   AdminWishBook,
   Mypage,
+  BookSearch,
 } from './pages/index'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
@@ -35,6 +36,8 @@ root.render(
             <Route path="/" element={<Main />}></Route>
             <Route path="/login" element={<Login />}></Route>
             <Route path="/signup" element={<SignUp />}></Route>
+            <Route path="/mypage" element={<Mypage />} />
+            <Route path="/search" element={<BookSearch />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="" element={<AdminMain />} />
               <Route path="user" element={<AdminUser />} />
@@ -42,7 +45,6 @@ root.render(
               <Route path="book" element={<AdminBook />} />
               <Route path="wishbook" element={<AdminWishBook />} />
             </Route>
-            <Route path="/mypage" element={<Mypage />} />
           </Routes>
           <Footer />
         </Router>
