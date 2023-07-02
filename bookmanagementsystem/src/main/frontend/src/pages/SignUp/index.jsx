@@ -1,6 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import { Text, LabelInput } from '../../components/index'
-import Logo from '../../assets/logo.svg'
+import { Title, LabelInput } from '../../components/index'
 import * as S from './style'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
@@ -73,33 +72,7 @@ function SignUp() {
     <>
       <S.Container>
         <S.InnerContainer>
-          <S.TitleWrap>
-            <Text
-              text="회원가입"
-              color={({ theme }) => theme.colors.black}
-              fontWeight={'bold'}
-              fontSize={({ theme }) => theme.fontSize.sz32}
-              textAlign={'center'}
-              verticalAlign={'middle'}
-            />
-            <Text
-              text="|"
-              color={({ theme }) => theme.colors.grey3}
-              fontSize={({ theme }) => theme.fontSize.sz32}
-              fontWeight={'lighter'}
-              textAlign={'center'}
-              margin={'0 0 0 20px'}
-              verticalAlign={'middle'}
-            />
-            <img
-              src={Logo}
-              alt="logo"
-              width="120px"
-              height="36px"
-              draggable={false}
-            />
-          </S.TitleWrap>
-
+          <Title text="회원가입" />
           <S.ContentWrap>
             <LabelInput
               type="text"

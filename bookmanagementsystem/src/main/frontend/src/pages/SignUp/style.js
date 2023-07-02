@@ -26,14 +26,6 @@ const InnerContainer = styled.div`
   border-radius: 5px;
 `
 
-const TitleWrap = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 50px;
-  font-weight: 700;
-`
-
 const ContentWrap = styled.div`
   margin-top: 26px;
   flex: 1;
@@ -114,7 +106,6 @@ const ToLoginButton = styled.button`
 export {
   Container,
   InnerContainer,
-  TitleWrap,
   ContentWrap,
   InputWrap,
   Input,
