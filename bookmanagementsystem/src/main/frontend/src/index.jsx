@@ -22,6 +22,7 @@ import {
   AdminWishBook,
   Mypage,
   BookSearch,
+  BookDetail,
 } from './pages/index'
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
@@ -38,6 +39,7 @@ root.render(
             <Route path="/signup" element={<SignUp />}></Route>
             <Route path="/mypage" element={<Mypage />} />
             <Route path="/search" element={<BookSearch />} />
+            <Route path="/search/detail" element={<BookDetail />} />
             <Route path="/admin" element={<AdminLayout />}>
               <Route path="" element={<AdminMain />} />
               <Route path="user" element={<AdminUser />} />

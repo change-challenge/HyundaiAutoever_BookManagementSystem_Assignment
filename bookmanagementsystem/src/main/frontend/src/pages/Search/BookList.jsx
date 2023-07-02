@@ -1,6 +1,7 @@
 import bookImg from '../../assets/XL.jpeg'
 import styled from 'styled-components'
 import { Text } from '../../components/index'
+import { Link } from 'react-router-dom'
 
 const BookListContentContainer = styled.div`
   display: flex;
@@ -55,16 +56,26 @@ const BookList = () => {
   return (
     <BookListContentContainer>
       <BookListImageWrapper>
-        <img src={bookImg} width="120px" height="160px" />
+        <Link to={process.env.PUBLIC_URL + `/search/detail`}>
+          <img src={bookImg} width="120px" height="160px" />
+        </Link>
       </BookListImageWrapper>
       <BookListInfoWrapper>
         <BookListTitle>
-          <Text
-            text="인간 본성의 법칙"
-            color={({ theme }) => theme.colors.grey9}
-            fontWeight={'bold'}
-            fontSize={({ theme }) => theme.fontSize.sz22}
-          />
+          <Link
+            to={process.env.PUBLIC_URL + `/search/detail`}
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            <Text
+              text="인간 본성의 법칙"
+              color={({ theme }) => theme.colors.grey9}
+              fontWeight={'bold'}
+              fontSize={({ theme }) => theme.fontSize.sz22}
+              cursor={'pointer'}
+            />
+          </Link>
         </BookListTitle>
         <BookListArthorPublisher>
           <Text

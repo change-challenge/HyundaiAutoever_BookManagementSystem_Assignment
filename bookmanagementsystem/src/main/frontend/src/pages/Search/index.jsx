@@ -17,10 +17,16 @@ const BookSearch = () => {
       <S.Container>
         <S.BookSearchTitleWrapper>
           <Text
-            text="‘00’에 대한 120개의 검색 결과"
+            text="‘00’"
+            color={({ theme }) => theme.colors.main}
+            fontWeight={'bold'}
+            fontSize={({ theme }) => theme.fontSize.sz28}
+          />
+          <Text
+            text="에 대한 120개의 검색 결과"
             color={({ theme }) => theme.colors.black}
             fontWeight={'bold'}
-            fontSize={({ theme }) => theme.fontSize.sz32}
+            fontSize={({ theme }) => theme.fontSize.sz28}
           />
         </S.BookSearchTitleWrapper>
         <S.BookSearchContainer>
