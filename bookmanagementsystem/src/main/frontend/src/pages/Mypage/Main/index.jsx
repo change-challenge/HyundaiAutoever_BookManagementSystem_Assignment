@@ -1,4 +1,3 @@
-import React from 'react'
 import BasicTabs from './Tabs'
 import * as S from './style'
 import { Text } from '../../../components/index'

@@ -10,6 +10,7 @@ const Container = styled.section`
 `
 
 const BookSearchTitleWrapper = styled.div`
+  display: flex;
   margin-top: 4rem;
   margin-left: 256px;
   width: 925px;
