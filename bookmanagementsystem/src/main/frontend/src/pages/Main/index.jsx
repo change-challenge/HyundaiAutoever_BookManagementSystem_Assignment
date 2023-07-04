@@ -8,6 +8,7 @@ export default function Main() {
   const handleSubmit = () => {
     navigate('/search')
   }
+  //  console.log(process.env.REACT_APP_ALADIN_API_KEY)
   return (
     <S.Container>
       <S.InnerWrapper>

@@ -3,7 +3,6 @@ import { Text, LabelInput, Title } from '../../components/index'
 import * as S from './style'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import { LinkButtonWrapper } from '../../components/Header/style'
 
 export default function WishBook() {
   const [wishBookName, setWishBookName] = useState('')
@@ -15,6 +14,51 @@ export default function WishBook() {
   const onClickWishBook = () => {
     alert('등록하겠습니까?')
   }
+
+  //  const onClickWishBook = () => {
+  //    fetchDataFromAPI(wishBookName)
+  //      .then(data => {
+  //        setWishBookArthor(data.author)
+  //        setWishBookPublisher(data.publisher)
+  //        setWishBookCreateDate(data.createDate)
+  //        setWishBookISBN(data.isbn)
+  //      })
+  //      .catch(error => {
+  //        console.error('API 호출 중 오류 발생:', error)
+  //      })
+  //  }
+
+  //  const fetchDataFromAPI = bookName => {
+  //    const TTBKey = process.env.REACT_APP_ALADIN_API_KEY
+  //    const Query = encodeURIComponent(bookName)
+  //    const Output = 'js'
+  //    const QueryType = 'Title'
+
+  //    const url = `http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?TTBKey=${TTBKey}&Query=${Query}&Output=js&QueryType=title`
+
+  //    return fetch(url)
+  //      .then(response => response.json())
+  //      .then(data => {
+  //        console.log(data)
+  //        const item = data.item[0]
+  //        // 데이터 가공 및 필요한 정보 추출
+  //        const author = item.author
+  //        const publisher = item.publisher
+  //        const createDate = item.pubDate.slice(0, 3)
+  //        const isbn = item.isbn13
+
+  //        return {
+  //          author,
+  //          publisher,
+  //          createDate,
+  //          isbn,
+  //        }
+  //      })
+  //      .catch(error => {
+  //        console.error('API 호출 중 오류 발생:', error)
+  //        throw error
+  //      })
+  //  }
 
   return (
     <S.InnerContainer>
