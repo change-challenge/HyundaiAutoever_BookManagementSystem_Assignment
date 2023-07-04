@@ -5,10 +5,11 @@ const InputWrap = styled.div`
   display: flex;
   border-radius: 8px;
   padding: 16px;
-  margin-top: 8px;
   background-color: white;
   border: 1px solid ${({ theme }) => theme.colors.grey4};
-  margin-top: 15px;
+  margin-top: ${({ marginTop }) => marginTop}px;
+  margin-left: ${({ marginLeft }) => marginLeft}px;
+  margin-right: ${({ marginRight }) => marginRight}px;
 
   &:focus-within {
     border: 1.5px solid ${({ theme }) => theme.colors.main};
@@ -16,7 +17,7 @@ const InputWrap = styled.div`
 `
 
 const Input = styled.input`
-  width: 100%;
+  width: ${({ width }) => width}px;
   outline: none;
   border: none;
   height: 17px;
@@ -35,17 +36,26 @@ const LabelInput = forwardRef(
       value = '',
       onChange,
       placeholder = 'Default',
+      marginTop = 15, // 기본값 설정
+      marginLeft = 0, // 기본값 설정
+      marginRight = 0, // 기본값 설정
+      width = 100, // 기본값 설정
       ...restProps
     },
     ref
   ) => {
     return (
-      <InputWrap>
+      <InputWrap
+        marginTop={marginTop}
+        marginLeft={marginLeft}
+        marginRight={marginRight}
+      >
         <Input
           type={type}
           value={value}
           onChange={onChange}
           placeholder={placeholder}
+          width={width}
           {...restProps}
           ref={ref}
         />

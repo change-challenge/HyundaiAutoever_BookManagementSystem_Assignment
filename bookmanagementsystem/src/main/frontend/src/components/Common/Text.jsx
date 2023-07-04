@@ -11,6 +11,7 @@ const StyledText = styled.p`
   vertical-align: ${({ verticalAlign }) => verticalAlign};
   cursor: ${({ cursor }) => cursor};
   line-height: ${({ lineHeight }) => lineHeight};
+  margin-top: ${({ marginTop }) => marginTop};
   max-width: 100%;
   white-space: pre-line;
 `

@@ -57,7 +57,7 @@ const BookList = () => {
     <BookListContentContainer>
       <BookListImageWrapper>
         <Link to={process.env.PUBLIC_URL + `/search/detail`}>
-          <img src={bookImg} width="120px" height="160px" />
+          <img alt="" src={bookImg} width="120px" height="160px" />
         </Link>
       </BookListImageWrapper>
       <BookListInfoWrapper>

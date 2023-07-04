@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { Text } from '../../components/index'
 
 const categories = [
   { id: 1, name: '전체' },
