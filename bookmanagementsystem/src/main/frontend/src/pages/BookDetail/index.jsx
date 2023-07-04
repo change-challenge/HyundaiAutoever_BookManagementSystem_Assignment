@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+//import { useParams } from 'react-router-dom'
 import * as S from './style'
 import { Text } from '../../components/index'
 import CustomSeparator from './Breadcrumbs'
@@ -6,7 +6,7 @@ import bookImg from '../../assets/XL.jpeg'
 import BookCountTable from './BookCountTable'
 
 const BookDetail = () => {
-  const { book_id } = useParams()
+  //  const { book_id } = useParams()
   return (
     <S.BookDetailContainer>
       <S.InnerWrapper>
@@ -23,7 +23,7 @@ const BookDetail = () => {
         </S.BreadcrumbWrapper>
         <S.BookDetailContentWrapper>
           <S.BookDetailImageWrapper>
-            <img src={bookImg} width="100%" height="100%" />
+            <img alt="" src={bookImg} width="100%" height="100%" />
           </S.BookDetailImageWrapper>
           <S.BookDetailContent>
             <S.BookDetailContentTitleWrapper>
