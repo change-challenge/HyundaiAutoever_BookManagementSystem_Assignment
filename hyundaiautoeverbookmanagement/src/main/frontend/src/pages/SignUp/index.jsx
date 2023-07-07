@@ -48,15 +48,47 @@ function SignUp() {
   const handleName = e => {
     const value = e.target.value
     setName(value)
-    const isValid = value.length > 2
+    const isValid = value.length >= 2
     setNameValid(isValid)
   }
 
   const onClickConfirmButton = () => {
-    alert('로그인에 성공했습니다.')
+    // 회원가입 버튼 클릭 시 호출되는 함수
+    if (emailValid && pwValid && pwSameValid && nameValid) {
+      // 필수 입력 사항이 모두 입력되었을 때 API 호출
+      // fetch 또는 axios를 사용하여 백엔드 API로 데이터 전송
+      const data = {
+        email: email,
+        name: name,
+        password: pw,
+      }
+
+      const confirm = window.confirm('회원가입을 하시겠습니까?')
+      if (confirm) {
+        fetch('/api/user/create', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data),
+        })
+          .then(response => {
+            if (response.ok) {
+              // 회원가입 성공 처리
+              navigate('/login')
+            } else {
+              alert('가입불가')
+            }
+          })
+          .catch(error => {
+            // 네트워크 에러 처리
+            console.error('Error:', error)
+          })
+      }
+    }
   }
 
-  const onClickSignUpButton = () => {
+  const onClickToLoginButton = () => {
     navigate('/login')
   }
 
@@ -79,6 +111,7 @@ function SignUp() {
               placeholder="아이디"
               value={email}
               onChange={handleEmail}
+              width="100%"
             />
             {emailValid
               ? email.length > 0 && (
@@ -96,6 +129,7 @@ function SignUp() {
               placeholder="이름"
               value={name}
               onChange={handleName}
+              width="100%"
             />
             {name.length > 0 && name.length < 2 && (
               <S.ErrorMessageWrap>
@@ -107,6 +141,7 @@ function SignUp() {
               placeholder="비밀번호"
               value={pw}
               onChange={handlePassword}
+              width="100%"
             />
             {pwValid
               ? pw.length > 0 && (
@@ -124,6 +159,7 @@ function SignUp() {
               placeholder="비밀번호 재확인"
               value={pwSame}
               onChange={handlePasswordSame}
+              width="100%"
             />
             {pwSameValid
               ? pwSame.length > 0 && (
@@ -141,7 +177,7 @@ function SignUp() {
             <S.SignUpButton onClick={onClickConfirmButton} disabled={notAllow}>
               회원가입
             </S.SignUpButton>
-            <S.ToLoginButton onClick={onClickSignUpButton}>
+            <S.ToLoginButton onClick={onClickToLoginButton}>
               로그인 페이지로
             </S.ToLoginButton>
           </div>

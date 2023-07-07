@@ -28,7 +28,6 @@ const InnerContainer = styled.div`
 
 const ContentWrap = styled.div`
   margin-top: 26px;
-  flex: 1;
 `
 
 const InputWrap = styled.div`

@@ -3,62 +3,48 @@ import { Text, LabelInput, Title } from '../../components/index'
 import * as S from './style'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
+import axios from 'axios'
+import { useNavigate } from 'react-router-dom' // useNavigate로 변경
 
 export default function WishBook() {
   const [wishBookName, setWishBookName] = useState('')
-  const [wishBookArthor, setWishBookArthor] = useState('')
+  const [wishBookAuthor, setWishBookAuthor] = useState('')
   const [wishBookPublisher, setWishBookPublisher] = useState('')
   const [wishBookCreateDate, setWishBookCreateDate] = useState('')
   const [wishBookISBN, setWishBookISBN] = useState('')
+  const navigate = useNavigate() // useNavigate로 변경
 
   const onClickWishBook = () => {
-    alert('등록하겠습니까?')
+    if (!wishBookName || !wishBookAuthor || !wishBookPublisher) {
+      alert('희망도서명, 저자, 발행자는 필수 항목입니다.')
+      return
+    }
+    const confirm = window.confirm('희망도서를 신청하시겠습니까?')
+    if (confirm) {
+      const currentDate = new Date()
+      const isoDate = currentDate.toISOString()
+
+      const requestData = {
+        title: wishBookName,
+        author: wishBookAuthor,
+        publisher: wishBookPublisher,
+        ISBN: wishBookISBN,
+        user_id: 123, // 사용자 ID를 적절히 설정해야 합니다.
+        createDate: isoDate,
+      }
+
+      axios
+        .post('/api/wishbook/create', requestData)
+        .then(response => {
+          console.log(response.data) // 성공적인 응답 처리
+        })
+        .catch(error => {
+          console.error(error) // 오류 처리
+        })
+
+      navigate('/')
+    }
   }
-
-  //  const onClickWishBook = () => {
-  //    fetchDataFromAPI(wishBookName)
-  //      .then(data => {
-  //        setWishBookArthor(data.author)
-  //        setWishBookPublisher(data.publisher)
-  //        setWishBookCreateDate(data.createDate)
-  //        setWishBookISBN(data.isbn)
-  //      })
-  //      .catch(error => {
-  //        console.error('API 호출 중 오류 발생:', error)
-  //      })
-  //  }
-
-  //  const fetchDataFromAPI = bookName => {
-  //    const TTBKey = process.env.REACT_APP_ALADIN_API_KEY
-  //    const Query = encodeURIComponent(bookName)
-  //    const Output = 'js'
-  //    const QueryType = 'Title'
-
-  //    const url = `http://www.aladin.co.kr/ttb/api/ItemSearch.aspx?TTBKey=${TTBKey}&Query=${Query}&Output=js&QueryType=title`
-
-  //    return fetch(url)
-  //      .then(response => response.json())
-  //      .then(data => {
-  //        console.log(data)
-  //        const item = data.item[0]
-  //        // 데이터 가공 및 필요한 정보 추출
-  //        const author = item.author
-  //        const publisher = item.publisher
-  //        const createDate = item.pubDate.slice(0, 3)
-  //        const isbn = item.isbn13
-
-  //        return {
-  //          author,
-  //          publisher,
-  //          createDate,
-  //          isbn,
-  //        }
-  //      })
-  //      .catch(error => {
-  //        console.error('API 호출 중 오류 발생:', error)
-  //        throw error
-  //      })
-  //  }
 
   return (
     <S.InnerContainer>
@@ -81,7 +67,7 @@ export default function WishBook() {
               onChange={e => setWishBookName(e.target.value)}
               marginTop="0"
               marginRight="50"
-              width="300"
+              width="300px"
             />
             <Button size="large" variant="contained" onClick={onClickWishBook}>
               검색
@@ -99,10 +85,10 @@ export default function WishBook() {
             <LabelInput
               type="text"
               placeholder=""
-              value={wishBookArthor}
-              onChange={e => setWishBookArthor(e.target.value)}
+              value={wishBookAuthor}
+              onChange={e => setWishBookAuthor(e.target.value)}
               marginTop="0"
-              width="200"
+              width="200px"
             />
           </S.LabelWrapper>
           <S.LabelWrapper>
@@ -120,7 +106,7 @@ export default function WishBook() {
               value={wishBookPublisher}
               onChange={e => setWishBookPublisher(e.target.value)}
               marginTop="0"
-              width="200"
+              width="200px"
             />
           </S.LabelWrapper>
           <S.LabelWrapper>
@@ -138,7 +124,7 @@ export default function WishBook() {
               value={wishBookCreateDate}
               onChange={e => setWishBookCreateDate(e.target.value)}
               marginTop="0"
-              width="200"
+              width="200px"
             />
           </S.LabelWrapper>
           <S.LabelWrapper>
@@ -155,7 +141,7 @@ export default function WishBook() {
               value={wishBookISBN}
               onChange={e => setWishBookISBN(e.target.value)}
               marginTop="0"
-              width="200"
+              width="200px"
             />
           </S.LabelWrapper>
         </Stack>
