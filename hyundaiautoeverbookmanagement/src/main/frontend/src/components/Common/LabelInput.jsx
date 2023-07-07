@@ -17,10 +17,10 @@ const InputWrap = styled.div`
 `
 
 const Input = styled.input`
-  width: ${({ width }) => width}px;
+  width: ${({ width }) => width};
   outline: none;
   border: none;
-  height: 17px;
+  height: 20px;
   font-size: 14px;
   font-weight: 400;
 

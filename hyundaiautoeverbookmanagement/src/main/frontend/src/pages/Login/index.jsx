@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom'
-import {  LabelInput, Title } from '../../components/index'
+import { LabelInput, Title } from '../../components/index'
 import * as S from './style'
 import React, { useState } from 'react'
 import { useEffect } from 'react'
@@ -60,6 +60,7 @@ function Login() {
               placeholder="아이디"
               value={email}
               onChange={handleEmail}
+              width="100%"
             />
             {!emailValid && email.length > 0 && (
               <S.ErrorMessageWrap>
@@ -71,6 +72,7 @@ function Login() {
               placeholder="비밀번호"
               value={pw}
               onChange={handlePassword}
+              width="100%"
             />
             {!pwValid && pw.length > 0 && (
               <S.ErrorMessageWrap>

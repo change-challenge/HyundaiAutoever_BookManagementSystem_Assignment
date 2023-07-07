@@ -27,7 +27,7 @@ const BookListTitle = styled.div`
   margin-top: 10px;
 `
 
-const BookListArthorPublisher = styled.div`
+const BookListAuthorPublisher = styled.div`
   display: flex;
   margin-top: 10px;
 `
@@ -77,7 +77,7 @@ const BookList = () => {
             />
           </Link>
         </BookListTitle>
-        <BookListArthorPublisher>
+        <BookListAuthorPublisher>
           <Text
             text="로버트 그린"
             color={({ theme }) => theme.colors.grey9}
@@ -94,7 +94,7 @@ const BookList = () => {
             color={({ theme }) => theme.colors.grey9}
             fontSize={({ theme }) => theme.fontSize.sz14}
           />
-        </BookListArthorPublisher>
+        </BookListAuthorPublisher>
         <BookListCreateDate>
           <Text
             text="발행월일  2023년 6월 23일"
