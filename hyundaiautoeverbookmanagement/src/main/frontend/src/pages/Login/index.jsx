@@ -1,10 +1,13 @@
 import { useNavigate } from 'react-router-dom'
 import { LabelInput, Title } from '../../components/index'
 import * as S from './style'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useEffect } from 'react'
+import { IsLoginContext } from '../../context/IsLoginContext'
+import axios from 'axios' // axios import 추가
 
 function Login() {
+  const { setIsLogin } = useContext(IsLoginContext)
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
 
@@ -34,7 +37,17 @@ function Login() {
   }
 
   const onClickConfirmButton = () => {
-    alert('로그인에 성공했습니다.')
+    // axios를 사용하여 POST 요청 보내기
+    axios
+      .post('/auth/login', { email, password: pw })
+      .then(response => {
+        alert('로그인에 성공했습니다.')
+        setIsLogin(true)
+      })
+      .catch(error => {
+        // 로그인 실패 시 에러 처리
+        console.error('로그인 실패:', error)
+      })
   }
 
   const onClickSignUpButton = () => {

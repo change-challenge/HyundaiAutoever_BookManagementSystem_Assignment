@@ -1,10 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.UserType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Table(name = "USERS")
@@ -12,7 +9,8 @@ import lombok.ToString;
 @NoArgsConstructor
 @ToString
 @Setter
-public class User {
+@Getter
+public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,5 +27,5 @@ public class User {
 
     @Column
     @Enumerated(EnumType.STRING)
-    private UserType userType;
+    private UserType usertype;
 }

@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../../assets/logo.svg'
 import * as S from './style'
 import { Text } from '../index'
+import { useIsLoginState } from '../../context/IsLoginContext'
 
 const basicNavMenu = [
   {
@@ -17,6 +18,7 @@ const basicNavMenu = [
 
 function Header() {
   const navigate = useNavigate()
+  const isLogin = useIsLoginState()
 
   const logoClick = () => {
     navigate('/')
@@ -43,8 +45,61 @@ function Header() {
         </S.LogoWrapper>
         <S.NavWrapper>
           <S.LinkButtonWrapper>
-            {basicNavMenu.map(menu => {
-              return (
+            {isLogin ? (
+              <>
+                <li>
+                  <Link
+                    style={{
+                      marginRight: '2rem',
+                      padding: '0 10px',
+                      lineHeight: '1em',
+                      height: '1em',
+                    }}
+                    to="/mypage"
+                  >
+                    <span
+                      style={{
+                        display: 'inline-block',
+                      }}
+                    >
+                      <Text
+                        text="마이페이지"
+                        color={({ theme }) => theme.colors.main}
+                        fontSize={({ theme }) => theme.fontSize.sz16}
+                        fontFamily={'Roboto'}
+                        cursor={'pointer'}
+                      />
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    style={{
+                      marginRight: '2rem',
+                      padding: '0 10px',
+                      lineHeight: '1em',
+                      height: '1em',
+                    }}
+                    to="/"
+                  >
+                    <span
+                      style={{
+                        display: 'inline-block',
+                      }}
+                    >
+                      <Text
+                        text="로그아웃"
+                        color={({ theme }) => theme.colors.main}
+                        fontSize={({ theme }) => theme.fontSize.sz16}
+                        fontFamily={'Roboto'}
+                        cursor={'pointer'}
+                      />
+                    </span>
+                  </Link>
+                </li>
+              </>
+            ) : (
+              basicNavMenu.map(menu => (
                 <li key={menu.linkTo}>
                   <Link
                     style={{
@@ -70,8 +125,8 @@ function Header() {
                     </span>
                   </Link>
                 </li>
-              )
-            })}
+              ))
+            )}
           </S.LinkButtonWrapper>
         </S.NavWrapper>
       </S.Layout>

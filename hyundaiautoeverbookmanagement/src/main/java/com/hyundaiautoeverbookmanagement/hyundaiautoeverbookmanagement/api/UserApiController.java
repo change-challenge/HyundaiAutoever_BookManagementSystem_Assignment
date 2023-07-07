@@ -1,23 +1,34 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.UserDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.User;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.UserRepository;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishBookRepository;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDto;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.UserService;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/user")
 @Slf4j
 public class UserApiController {
 
 
+    private final UserService userService;
+
+    @GetMapping("/me")
+    public ResponseEntity<MemberResponseDto> findUserInfoById() {
+        return ResponseEntity.ok(userService.findUserInfoById(SecurityUtil.getCurrentUserId()));
+    }
+
+//
     @Autowired // 스프링 부트가 미리 생성해놓은 객체를 가져다가 자동 연결!
-    private UserRepository userRepository;
+    private MemberRepository memberRepository;
 
 //    private final UserRepository userRepository;
 //
@@ -27,13 +38,13 @@ public class UserApiController {
 //    }
 
     @PostMapping("/api/user/create")
-    public String createUser(@RequestBody UserDTO form) {
+    public String createUser(@RequestBody MemberDTO form) {
         log.info(form.toString());
         // 1. Dto를 변환! Entity!
-        User user = form.toEntity();
+        Member user = form.toEntity();
 
         // 2. Repository에게 Entity를 DB안에 저장하게 함!
-        User saved = userRepository.save(user);
+        Member saved = memberRepository.save(user);
         log.info(saved.toString());
         return "success";
     }

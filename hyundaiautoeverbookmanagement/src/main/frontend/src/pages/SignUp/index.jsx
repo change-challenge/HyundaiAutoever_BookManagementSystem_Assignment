@@ -65,7 +65,7 @@ function SignUp() {
 
       const confirm = window.confirm('회원가입을 하시겠습니까?')
       if (confirm) {
-        fetch('/api/user/create', {
+        fetch('/auth/signup', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
