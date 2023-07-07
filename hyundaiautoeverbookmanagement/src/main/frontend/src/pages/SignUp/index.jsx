@@ -89,7 +89,7 @@ function SignUp() {
   }
 
   const onClickToLoginButton = () => {
-    navigate('/login')
+    navigate('/api/login')
   }
 
   useEffect(() => {

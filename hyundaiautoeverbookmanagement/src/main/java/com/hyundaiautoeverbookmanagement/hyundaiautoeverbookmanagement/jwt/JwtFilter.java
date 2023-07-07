@@ -23,7 +23,7 @@ public class JwtFilter extends OncePerRequestFilter {
     protected void doFilterInternal(jakarta.servlet.http.HttpServletRequest request, jakarta.servlet.http.HttpServletResponse response, jakarta.servlet.FilterChain filterChain) throws jakarta.servlet.ServletException, IOException {
 
         // 1. Request Header 에서 토큰을 꺼냄
-        String jwt = resolveToken((HttpServletRequest) request);
+        String jwt = resolveToken(request);
 
         // 2. validateToken 으로 토큰 유효성 검사
         // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장

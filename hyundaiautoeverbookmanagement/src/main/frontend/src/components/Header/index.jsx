@@ -3,7 +3,11 @@ import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../../assets/logo.svg'
 import * as S from './style'
 import { Text } from '../index'
-import { useIsLoginState } from '../../context/IsLoginContext'
+import {
+  useIsLoginState,
+  useIsLoginDispatch,
+} from '../../context/IsLoginContext'
+import axios from 'axios'
 
 const basicNavMenu = [
   {
@@ -19,6 +23,18 @@ const basicNavMenu = [
 function Header() {
   const navigate = useNavigate()
   const isLogin = useIsLoginState()
+  const setIsLogin = useIsLoginDispatch()
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/auth/logout')
+      // 로그아웃 성공 후 필요한 동작 수행
+      setIsLogin(false) // 클라이언트 측에서 인증 상태 해제
+      navigate('/') // 로그아웃 후 리다이렉트 등의 작업 수행
+    } catch (error) {
+      // 로그아웃 요청 실패 처리
+    }
+  }
 
   const logoClick = () => {
     navigate('/')
@@ -73,29 +89,24 @@ function Header() {
                   </Link>
                 </li>
                 <li>
-                  <Link
+                  <span
                     style={{
-                      marginRight: '2rem',
                       padding: '0 10px',
                       lineHeight: '1em',
                       height: '1em',
+                      display: 'inline-block',
                     }}
-                    to="/"
+                    onClick={handleLogout} // 로그아웃 버튼 클릭 시 로그아웃 처리 함수 호출
+                    role="button"
                   >
-                    <span
-                      style={{
-                        display: 'inline-block',
-                      }}
-                    >
-                      <Text
-                        text="로그아웃"
-                        color={({ theme }) => theme.colors.main}
-                        fontSize={({ theme }) => theme.fontSize.sz16}
-                        fontFamily={'Roboto'}
-                        cursor={'pointer'}
-                      />
-                    </span>
-                  </Link>
+                    <Text
+                      text="로그아웃"
+                      color={({ theme }) => theme.colors.main}
+                      fontSize={({ theme }) => theme.fontSize.sz16}
+                      fontFamily={'Roboto'}
+                      cursor={'pointer'}
+                    />
+                  </span>
                 </li>
               </>
             ) : (

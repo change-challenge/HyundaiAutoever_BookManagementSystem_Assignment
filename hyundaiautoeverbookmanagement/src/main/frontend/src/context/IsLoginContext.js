@@ -2,6 +2,46 @@ import React, { createContext, useContext, useState, useMemo } from 'react'
 
 const userId = sessionStorage.getItem('id')
 const token = sessionStorage.getItem('token')
+//const initialToken = localStorage.getItem('token') || ''
+const initialToken = sessionStorage.getItem('token') || ''
+
+export const TokenContext = createContext({
+  token: initialToken,
+  setToken: () => {},
+})
+
+export function TokenProvider({ children }) {
+  const [token, setToken] = useState(initialToken)
+
+  //  const updateToken = newToken => {
+  //    setToken(newToken)
+  //    localStorage.setItem('token', newToken)
+  //  }
+  const updateToken = newToken => {
+    setToken(newToken)
+    sessionStorage.setItem('token', newToken)
+  }
+
+  const value = useMemo(() => ({ token, setToken: updateToken }), [token])
+
+  return <TokenContext.Provider value={value}>{children}</TokenContext.Provider>
+}
+
+export function useTokenState() {
+  const context = useContext(TokenContext)
+  if (!context) {
+    throw new Error('Cannot find TokenProvider')
+  }
+  return context.token
+}
+
+export function useTokenDispatch() {
+  const context = useContext(TokenContext)
+  if (!context) {
+    throw new Error('Cannot find TokenProvider')
+  }
+  return context.setToken
+}
 
 export const IsLoginContext = createContext({
   isLogin: userId !== null && token !== null ? true : false,
@@ -24,4 +64,12 @@ export function useIsLoginState() {
     throw new Error('Cannot find IsLoginProvider')
   }
   return context.isLogin
+}
+
+export function useIsLoginDispatch() {
+  const context = useContext(IsLoginContext)
+  if (!context) {
+    throw new Error('Cannot find IsLoginProvider')
+  }
+  return context.setIsLogin
 }

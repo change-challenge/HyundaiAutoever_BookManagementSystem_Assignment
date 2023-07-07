@@ -1,8 +1,10 @@
 import BasicTabs from './Tabs'
 import * as S from './style'
 import { Text } from '../../../components/index'
+//import { useUser } from '../../../context/UserContext'
 
 const Mypage = () => {
+  //  const user = useUser()
   return (
     <S.MypageContainer>
       <S.InnerWrapper>
