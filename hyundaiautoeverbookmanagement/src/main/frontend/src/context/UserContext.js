@@ -16,11 +16,10 @@ export function UserProvider({ children }) {
               Authorization: `Bearer ${token}`, // 헤더에 토큰 추가
             },
           }
-          //  console.log('아따 성님들~~~')
           const response = await axios.get('/api/user/me', config) // 헤더를 포함하여 요청 보내기
-          //  console.log('여기 못와유?~~~')
 
           const userInfo = response.data
+          console.log(userInfo)
           setUserInfo(userInfo)
         }
       } catch (error) {
