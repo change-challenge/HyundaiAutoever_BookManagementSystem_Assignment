@@ -1,8 +1,16 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../../assets/logo.svg'
 import * as S from './style'
 import { Text } from '../index'
+import {
+  useIsLoginState,
+  useIsLoginDispatch,
+  useTokenDispatch,
+} from '../../context/IsLoginContext'
+import axios from 'axios'
+import { useUserState, useUserDispatch } from '../../context/UserContext'
+import { SnackbarContext } from '../../context/SnackbarContext'
 
 const basicNavMenu = [
   {
@@ -16,7 +24,32 @@ const basicNavMenu = [
 ]
 
 function Header() {
+  const { setSnackbar } = useContext(SnackbarContext)
+
   const navigate = useNavigate()
+  const isLogin = useIsLoginState()
+  const userInfo = useUserState()
+  const setUserInfo = useUserDispatch()
+  const setIsLogin = useIsLoginDispatch()
+  const setToken = useTokenDispatch() // 추가: 토큰 디스패치 함수
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout')
+      setIsLogin(false) // 클라이언트 측에서 인증 상태 해제
+      setUserInfo(null)
+      setToken(null) // 추가: 토큰 초기화
+      localStorage.removeItem('token')
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: '로그아웃 성공!',
+      })
+      navigate('/') // 로그아웃 후 리다이렉트 등의 작업 수행
+    } catch (error) {
+      console.error('로그아웃 실패:', error)
+    }
+  }
 
   const logoClick = () => {
     navigate('/')
@@ -43,8 +76,56 @@ function Header() {
         </S.LogoWrapper>
         <S.NavWrapper>
           <S.LinkButtonWrapper>
-            {basicNavMenu.map(menu => {
-              return (
+            {isLogin ? (
+              <>
+                <li>
+                  <Link
+                    style={{
+                      marginRight: '2rem',
+                      padding: '0 10px',
+                      lineHeight: '1em',
+                      height: '1em',
+                    }}
+                    to="/mypage"
+                  >
+                    <span
+                      style={{
+                        display: 'inline-block',
+                      }}
+                    >
+                      <Text
+                        text="마이페이지"
+                        color={({ theme }) => theme.colors.main}
+                        fontSize={({ theme }) => theme.fontSize.sz16}
+                        fontFamily={'Roboto'}
+                        cursor={'pointer'}
+                      />
+                    </span>
+                  </Link>
+                </li>
+                <li>
+                  <span
+                    style={{
+                      padding: '0 10px',
+                      lineHeight: '1em',
+                      height: '1em',
+                      display: 'inline-block',
+                    }}
+                    onClick={handleLogout}
+                    role="button"
+                  >
+                    <Text
+                      text="로그아웃"
+                      color={({ theme }) => theme.colors.main}
+                      fontSize={({ theme }) => theme.fontSize.sz16}
+                      fontFamily={'Roboto'}
+                      cursor={'pointer'}
+                    />
+                  </span>
+                </li>
+              </>
+            ) : (
+              basicNavMenu.map(menu => (
                 <li key={menu.linkTo}>
                   <Link
                     style={{
@@ -70,8 +151,8 @@ function Header() {
                     </span>
                   </Link>
                 </li>
-              )
-            })}
+              ))
+            )}
           </S.LinkButtonWrapper>
         </S.NavWrapper>
       </S.Layout>

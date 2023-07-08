@@ -1,8 +1,21 @@
 import BasicTabs from './Tabs'
 import * as S from './style'
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
 import { Text } from '../../../components/index'
+import { useUserState } from '../../../context/UserContext'
 
 const Mypage = () => {
+  const userInfo = useUserState()
+
+  if (!userInfo) {
+    return (
+      <Box sx={{ display: 'flex', width: 300, height: 300 }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
+
   return (
     <S.MypageContainer>
       <S.InnerWrapper>
@@ -16,7 +29,7 @@ const Mypage = () => {
         </S.MypageTitleWrapper>
         <S.MypageGreetingWrapper>
           <Text
-            text="000님, 반갑습니다!"
+            text={`${userInfo.name}님, 반갑습니다!`}
             color={({ theme }) => theme.colors.black}
             fontWeight={'bold'}
             fontSize={({ theme }) => theme.fontSize.sz32}

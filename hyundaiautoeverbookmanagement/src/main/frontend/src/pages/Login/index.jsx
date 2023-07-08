@@ -1,10 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 import { LabelInput, Title } from '../../components/index'
 import * as S from './style'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useEffect } from 'react'
+import { useTokenDispatch, IsLoginContext } from '../../context/IsLoginContext'
+import { SnackbarContext } from '../../context/SnackbarContext'
+import axios from 'axios' // axios import 추가
 
 function Login() {
+  const setToken = useTokenDispatch()
+  const { setSnackbar } = useContext(SnackbarContext)
+
+  const { setIsLogin } = useContext(IsLoginContext)
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
 
@@ -33,8 +40,29 @@ function Login() {
     setPwValid(isValid)
   }
 
-  const onClickConfirmButton = () => {
-    alert('로그인에 성공했습니다.')
+  const onClickConfirmButton = async () => {
+    try {
+      const response = await axios.post('/api/auth/login', {
+        email,
+        password: pw,
+      })
+      const accessToken = response.data.accessToken
+      localStorage.setItem('token', accessToken) // 추가: localStorage에 토큰 저장
+      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}` // 추가: 헤더에 Access Token 설정
+      setToken(accessToken)
+      setIsLogin(true)
+      setSnackbar({
+        open: true,
+        severity: 'success',
+        message: '로그인 성공!',
+      })
+
+      navigate('/')
+    } catch (error) {
+      setPw('')
+      setPwValid(false)
+      alert('로그인 정보가 올바르지 않거나 가입된 회원이 아닙니다.')
+    }
   }
 
   const onClickSignUpButton = () => {
