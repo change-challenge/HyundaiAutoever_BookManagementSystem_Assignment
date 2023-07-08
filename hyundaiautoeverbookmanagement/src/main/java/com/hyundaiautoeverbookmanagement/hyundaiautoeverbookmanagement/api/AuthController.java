@@ -5,14 +5,20 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.Token
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.TokenRequestDto;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberRequestDto;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDto;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberId;
 
 @Slf4j
 @RestController
@@ -28,7 +34,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto memberRequestDto) {
-
         return ResponseEntity.ok(authService.login(memberRequestDto));
     }
 
@@ -38,9 +43,10 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
-
-        return ResponseEntity.ok("잘햿다");
+    public ResponseEntity<?> logout() {
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        authService.logout(getCurrentMemberId());
+        return ResponseEntity.ok().build();
     }
 
 //    public ResponseEntity<String> logout(@RequestBody TokenRequestDto tokenRequestDto) {
