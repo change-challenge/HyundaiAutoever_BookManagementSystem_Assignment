@@ -1,12 +1,24 @@
 import { SearchBar } from '../../components/index'
 import { useNavigate } from 'react-router-dom'
 import * as S from './style'
+import axios from 'axios'
 
 export default function Main() {
   const navigate = useNavigate()
 
   const handleSubmit = () => {
     navigate('/search')
+  }
+
+  const token = localStorage.getItem('token')
+  console.log('Stored token:', token)
+
+  if (token) {
+    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    console.log(
+      'Token set in headers:',
+      axios.defaults.headers.common['Authorization']
+    )
   }
   //  console.log(process.env.REACT_APP_ALADIN_API_KEY)
   return (

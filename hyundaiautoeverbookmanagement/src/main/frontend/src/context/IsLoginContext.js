@@ -1,58 +1,68 @@
-import React, { createContext, useContext, useState, useMemo } from 'react'
+import React, {
+  createContext,
+  useEffect,
+  useContext,
+  useState,
+  useMemo,
+} from 'react'
 
-const userId = sessionStorage.getItem('id')
-const token = sessionStorage.getItem('token')
-//const initialToken = localStorage.getItem('token') || ''
-const initialToken = sessionStorage.getItem('token') || ''
+const initialToken = localStorage.getItem('token') || ''
 
 export const TokenContext = createContext({
   token: initialToken,
   setToken: () => {},
 })
 
-export function TokenProvider({ children }) {
-  const [token, setToken] = useState(initialToken)
+//export function TokenProvider({ children }) {
+//  const [token, setToken] = useState(initialToken)
 
-  //  const updateToken = newToken => {
-  //    setToken(newToken)
-  //    localStorage.setItem('token', newToken)
-  //  }
-  const updateToken = newToken => {
-    setToken(newToken)
-    sessionStorage.setItem('token', newToken)
-  }
+//  useEffect(() => {
+//    localStorage.setItem('token', token) // 토큰 값이 변경될 때마다 로컬 스토리지에 저장
+//  }, [token])
 
-  const value = useMemo(() => ({ token, setToken: updateToken }), [token])
+//  const value = useMemo(() => ({ token, setToken: updateToken }), [token])
 
-  return <TokenContext.Provider value={value}>{children}</TokenContext.Provider>
-}
+//  return <TokenContext.Provider value={value}>{children}</TokenContext.Provider>
+//}
 
 export function useTokenState() {
-  const context = useContext(TokenContext)
+  const context = useContext(IsLoginContext)
   if (!context) {
-    throw new Error('Cannot find TokenProvider')
+    throw new Error('Cannot find IsLoginProvider')
   }
   return context.token
 }
 
 export function useTokenDispatch() {
-  const context = useContext(TokenContext)
+  const context = useContext(IsLoginContext)
   if (!context) {
-    throw new Error('Cannot find TokenProvider')
+    throw new Error('Cannot find IsLoginProvider')
   }
   return context.setToken
 }
 
 export const IsLoginContext = createContext({
-  isLogin: userId !== null && token !== null ? true : false,
+  isLogin: false,
+  setLogin: () => {},
 })
 
 export function IsLoginProvider({ children }) {
-  const [isLogin, setIsLogin] = useState(
-    userId !== null && token !== null ? true : false
+  const [isLogin, setIsLogin] = useState(false)
+  const [token, setToken] = useState(localStorage.getItem('token') || '')
+
+  useEffect(() => {
+    if (token) {
+      setIsLogin(true)
+    } else {
+      setIsLogin(false)
+    }
+  }, [token])
+
+  const value = useMemo(
+    () => ({ isLogin, setIsLogin, token, setToken }),
+    [isLogin, setIsLogin, token, setToken]
   )
-  // useMemo로 캐싱하지 않으면 value가 바뀔 때마다 state를 사용하는 모든 컴포넌트가 매번 리렌더링됨
-  const value = useMemo(() => ({ isLogin, setIsLogin }), [isLogin, setIsLogin])
+
   return (
     <IsLoginContext.Provider value={value}>{children}</IsLoginContext.Provider>
   )

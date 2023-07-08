@@ -4,7 +4,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.Membe
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDto;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.UserService;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.MemberService;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,13 +16,19 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/user")
 @Slf4j
-public class UserApiController {
+public class MemberApiController {
 
-    private final UserService userService;
+    private final MemberService memberService;
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponseDto> findUserInfoById() {
-        return ResponseEntity.ok(userService.findUserInfoById(SecurityUtil.getCurrentUserId()));
+    public ResponseEntity<MemberResponseDto> findMemberInfoById() {
+        log.info("SecurityUtil.getCurrentMemberId()" + SecurityUtil.getCurrentMemberId());
+        return ResponseEntity.ok(memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId()));
+    }
+
+    @GetMapping("/{email}")
+    public ResponseEntity<MemberResponseDto> findMemberInfoByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(memberService.findMemberInfoByEmail(email));
     }
 
 //

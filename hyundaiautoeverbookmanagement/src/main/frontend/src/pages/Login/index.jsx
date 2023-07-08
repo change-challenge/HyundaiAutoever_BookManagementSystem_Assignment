@@ -38,21 +38,24 @@ function Login() {
     setPwValid(isValid)
   }
 
-  const onClickConfirmButton = () => {
-    // axios를 사용하여 POST 요청 보내기
-    axios
-      .post('/api/auth/login', { email, password: pw })
-      .then(response => {
-        console.log(response)
-        setToken(response.data.accessToken)
-        alert('로그인에 성공했습니다.')
-        setIsLogin(true)
-        navigate('/')
+  const onClickConfirmButton = async () => {
+    try {
+      const response = await axios.post('/api/auth/login', {
+        email,
+        password: pw,
       })
-      .catch(error => {
-        // 로그인 실패 시 에러 처리
-        console.error('로그인 실패:', error)
-      })
+      console.log(response)
+      const accessToken = response.data.accessToken
+      console.log('accessToken ', accessToken)
+      setToken(accessToken)
+      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}` // 추가: 헤더에 Access Token 설정
+      alert('로그인에 성공했습니다.')
+      setIsLogin(true)
+      localStorage.setItem('token', accessToken) // 추가: localStorage에 토큰 저장
+      navigate('/')
+    } catch (error) {
+      console.error('로그인 실패:', error)
+    }
   }
 
   const onClickSignUpButton = () => {

@@ -6,6 +6,7 @@ import { Text } from '../index'
 import {
   useIsLoginState,
   useIsLoginDispatch,
+  useTokenDispatch,
 } from '../../context/IsLoginContext'
 import axios from 'axios'
 
@@ -24,15 +25,16 @@ function Header() {
   const navigate = useNavigate()
   const isLogin = useIsLoginState()
   const setIsLogin = useIsLoginDispatch()
+  const setToken = useTokenDispatch() // 추가: 토큰 디스패치 함수
 
   const handleLogout = async () => {
     try {
       await axios.post('/auth/logout')
-      // 로그아웃 성공 후 필요한 동작 수행
       setIsLogin(false) // 클라이언트 측에서 인증 상태 해제
+      setToken(null) // 추가: 토큰 초기화
       navigate('/') // 로그아웃 후 리다이렉트 등의 작업 수행
     } catch (error) {
-      // 로그아웃 요청 실패 처리
+      console.error('로그아웃 실패:', error)
     }
   }
 
@@ -96,7 +98,7 @@ function Header() {
                       height: '1em',
                       display: 'inline-block',
                     }}
-                    onClick={handleLogout} // 로그아웃 버튼 클릭 시 로그아웃 처리 함수 호출
+                    onClick={handleLogout}
                     role="button"
                   >
                     <Text

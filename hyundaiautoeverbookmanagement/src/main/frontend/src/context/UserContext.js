@@ -7,12 +7,22 @@ export function UserProvider({ children }) {
   const [userInfo, setUserInfo] = useState(null)
 
   useEffect(() => {
-    // 로그인 후 사용자 정보를 가져오는 요청을 보냅니다.
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get('/api/user/me')
-        const userInfo = response.data
-        setUserInfo(userInfo)
+        const token = localStorage.getItem('token') // 토큰 가져오기
+        if (token) {
+          const config = {
+            headers: {
+              Authorization: `Bearer ${token}`, // 헤더에 토큰 추가
+            },
+          }
+          //  console.log('아따 성님들~~~')
+          const response = await axios.get('/api/user/me', config) // 헤더를 포함하여 요청 보내기
+          //  console.log('여기 못와유?~~~')
+
+          const userInfo = response.data
+          setUserInfo(userInfo)
+        }
       } catch (error) {
         console.error('Failed to fetch user info', error)
       }

@@ -30,18 +30,11 @@ import {
 import axios from 'axios'
 
 // Axios 인터셉터 설정
-axios.interceptors.request.use(
-  config => {
-    const token = sessionStorage.getItem('token')
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
-    return config
-  },
-  error => {
-    return Promise.reject(error)
-  }
-)
+// 새로고침 시 localStorage에 저장된 토큰을 사용하여 로그인 상태를 확인
+const token = localStorage.getItem('token')
+if (token) {
+  axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+}
 
 const root = ReactDOM.createRoot(document.getElementById('root'))
 root.render(
