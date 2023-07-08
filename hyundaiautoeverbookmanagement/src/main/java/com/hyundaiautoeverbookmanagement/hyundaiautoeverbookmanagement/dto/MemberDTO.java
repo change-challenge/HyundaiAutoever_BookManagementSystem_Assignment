@@ -14,8 +14,6 @@ public class MemberDTO {
     private String email;
     private String password;
     private String name;
-    private String address;
-    private String phone;
     private UserType userType;
 
     // 생성자, getter, setter, toString 등 필요한 메서드 추가

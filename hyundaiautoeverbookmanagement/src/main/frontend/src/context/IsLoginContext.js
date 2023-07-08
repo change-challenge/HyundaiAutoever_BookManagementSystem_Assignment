@@ -8,11 +8,6 @@ import React, {
 
 const initialToken = localStorage.getItem('token') || ''
 
-export const TokenContext = createContext({
-  token: initialToken,
-  setToken: () => {},
-})
-
 //export function TokenProvider({ children }) {
 //  const [token, setToken] = useState(initialToken)
 
@@ -40,6 +35,11 @@ export function useTokenDispatch() {
   }
   return context.setToken
 }
+
+export const TokenContext = createContext({
+  token: initialToken,
+  setIsToken: () => {},
+})
 
 export const IsLoginContext = createContext({
   isLogin: false,

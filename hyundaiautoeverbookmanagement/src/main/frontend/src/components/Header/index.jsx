@@ -9,6 +9,7 @@ import {
   useTokenDispatch,
 } from '../../context/IsLoginContext'
 import axios from 'axios'
+import { useUserState, useUserDispatch } from '../../context/UserContext'
 
 const basicNavMenu = [
   {
@@ -24,15 +25,20 @@ const basicNavMenu = [
 function Header() {
   const navigate = useNavigate()
   const isLogin = useIsLoginState()
+  const userInfo = useUserState()
+  const setUserInfo = useUserDispatch()
   const setIsLogin = useIsLoginDispatch()
   const setToken = useTokenDispatch() // 추가: 토큰 디스패치 함수
 
   const handleLogout = async () => {
     try {
-      await axios.post('/auth/logout')
+      await axios.post('/api/auth/logout')
       setIsLogin(false) // 클라이언트 측에서 인증 상태 해제
+      setUserInfo(null)
       setToken(null) // 추가: 토큰 초기화
+      localStorage.removeItem('token')
       navigate('/') // 로그아웃 후 리다이렉트 등의 작업 수행
+      console.log('logout 안에', userInfo)
     } catch (error) {
       console.error('로그아웃 실패:', error)
     }

@@ -1,7 +1,7 @@
 import { memo } from 'react'
 import styled from 'styled-components'
 
-const StyledText = styled.p`
+const StyledText = styled.div`
   color: ${({ color }) => color};
   font-family: 'Apple SD Gothic Neo';
   font-size: ${({ fontSize }) => fontSize};

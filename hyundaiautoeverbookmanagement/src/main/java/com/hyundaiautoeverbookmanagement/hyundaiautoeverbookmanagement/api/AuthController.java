@@ -6,10 +6,6 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.Token
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberRequestDto;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDto;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.AuthService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +28,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<TokenDto> login(@RequestBody MemberRequestDto memberRequestDto) {
-        log.info("hey!!!!!!!!!!!" + memberRequestDto.toString());
+
         return ResponseEntity.ok(authService.login(memberRequestDto));
     }
 
@@ -42,7 +38,12 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<String> logout(@RequestBody TokenRequestDto tokenRequestDto) {
+    public ResponseEntity<String> logout() {
+
+        return ResponseEntity.ok("잘햿다");
+    }
+
+//    public ResponseEntity<String> logout(@RequestBody TokenRequestDto tokenRequestDto) {
 //        // 세션 무효화
 //        HttpSession session = request.getSession(false);
 //        if (session != null) {
@@ -59,8 +60,8 @@ public class AuthController {
 //                response.addCookie(cookie);
 //            }
 //        }
-
-        return ResponseEntity.ok("로그아웃 성공");
-    }
-
+//
+//        return ResponseEntity.ok("로그아웃 성공");
+//    }
+//
 }

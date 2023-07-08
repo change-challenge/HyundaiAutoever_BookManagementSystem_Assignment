@@ -1,7 +1,16 @@
-import React, { createContext, useContext, useState, useEffect } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useMemo,
+} from 'react'
 import axios from 'axios'
 
-const UserContext = createContext(null)
+const UserContext = createContext({
+  userInfo: null,
+  setUserInfo: () => {},
+})
 
 export function UserProvider({ children }) {
   const [userInfo, setUserInfo] = useState(null)
@@ -19,7 +28,7 @@ export function UserProvider({ children }) {
           const response = await axios.get('/api/user/me', config) // 헤더를 포함하여 요청 보내기
 
           const userInfo = response.data
-          console.log(userInfo)
+          console.log('context 안에 ', userInfo)
           setUserInfo(userInfo)
         }
       } catch (error) {
@@ -30,15 +39,26 @@ export function UserProvider({ children }) {
     fetchUserInfo()
   }, [])
 
-  return (
-    <UserContext.Provider value={userInfo}>{children}</UserContext.Provider>
+  const value = useMemo(
+    () => ({ userInfo, setUserInfo }),
+    [userInfo, setUserInfo]
   )
+
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }
 
-export function useUser() {
-  const userInfo = useContext(UserContext)
-  if (userInfo === null) {
-    throw new Error('useUser must be used within a UserProvider')
+export function useUserState() {
+  const context = useContext(UserContext)
+  if (context === null) {
+    throw new Error('useUserState must be used within a UserProvider')
   }
-  return userInfo
+  return context.userInfo
+}
+
+export function useUserDispatch() {
+  const context = useContext(UserContext)
+  if (context === null) {
+    throw new Error('useUserDispatch must be used within a UserProvider')
+  }
+  return context.setUserInfo
 }
