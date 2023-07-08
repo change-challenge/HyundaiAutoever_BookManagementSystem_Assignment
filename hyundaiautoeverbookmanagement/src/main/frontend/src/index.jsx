@@ -6,6 +6,9 @@ import GlobalStyle from './styles/GlobalStyle'
 import theme from './styles/theme'
 import { IsLoginProvider } from './context/IsLoginContext'
 import { UserProvider } from './context/UserContext'
+import { SnackbarProvider } from './context/SnackbarContext'
+import { SnackbarComponent } from './components/index'
+
 import {
   Header,
   HeaderWithSearchBarLogOut,
@@ -44,26 +47,29 @@ root.render(
         <IsLoginProvider>
           <GlobalStyle />
           <ThemeProvider theme={theme}>
-            <Router>
-              <Header />
-              <Routes>
-                <Route path="/" element={<Main />}></Route>
-                <Route path="/login" element={<Login />}></Route>
-                <Route path="/signup" element={<SignUp />}></Route>
-                <Route path="/mypage" element={<Mypage />} />
-                <Route path="/search" element={<BookSearch />} />
-                <Route path="/search/detail" element={<BookDetail />} />
-                <Route path="/wishbook" element={<WishBook />} />
-                <Route path="/admin" element={<AdminLayout />}>
-                  <Route path="" element={<AdminMain />} />
-                  <Route path="user" element={<AdminUser />} />
-                  <Route path="rent" element={<AdminRent />} />
-                  <Route path="book" element={<AdminBook />} />
-                  <Route path="wishbook" element={<AdminWishBook />} />
-                </Route>
-              </Routes>
-              <Footer />
-            </Router>
+            <SnackbarProvider>
+              <Router>
+                <Header />
+                <Routes>
+                  <Route path="/" element={<Main />}></Route>
+                  <Route path="/login" element={<Login />}></Route>
+                  <Route path="/signup" element={<SignUp />}></Route>
+                  <Route path="/mypage" element={<Mypage />} />
+                  <Route path="/search" element={<BookSearch />} />
+                  <Route path="/search/detail" element={<BookDetail />} />
+                  <Route path="/wishbook" element={<WishBook />} />
+                  <Route path="/admin" element={<AdminLayout />}>
+                    <Route path="" element={<AdminMain />} />
+                    <Route path="user" element={<AdminUser />} />
+                    <Route path="rent" element={<AdminRent />} />
+                    <Route path="book" element={<AdminBook />} />
+                    <Route path="wishbook" element={<AdminWishBook />} />
+                  </Route>
+                </Routes>
+                <Footer />
+                <SnackbarComponent />
+              </Router>
+            </SnackbarProvider>
           </ThemeProvider>
         </IsLoginProvider>
       </UserProvider>

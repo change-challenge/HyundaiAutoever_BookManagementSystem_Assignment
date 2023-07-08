@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../../assets/logo.svg'
 import * as S from './style'
@@ -10,6 +10,7 @@ import {
 } from '../../context/IsLoginContext'
 import axios from 'axios'
 import { useUserState, useUserDispatch } from '../../context/UserContext'
+import { SnackbarContext } from '../../context/SnackbarContext'
 
 const basicNavMenu = [
   {
@@ -23,6 +24,8 @@ const basicNavMenu = [
 ]
 
 function Header() {
+  const { setSnackbar } = useContext(SnackbarContext)
+
   const navigate = useNavigate()
   const isLogin = useIsLoginState()
   const userInfo = useUserState()
@@ -37,8 +40,12 @@ function Header() {
       setUserInfo(null)
       setToken(null) // 추가: 토큰 초기화
       localStorage.removeItem('token')
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: '로그아웃 성공!',
+      })
       navigate('/') // 로그아웃 후 리다이렉트 등의 작업 수행
-      console.log('logout 안에', userInfo)
     } catch (error) {
       console.error('로그아웃 실패:', error)
     }
