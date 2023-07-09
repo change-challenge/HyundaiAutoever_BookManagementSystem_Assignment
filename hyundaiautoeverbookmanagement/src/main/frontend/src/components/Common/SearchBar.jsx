@@ -84,15 +84,25 @@ const SearchBar = ({ onSubmit, placeholder, width, height }) => {
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
+    console.log('SearchBar handleInputChange:', e.target.value)
   }
 
   const handleClearClick = () => {
     setSearchValue('')
   }
 
+  const handleSubmit = event => {
+    event.preventDefault() // form의 기본 submit 동작을 막음
+    if (onSubmit) {
+      // onSubmit이 제공되었는지 확인
+      onSubmit(searchValue) // onSubmit 함수를 searchValue와 함께 호출
+    }
+    console.log(' SearchBar handleSubmit : ', searchValue)
+  }
+
   return (
     <SearchWrapper width={width} height={height}>
-      <SearchForm onSubmit={onSubmit} width={width} height={height}>
+      <SearchForm onSubmit={handleSubmit} width={width} height={height}>
         <SearchInput
           type="text"
           value={searchValue}

@@ -1,9 +1,11 @@
+import { useState, useEffect } from 'react'
 import * as S from './style'
 import SideBar from './SideBar'
 import { Text } from '../../components/index'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import BookList from './BookList'
 import Pagination from '@mui/material/Pagination'
+import axios from 'axios'
 
 const filters = [
   { id: 1, name: '정확도순' },
@@ -12,12 +14,32 @@ const filters = [
 ]
 
 const BookSearch = () => {
+  const location = useLocation()
+  const searchParams = new URLSearchParams(location.search)
+  const query = searchParams.get('query') // 검색어 가져오기
+
+  const [books, setBooks] = useState([])
+  const [page, setPage] = useState(1)
+
+  useEffect(() => {
+    const fetchBooks = async () => {
+      const response = await axios.get(`/api/book/search?title=${query}`)
+      setBooks(response.data)
+      console.log(books)
+    }
+    fetchBooks()
+  }, [query])
+
+  const handlePageChange = (event, value) => {
+    setPage(value)
+  }
+
   return (
     <>
       <S.Container>
         <S.BookSearchTitleWrapper>
           <Text
-            text="‘00’"
+            text={`${query}`}
             color={({ theme }) => theme.colors.main}
             fontWeight={'bold'}
             fontSize={({ theme }) => theme.fontSize.sz28}
@@ -62,15 +84,17 @@ const BookSearch = () => {
               </ul>
             </S.BookSearchFilterWrapper>
             <S.BookListWrapper>
-              <BookList />
-              <BookList />
-              <BookList />
-              <BookList />
-              <BookList />
-              <BookList />
+              {books.slice((page - 1) * 20, page * 20).map(book => (
+                <BookList key={book.id} book={book} />
+              ))}
             </S.BookListWrapper>
             <S.PaginationWrapper>
-              <Pagination count={10} shape="rounded" />
+              <Pagination
+                count={Math.ceil(books.length / 20)}
+                page={page}
+                onChange={handlePageChange}
+                shape="rounded"
+              />
             </S.PaginationWrapper>
           </S.BookSearchContentWrapper>
         </S.BookSearchContainer>

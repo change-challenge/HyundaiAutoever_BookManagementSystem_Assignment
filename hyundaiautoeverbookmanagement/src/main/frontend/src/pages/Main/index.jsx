@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { SearchBar } from '../../components/index'
 import { useNavigate } from 'react-router-dom'
 import * as S from './style'
@@ -5,13 +6,15 @@ import axios from 'axios'
 
 export default function Main() {
   const navigate = useNavigate()
+  const [searchValue, setSearchValue] = useState('')
 
-  const handleSubmit = () => {
-    navigate('/search')
+  const handleSubmit = value => {
+    setSearchValue(value) // 검색어 상태 업데이트
+    navigate(`/search?query=${value}`) // 검색어를 쿼리 매개변수로 전달
+    console.log(' Main handleSubmit : ', value)
   }
 
   const token = localStorage.getItem('token')
-  console.log('Stored token:', token)
 
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
@@ -20,7 +23,6 @@ export default function Main() {
       axios.defaults.headers.common['Authorization']
     )
   }
-  //  console.log(process.env.REACT_APP_ALADIN_API_KEY)
   return (
     <S.Container>
       <S.InnerWrapper>
