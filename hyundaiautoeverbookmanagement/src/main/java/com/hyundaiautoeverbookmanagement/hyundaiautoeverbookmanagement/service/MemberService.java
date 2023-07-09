@@ -1,7 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDto;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,15 +13,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class MemberService {
     private final MemberRepository memberRepository;
 
-    public MemberResponseDto findMemberInfoById(Long userId) {
+    public MemberResponseDTO findMemberInfoById(Long userId) {
         return memberRepository.findById(userId)
-                .map(MemberResponseDto::of)
+                .map(MemberResponseDTO::of)
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
     }
 
-    public MemberResponseDto findMemberInfoByEmail(String email) {
+    public MemberResponseDTO findMemberInfoByEmail(String email) {
         return memberRepository.findByEmail(email)
-                .map(MemberResponseDto::of)
+                .map(MemberResponseDTO::of)
                 .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
     }
 }

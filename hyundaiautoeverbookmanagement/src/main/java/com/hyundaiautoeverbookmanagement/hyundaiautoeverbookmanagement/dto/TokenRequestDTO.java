@@ -1,16 +1,11 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
-@Builder
-public class TokenDto {
-
-    private String grantType;
+public class TokenRequestDTO {
     private String accessToken;
     private String refreshToken;
-    private Long accessTokenExpiresIn;
 }
-
