@@ -5,6 +5,8 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wi
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishBookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,7 +19,7 @@ public class WishBookApiController {
     private WishBookRepository wishBookRepository;
 
     @PostMapping("/api/wishbook/create")
-    public String createWishBook(@RequestBody WishBookDTO form) {
+    public ResponseEntity<String> createWishBook(@RequestBody WishBookDTO form) {
         log.info("heyyyyyyyyy" + form.toString());
         // 1. Dto를 변환! Entity!
         Wish wishbook = form.toEntity();
@@ -25,7 +27,7 @@ public class WishBookApiController {
         // 2. Repository에게 Entity를 DB안에 저장하게 함!
         Wish saved = wishBookRepository.save(wishbook);
         log.info(saved.toString());
-        return "Success";
+        return new ResponseEntity<String>("Success", HttpStatus.OK);
     }
 
 }

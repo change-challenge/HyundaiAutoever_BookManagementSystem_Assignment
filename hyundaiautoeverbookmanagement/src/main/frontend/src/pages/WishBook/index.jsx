@@ -19,7 +19,7 @@ export default function WishBook() {
     const getUserInfo = async () => {
       const userInfo = await fetchUserInfo()
       setUser(userInfo)
-      console.log('userInfo ', userInfo)
+      console.log('WishBook userInfo ', userInfo)
     }
     getUserInfo()
   }, [])
@@ -39,10 +39,11 @@ export default function WishBook() {
         author: wishBookAuthor,
         publisher: wishBookPublisher,
         ISBN: wishBookISBN,
-        user_email: user.email,
-        wish_date: isoDate,
+        userEmail: user.email,
+        wishDate: isoDate,
       }
 
+      console.log('requestData : ', requestData)
       axios
         .post('/api/wishbook/create', requestData)
         .then(response => {

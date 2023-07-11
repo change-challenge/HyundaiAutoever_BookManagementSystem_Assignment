@@ -1,5 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.UserType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
@@ -35,4 +36,8 @@ public class Wish {
 
     @Column(name = "WISH_DATE", nullable = false)
     private Date wish_date;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", nullable = false)
+    private WishType wishType = WishType.PENDING;
 }

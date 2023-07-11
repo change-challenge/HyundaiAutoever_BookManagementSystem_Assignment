@@ -29,6 +29,7 @@ export async function fetchUserInfo() {
     return null
   } catch (error) {
     console.error('Failed to fetch user info', error)
+    localStorage.clear()
     return null
   }
 }
