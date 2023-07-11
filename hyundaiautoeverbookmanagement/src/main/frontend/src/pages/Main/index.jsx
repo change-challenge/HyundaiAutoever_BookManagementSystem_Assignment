@@ -10,25 +10,14 @@ export default function Main() {
   const [isSearchRequested, setIsSearchRequested] = useState(false)
 
   useEffect(() => {
-    console.log(
-      'useEffect안에 들어오기는 함?',
-      ' | ',
-      isSearchRequested,
-      ' | ',
-      searchValue,
-      ' | '
-    )
     if (isSearchRequested && searchValue) {
       navigate(`/search?query=${searchValue}`)
-      console.log('useEffect안에 searchValue', searchValue)
       setIsSearchRequested(false)
     }
   }, [searchValue, isSearchRequested, navigate])
 
   const handleSearchValueChange = value => {
-    console.log('handleSearchValueChange - value : ', value)
     setSearchValue(value)
-    console.log('handleSearchValueChange - searchValue : ', searchValue)
     setIsSearchRequested(true)
   }
 

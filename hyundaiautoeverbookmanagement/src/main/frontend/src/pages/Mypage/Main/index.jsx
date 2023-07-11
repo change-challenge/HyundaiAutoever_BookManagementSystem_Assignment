@@ -3,12 +3,22 @@ import * as S from './style'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { Text } from '../../../components/index'
-import { useUserState } from '../../../context/UserContext'
+import { useUserState, fetchUserInfo } from '../../../context/UserContext'
+import { useState, useEffect } from 'react'
 
 const Mypage = () => {
-  const userInfo = useUserState()
+  const [user, setUser] = useState(null)
 
-  if (!userInfo) {
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const userInfo = await fetchUserInfo()
+      setUser(userInfo)
+    }
+    getUserInfo()
+  }, [])
+
+  console.log('user : ', user)
+  if (!user) {
     return (
       <Box sx={{ display: 'flex', width: 300, height: 300 }}>
         <CircularProgress />
@@ -29,7 +39,7 @@ const Mypage = () => {
         </S.MypageTitleWrapper>
         <S.MypageGreetingWrapper>
           <Text
-            text={`${userInfo.name}님, 반갑습니다!`}
+            text={`${user.name}님, 반갑습니다!`}
             color={({ theme }) => theme.colors.black}
             fontWeight={'bold'}
             fontSize={({ theme }) => theme.fontSize.sz32}

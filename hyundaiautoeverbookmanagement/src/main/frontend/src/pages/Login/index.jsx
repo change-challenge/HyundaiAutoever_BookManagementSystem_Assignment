@@ -4,6 +4,7 @@ import * as S from './style'
 import React, { useState, useContext } from 'react'
 import { useEffect } from 'react'
 import { useTokenDispatch, IsLoginContext } from '../../context/IsLoginContext'
+import { fetchUserInfo } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
 import axios from 'axios' // axios import 추가
 
@@ -57,6 +58,7 @@ function Login() {
         message: '로그인 성공!',
       })
 
+      fetchUserInfo()
       navigate('/')
     } catch (error) {
       setPw('')

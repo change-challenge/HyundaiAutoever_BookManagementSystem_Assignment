@@ -83,16 +83,13 @@ const SearchBar = ({ onSearchValueChange, placeholder, width, height }) => {
 
   const handleInputChange = e => {
     setSearchValue(e.target.value)
-    console.log('SearchBar handleInputChange:', e.target.value)
   }
 
   const handleClearClick = () => {
-    console.log('너 왜 실행?')
     setSearchValue('')
   }
 
   const handleSubmit = event => {
-    console.log('handleSubmit : ', searchValue)
     event.preventDefault()
     onSearchValueChange(searchValue)
   }
