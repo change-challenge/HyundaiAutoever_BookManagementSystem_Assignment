@@ -12,23 +12,27 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class WishBook {
+public class Wish {
 
     @Id // 대표값을 지정! like a 주민등록번호
     @GeneratedValue(strategy = GenerationType.AUTO) // 1, 2, 3, .... 자동 생성 어노테이션!
     private Long id;
-    @Column
+
+    @Column(name = "TITLE", nullable = false)
     private String title;
-    @Column
+
+    @Column(name = "AUTHOR", nullable = false)
     private String author;
-    @Column
+
+    @Column(name = "PUBLISHER", nullable = false)
     private String publisher;
-    @Column
+
+    @Column(name = "ISBN")
     private String ISBN;
-    @Column
-    private int user_id;
-    @Column
-    private Date create_date;
 
+    @JoinColumn(name = "user_email", nullable = false)
+    private String user_email;
 
+    @Column(name = "WISH_DATE", nullable = false)
+    private Date wish_date;
 }

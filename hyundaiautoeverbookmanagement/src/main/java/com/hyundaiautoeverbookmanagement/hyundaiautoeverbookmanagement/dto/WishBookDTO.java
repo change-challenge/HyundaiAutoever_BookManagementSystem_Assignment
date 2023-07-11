@@ -1,6 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishBook;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
@@ -17,11 +18,11 @@ public class WishBookDTO {
     private String author;
     private String publisher;
     private Optional<String> ISBN;
-    private int user_id;
-    private Date create_date;
+    private String user_email;
+    private Date wish_date;
 
 
-    public WishBook toEntity() {
-        return new WishBook(null, title, author, publisher, ISBN.orElse(null), user_id, create_date);
+    public Wish toEntity() {
+        return new Wish(null, title, author, publisher, ISBN.orElse(null), user_email, wish_date);
     }
 }

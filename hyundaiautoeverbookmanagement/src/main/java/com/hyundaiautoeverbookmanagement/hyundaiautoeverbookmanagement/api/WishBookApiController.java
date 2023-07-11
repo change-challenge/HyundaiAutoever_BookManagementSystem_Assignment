@@ -1,7 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishBookDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishBook;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishBookRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +18,12 @@ public class WishBookApiController {
 
     @PostMapping("/api/wishbook/create")
     public String createWishBook(@RequestBody WishBookDTO form) {
-        log.info(form.toString());
+        log.info("heyyyyyyyyy" + form.toString());
         // 1. Dto를 변환! Entity!
-        WishBook wishbook = form.toEntity();
+        Wish wishbook = form.toEntity();
 
         // 2. Repository에게 Entity를 DB안에 저장하게 함!
-        WishBook saved = wishBookRepository.save(wishbook);
+        Wish saved = wishBookRepository.save(wishbook);
         log.info(saved.toString());
         return "Success";
     }

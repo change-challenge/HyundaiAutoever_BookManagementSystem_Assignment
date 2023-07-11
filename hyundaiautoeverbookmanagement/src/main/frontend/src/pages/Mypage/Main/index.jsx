@@ -3,7 +3,7 @@ import * as S from './style'
 import CircularProgress from '@mui/material/CircularProgress'
 import Box from '@mui/material/Box'
 import { Text } from '../../../components/index'
-import { useUserState, fetchUserInfo } from '../../../context/UserContext'
+import { fetchUserInfo } from '../../../context/UserContext'
 import { useState, useEffect } from 'react'
 
 const Mypage = () => {
