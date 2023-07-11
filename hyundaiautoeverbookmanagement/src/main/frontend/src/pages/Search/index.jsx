@@ -45,7 +45,7 @@ const BookSearch = () => {
             fontSize={({ theme }) => theme.fontSize.sz28}
           />
           <Text
-            text="에 대한 120개의 검색 결과"
+            text={`에 대한 ${books.length}개의 검색 결과`}
             color={({ theme }) => theme.colors.black}
             fontWeight={'bold'}
             fontSize={({ theme }) => theme.fontSize.sz28}

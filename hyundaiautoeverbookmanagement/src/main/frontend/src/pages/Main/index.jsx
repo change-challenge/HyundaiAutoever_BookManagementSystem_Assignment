@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { SearchBar } from '../../components/index'
 import { useNavigate } from 'react-router-dom'
 import * as S from './style'
@@ -7,11 +7,29 @@ import axios from 'axios'
 export default function Main() {
   const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState('')
+  const [isSearchRequested, setIsSearchRequested] = useState(false)
 
-  const handleSubmit = value => {
-    setSearchValue(value) // 검색어 상태 업데이트
-    navigate(`/search?query=${value}`) // 검색어를 쿼리 매개변수로 전달
-    console.log(' Main handleSubmit : ', value)
+  useEffect(() => {
+    console.log(
+      'useEffect안에 들어오기는 함?',
+      ' | ',
+      isSearchRequested,
+      ' | ',
+      searchValue,
+      ' | '
+    )
+    if (isSearchRequested && searchValue) {
+      navigate(`/search?query=${searchValue}`)
+      console.log('useEffect안에 searchValue', searchValue)
+      setIsSearchRequested(false)
+    }
+  }, [searchValue, isSearchRequested, navigate])
+
+  const handleSearchValueChange = value => {
+    console.log('handleSearchValueChange - value : ', value)
+    setSearchValue(value)
+    console.log('handleSearchValueChange - searchValue : ', searchValue)
+    setIsSearchRequested(true)
   }
 
   const token = localStorage.getItem('token')
@@ -36,7 +54,11 @@ export default function Main() {
         </S.SubGuide>
         {/*검색창*/}
         <S.SearchContainer>
-          <SearchBar width="500px" height="50px" onSubmit={handleSubmit} />
+          <SearchBar
+            width="500px"
+            height="50px"
+            onSearchValueChange={handleSearchValueChange}
+          />
         </S.SearchContainer>
         {/*검색창 끝*/}
       </S.InnerWrapper>
