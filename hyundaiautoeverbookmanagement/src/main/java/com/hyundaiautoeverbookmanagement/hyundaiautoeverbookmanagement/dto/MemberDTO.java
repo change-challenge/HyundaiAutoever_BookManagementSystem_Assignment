@@ -19,13 +19,4 @@ public class MemberDTO {
     private UserType userType;
     private Date registDate;
 
-
-    public Member toEntity() {
-        Member user = new Member();
-        user.setId(null);
-        user.setEmail(this.email);
-        user.setName(this.name);
-        user.setUsertype(UserType.USER);
-        return user;
-    }
 }

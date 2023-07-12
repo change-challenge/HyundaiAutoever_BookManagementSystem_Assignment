@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Button from '@mui/material/Button'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -58,7 +59,7 @@ const rows = [
   ),
 ]
 
-export default function CustomizedTables() {
+export default function CustomizedTables({ rents }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -74,17 +75,54 @@ export default function CustomizedTables() {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.rentId}
+          {rents.map(rent => (
+            <StyledTableRow key={rent.name}>
+              <StyledTableCell component="th" scope="rent">
+                {rent.id}
               </StyledTableCell>
-              <StyledTableCell>{row.bookName}</StyledTableCell>
-              <StyledTableCell>{row.userEmail}</StyledTableCell>
-              <StyledTableCell>{row.rentDate}</StyledTableCell>
-              <StyledTableCell>{row.returnDate}</StyledTableCell>
-              <StyledTableCell>{row.bookState}</StyledTableCell>
-              <StyledTableCell>버튼</StyledTableCell>
+              <StyledTableCell title={rent.title}>
+                {rent.title.length > 15
+                  ? rent.title.substring(0, 15) + '...'
+                  : rent.title}
+              </StyledTableCell>
+
+              <StyledTableCell>{rent.userEmail}</StyledTableCell>
+              <StyledTableCell>
+                {new Date(rent.rentStartDate).toLocaleDateString()}
+              </StyledTableCell>
+              <StyledTableCell>
+                {' '}
+                {rent.rentReturnedDate ? rent.rentReturnedDate : '-'}
+              </StyledTableCell>
+              <StyledTableCell>
+                {(() => {
+                  if (rent.rentReturnedDate) {
+                    return '반납완료'
+                  } else {
+                    let rentStartDate = new Date(rent.rentStartDate)
+                    let today = new Date()
+
+                    let diffInMs = Math.abs(today - rentStartDate)
+
+                    let diffInDays = Math.floor(
+                      diffInMs / (1000 * 60 * 60 * 24)
+                    )
+
+                    if (diffInDays <= 7) {
+                      return '대출중'
+                    } else {
+                      let overdueDays = diffInDays - 7
+                      return `연체중(${overdueDays}일)`
+                    }
+                  }
+                })()}
+              </StyledTableCell>
+
+              <StyledTableCell>
+                <Button variant="contained" disabled={!!rent.rentReturnedDate}>
+                  반납하기
+                </Button>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

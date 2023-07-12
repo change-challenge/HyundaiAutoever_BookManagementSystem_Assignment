@@ -7,6 +7,7 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Button from '@mui/material/Button'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -41,6 +42,7 @@ export default function CustomizedTables({ users }) {
             <StyledTableCell>가입일자</StyledTableCell>
             <StyledTableCell>대출 여부</StyledTableCell>
             <StyledTableCell>상태</StyledTableCell>
+            <StyledTableCell></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -58,10 +60,19 @@ export default function CustomizedTables({ users }) {
                 </StyledTableCell>
 
                 <StyledTableCell>
-                  {user.rentCount == 0 ? '-' : `대출중(${user.rentCount}권)`}
+                  {user.rentCount === 0 ? '-' : `대출중(${user.rentCount}권)`}
                 </StyledTableCell>
                 <StyledTableCell>
-                  {user.lateDay == 0 ? '-' : `연채중(${user.lateDay}일)`}
+                  {user.lateDay === 0 ? '-' : `연채중(${user.lateDay}일)`}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {user.userType === 'ADMIN' ? (
+                    <Button variant="contained">TO USER</Button>
+                  ) : (
+                    <Button variant="contained" color="error">
+                      TO ADMIN
+                    </Button>
+                  )}
                 </StyledTableCell>
               </StyledTableRow>
             ))}

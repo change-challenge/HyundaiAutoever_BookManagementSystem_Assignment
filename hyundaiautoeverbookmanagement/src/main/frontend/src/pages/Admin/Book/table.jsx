@@ -43,7 +43,7 @@ export default function CustomizedTables({ books }) {
             <StyledTableCell>출판사</StyledTableCell>
             <StyledTableCell>ISBN</StyledTableCell>
             <StyledTableCell>수량</StyledTableCell>
-            <StyledTableCell>버튼</StyledTableCell>
+            <StyledTableCell></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -52,7 +52,12 @@ export default function CustomizedTables({ books }) {
               <StyledTableCell component="th" scope="row">
                 {book.id}
               </StyledTableCell>
-              <StyledTableCell>{book.title}</StyledTableCell>
+              <StyledTableCell title={book.title}>
+                {book.title.length > 15
+                  ? book.title.substring(0, 15) + '...'
+                  : book.title}
+              </StyledTableCell>
+
               <StyledTableCell>{book.author}</StyledTableCell>
               <StyledTableCell>
                 {new Date(book.pubDate).toLocaleDateString()}

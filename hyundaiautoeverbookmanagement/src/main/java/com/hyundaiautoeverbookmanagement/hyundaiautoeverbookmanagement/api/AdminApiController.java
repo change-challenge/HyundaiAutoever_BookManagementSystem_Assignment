@@ -27,13 +27,13 @@ public class AdminApiController {
     @GetMapping("/user")
     public ResponseEntity<List<MemberAdminResponseDTO>> getUsers() {
         List<MemberAdminResponseDTO> users = memberService.getAllMembers();
-        log.info("!!users!! " + users);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     @GetMapping("/rent")
-    public ResponseEntity<List<RentDTO>> getRents() {
-        List<RentDTO> rent = rentService.getAllRents();
+    public ResponseEntity<List<RentAdminResponseDTO>> getRents() {
+        List<RentAdminResponseDTO> rent = rentService.getAllRents();
+        log.info("!!rent!! " + rent);
         return new ResponseEntity<>(rent, HttpStatus.OK);
     }
 

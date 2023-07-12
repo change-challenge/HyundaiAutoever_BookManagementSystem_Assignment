@@ -1,11 +1,11 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishResponseDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentAdminResponseDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Copy;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.RentRepository;
@@ -23,28 +23,30 @@ public class RentService {
     private final RentRepository rentRepository;
     private final MemberRepository memberRepository;
     private final CopyRepository copyRepository;
+    private final BookRepository bookRepository;
 
-    public List<RentDTO> getAllRents() {
+    public List<RentAdminResponseDTO> getAllRents() {
         List<Rent> rents = rentRepository.findAll();
-        List<RentDTO> rentDTOS = new ArrayList<>();
-
+        List<RentAdminResponseDTO> rentAdminResponseDTOS = new ArrayList<>();
         for (Rent rent: rents) {
-            RentDTO rentDTO = new RentDTO();
-            rentDTO.setId(rent.getId());
-            rentDTO.setUserEmail(rent.getUser().getEmail());
-            rentDTO.setRentStartDate(rent.getRentStartDate());
-            rentDTO.setRentEndDate(rent.getRentEndDate());
-            rentDTO.setRentReturnedDate(Optional.ofNullable(rent.getRentReturnedDate()));
-            rentDTO.setCopyId(rent.getCopy().getCopyId());
+            RentAdminResponseDTO rentAdminResponseDTO = new RentAdminResponseDTO();
+            Long bookId = copyRepository.findBookIdByCopyId(rent.getCopy().getCopyId());
 
-            rentDTOS.add(rentDTO);
+            rentAdminResponseDTO.setId(rent.getId());
+            rentAdminResponseDTO.setUserEmail(rent.getUser().getEmail());
+            rentAdminResponseDTO.setRentStartDate(rent.getRentStartDate());
+            rentAdminResponseDTO.setRentEndDate(rent.getRentEndDate());
+            rentAdminResponseDTO.setRentReturnedDate(Optional.ofNullable(rent.getRentReturnedDate()));
+            rentAdminResponseDTO.setTitle(bookRepository.findTitleById(bookId));
+            rentAdminResponseDTOS.add(rentAdminResponseDTO);
         }
-        return rentDTOS;
+        return rentAdminResponseDTOS;
     }
 
-    public String rent(RentDTO form) {
+    public String rent(RentAdminResponseDTO form) {
+        Long copyId = bookRepository.findIdByTitle(form.getTitle());
         Member member = memberRepository.findByEmail(form.getUserEmail()).orElse(null);
-        Copy copy = copyRepository.findById(form.getCopyId()).orElse(null);
+        Copy copy = copyRepository.findById(copyId).orElse(null);
         Rent rent = form.toEntity(member, copy);
         Rent saved = rentRepository.save(rent);
         return "Success";

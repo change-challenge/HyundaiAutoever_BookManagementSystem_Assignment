@@ -3,6 +3,8 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.reposito
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Copy;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 
@@ -14,4 +16,6 @@ public interface CopyRepository extends JpaRepository<Copy, Long> {
     List<Copy> findByBook(Book book);
     Optional<Copy> findById(Long id);
     int countByBook(Book book);
+    @Query("SELECT c.book FROM Copy c WHERE c.copyId = :copyId")
+    Long findBookIdByCopyId(@Param("copyId") Long copyId);
 }
