@@ -2,14 +2,14 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.UserType;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 
 @Entity // DB가 해당 객체를 인식 가능!
 @Table(name = "WISH")
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString

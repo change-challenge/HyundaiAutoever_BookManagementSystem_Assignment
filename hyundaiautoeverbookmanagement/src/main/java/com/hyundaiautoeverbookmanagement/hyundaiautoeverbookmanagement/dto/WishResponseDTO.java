@@ -1,29 +1,26 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.Date;
 import java.util.Optional;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Getter
-public class WishBookDTO {
+@Setter
+public class WishResponseDTO {
 
+    private Long id;
     private String title;
     private String author;
     private String publisher;
     private Optional<String> ISBN;
     private String userEmail;
     private Date wishDate;
+    private WishType wishType;
 
-
-    public Wish toEntity() {
-        return new Wish(null, title, author, publisher, ISBN.orElse(null), this.userEmail, wishDate, WishType.PENDING);
-    }
 }

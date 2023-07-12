@@ -3,7 +3,9 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.reposito
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface WishBookRepository extends JpaRepository<Wish, Long> {
+import java.util.List;
 
-
+public interface WishRepository extends JpaRepository<Wish, Long> {
+    List<Wish> findAll();
+    Wish save(Wish wish);
 }

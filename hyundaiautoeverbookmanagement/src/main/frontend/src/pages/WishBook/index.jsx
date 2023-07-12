@@ -39,7 +39,7 @@ export default function WishBook() {
         author: wishBookAuthor,
         publisher: wishBookPublisher,
         ISBN: wishBookISBN,
-        userEmail: user.email,
+        userEmail: user?.email,
         wishDate: isoDate,
       }
 
