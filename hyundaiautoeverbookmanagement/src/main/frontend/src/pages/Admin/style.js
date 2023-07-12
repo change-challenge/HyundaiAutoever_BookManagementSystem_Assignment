@@ -20,4 +20,17 @@ const TableContainer = styled.div`
   padding: 0 30px 0 30px;
 `
 
-export { AdminUserContainer, AdminTitle, SearchBarContainer, TableContainer }
+const PaginationWrapper = styled.div`
+  display: flex;
+
+  justify-content: center;
+  width: 100%;
+`
+
+export {
+  AdminUserContainer,
+  AdminTitle,
+  SearchBarContainer,
+  TableContainer,
+  PaginationWrapper,
+}

@@ -22,6 +22,7 @@ public class BookDTO {
     private String info;
     private LocalDate pubDate;
     private boolean bookStatus;
+    private int bookCount;
 
     public Book toEntity() {
         return new Book(null, title, author, publisher, category, isbn, cover, info, pubDate);

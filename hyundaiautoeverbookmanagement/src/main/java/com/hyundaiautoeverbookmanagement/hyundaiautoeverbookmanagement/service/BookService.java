@@ -52,6 +52,9 @@ public class BookService {
         bookDto.setCover(book.getCover());
         bookDto.setPubDate(book.getPubDate());
 
+        int bookCount = copyRepository.countByBook(book);
+        bookDto.setBookCount(bookCount);
+
         List<Copy> copies = copyRepository.findByBook(book);
         bookDto.setBookStatus(copies.stream()
                 .anyMatch(copy -> copy.getBookStatus() == BookStatus.AVAILABLE));

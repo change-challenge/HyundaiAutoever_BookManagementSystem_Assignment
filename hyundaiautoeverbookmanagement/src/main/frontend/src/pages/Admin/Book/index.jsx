@@ -1,11 +1,29 @@
 import * as S from '../style'
-import { Text, SearchBar } from '../../../components/index'
+import { Text } from '../../../components/index'
 import { default as Table } from './table'
+import { useEffect, useState } from 'react'
+import Pagination from '@mui/material/Pagination'
+import axios from 'axios'
 
 const AdminBook = () => {
-  const handleSubmit = () => {
-    console.log('검색 폼 제출')
+  const [books, setBooks] = useState([])
+  const [page, setPage] = useState(1)
+
+  const fetchBooks = async () => {
+    const response = await axios.get(`/api/admin/book`)
+    setBooks(response.data)
   }
+
+  useEffect(() => {
+    fetchBooks()
+  }, [])
+
+  const handlePageChange = (event, value) => {
+    setPage(value)
+  }
+
+  const booksToShow = books.slice((page - 1) * 20, page * 20)
+
   return (
     <S.AdminUserContainer>
       <S.AdminTitle>
@@ -15,19 +33,18 @@ const AdminBook = () => {
           fontWeight={'bold'}
           color={({ theme }) => theme.colors.black}
         />
-        <S.SearchBarContainer>
-          <SearchBar
-            align="row"
-            width="400px"
-            height="40px"
-            onSubmit={handleSubmit}
-            placeholder={'검색'}
-          />
-        </S.SearchBarContainer>
       </S.AdminTitle>
       <S.TableContainer>
-        <Table />
+        <Table books={booksToShow} />
       </S.TableContainer>
+      <S.PaginationWrapper>
+        <Pagination
+          count={Math.ceil(books.length / 20)}
+          page={page}
+          onChange={handlePageChange}
+          shape="rounded"
+        />
+      </S.PaginationWrapper>
     </S.AdminUserContainer>
   )
 }
