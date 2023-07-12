@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -24,28 +25,40 @@ public class BookService {
 
     public List<BookDTO> searchBooks(String title) {
         List<Book> books = bookRepository.findByTitleContaining(title);
-        List<BookDTO> bookDtos = new ArrayList<>();
 
-        for (Book book : books) {
-            BookDTO bookDto = new BookDTO();
-
-            bookDto.setId(book.getId());
-            bookDto.setTitle(book.getTitle());
-            bookDto.setAuthor(book.getAuthor());
-            bookDto.setPublisher(book.getPublisher());
-            bookDto.setCategory(book.getCategory());
-            bookDto.setIsbn(book.getIsbn());
-            bookDto.setInfo(book.getInfo());
-            bookDto.setCover(book.getCover());
-            bookDto.setPubDate(book.getPubDate());
-
-            List<Copy> copies = copyRepository.findByBook(book);
-            bookDto.setBookStatus(copies.stream().anyMatch((copy) ->
-                    copy.getBookStatus() == BookStatus.AVAILABLE) ? true : false);
-            bookDtos.add(bookDto);
-        }
-        return bookDtos;
+        return books.stream()
+                .map(this::mapToBookDTO)
+                .collect(Collectors.toList());
     }
+
+    public List<BookDTO> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+
+        return books.stream()
+                .map(this::mapToBookDTO)
+                .collect(Collectors.toList());
+    }
+
+    private BookDTO mapToBookDTO(Book book) {
+        BookDTO bookDto = new BookDTO();
+
+        bookDto.setId(book.getId());
+        bookDto.setTitle(book.getTitle());
+        bookDto.setAuthor(book.getAuthor());
+        bookDto.setPublisher(book.getPublisher());
+        bookDto.setCategory(book.getCategory());
+        bookDto.setIsbn(book.getIsbn());
+        bookDto.setInfo(book.getInfo());
+        bookDto.setCover(book.getCover());
+        bookDto.setPubDate(book.getPubDate());
+
+        List<Copy> copies = copyRepository.findByBook(book);
+        bookDto.setBookStatus(copies.stream()
+                .anyMatch(copy -> copy.getBookStatus() == BookStatus.AVAILABLE));
+
+        return bookDto;
+    }
+
 
 
 //    public BookDTO findBookById(Long bookId) {

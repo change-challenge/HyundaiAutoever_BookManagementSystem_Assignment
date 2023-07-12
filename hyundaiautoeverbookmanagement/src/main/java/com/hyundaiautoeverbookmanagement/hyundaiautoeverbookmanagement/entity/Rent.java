@@ -1,23 +1,27 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Date;
 
 @Entity
+@Setter
+@Getter
 @Table(name = "RENT")
 public class Rent {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private int id;
+    private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "USER_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "USER_ID", insertable = false, updatable = false)
     private Member user;
 
-    @ManyToOne
-    @JoinColumn(name = "COPY_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "COPY_ID", insertable = false, updatable = false)
     private Copy copy;
 
     @Column(name = "RENT_START_DATE", nullable = false)

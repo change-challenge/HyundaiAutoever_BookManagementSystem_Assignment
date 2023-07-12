@@ -29,12 +29,16 @@ public class AdminService {
     @Autowired
     private RentRepository rentRepository;
 
+//    public List<WishRequestDTO> getWishBooks() {
+//
+//
+//    }
+
 //    public List<MemberDTO> getUsers() {
 //    }
 //
 //    public List<BookDTO> getBooks() {
 //    }
 //
-//    public List<WishRequestDTO> getWishBooks() {
-//    }
+
 }

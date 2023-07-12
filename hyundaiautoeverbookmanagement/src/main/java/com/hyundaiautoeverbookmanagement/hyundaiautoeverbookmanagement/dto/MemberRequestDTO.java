@@ -9,6 +9,8 @@ import lombok.ToString;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.util.Date;
+
 @Getter
 @ToString
 @AllArgsConstructor
@@ -19,6 +21,7 @@ public class MemberRequestDTO {
     private String email;
     private String password;
     private UserType usertype;
+    private Date registDate;
 
     public Member toUser(PasswordEncoder passwordEncoder) {
         Member user = new Member();
@@ -27,6 +30,7 @@ public class MemberRequestDTO {
         user.setPassword(passwordEncoder.encode(password));
         user.setName(this.name);
         user.setUsertype(UserType.USER);
+        user.setRegist_date(this.registDate);
         return user;
     }
 

@@ -3,8 +3,9 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishRequestDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.AdminService;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishResponseDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,28 +20,32 @@ import java.util.List;
 @RequestMapping("/api/admin")
 public class AdminApiController {
 
-    private final AdminService adminService;
+    private final MemberService memberService;
+    private final RentService rentService;
+    private final WishService wishService;
+    private final BookService bookService;
 
-//    @GetMapping("/user")
-//    public ResponseEntity<List<MemberDTO>> getUsers() {
-//        List<MemberDTO> users = adminService.getUser();
-//        return new ResponseEntity<>(users, HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/rent")
-//    public ResponseEntity<String> getRents() {
-//        return new ResponseEntity<String>("WHAT'S UP RENT", HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/book")
-//    public ResponseEntity<List<BookDTO>> getBooks() {
-//        List<BookDTO> books = adminService.getBooks();
-//        return new ResponseEntity<>(books, HttpStatus.OK);
-//    }
-//
-//    @GetMapping("/wish")
-//    public ResponseEntity<List<WishRequestDTO>> getWishBooks() {
-//        List<WishRequestDTO> wishBooks = adminService.getWishBooks();
-//        return new ResponseEntity<>(wishBooks, HttpStatus.OK);
-//    }
+    @GetMapping("/user")
+    public ResponseEntity<List<MemberDTO>> getUsers() {
+        List<MemberDTO> users = memberService.getAllMembers();
+        return new ResponseEntity<>(users, HttpStatus.OK);
+    }
+
+    @GetMapping("/rent")
+    public ResponseEntity<List<RentDTO>> getRents() {
+        List<RentDTO> rent = rentService.getAllRents();
+        return new ResponseEntity<>(rent, HttpStatus.OK);
+    }
+
+    @GetMapping("/book")
+    public ResponseEntity<List<BookDTO>> getBooks() {
+        List<BookDTO> books = bookService.getAllBooks();
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+    @GetMapping("/wish")
+    public ResponseEntity<List<WishResponseDTO>> getWishBooks() {
+        List<WishResponseDTO> wishBooks = wishService.getAllWishs();
+        return new ResponseEntity<>(wishBooks, HttpStatus.OK);
+    }
 }

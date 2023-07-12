@@ -21,7 +21,7 @@ public class WishBookApiController {
 
     @PostMapping("/api/wishbook/create")
     public ResponseEntity<String> createWishBook(@RequestBody WishRequestDTO form) {
-        return ResponseEntity.ok(wishService.saveWishBook(form));
+        return ResponseEntity.ok(wishService.saveWish(form));
 
     }
 }

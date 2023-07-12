@@ -5,9 +5,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishR
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -21,7 +19,7 @@ public class WishService {
 
     private final WishRepository wishRepository;
 
-    public List<WishResponseDTO> getWishBooks() {
+    public List<WishResponseDTO> getAllWishs() {
         List<Wish> wishBooks = wishRepository.findAll();
         List<WishResponseDTO> wishResponseDTOS = new ArrayList<>();
 
@@ -41,17 +39,9 @@ public class WishService {
         return wishResponseDTOS;
     }
 
-
-    public String saveWishBook(WishRequestDTO form) {
+    public String saveWish(WishRequestDTO form) {
         Wish wish = form.toEntity();
         Wish saved = wishRepository.save(wish);
         return "Success";
     }
-
-
-
-
-
-
-
 }
