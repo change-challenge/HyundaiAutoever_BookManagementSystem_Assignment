@@ -7,6 +7,8 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,11 +54,21 @@ export default function CustomizedTables({ books }) {
               </StyledTableCell>
               <StyledTableCell>{book.title}</StyledTableCell>
               <StyledTableCell>{book.author}</StyledTableCell>
-              <StyledTableCell>{book.pubDate}</StyledTableCell>
+              <StyledTableCell>
+                {new Date(book.pubDate).toLocaleDateString()}
+              </StyledTableCell>
+
               <StyledTableCell>{book.publisher}</StyledTableCell>
               <StyledTableCell>{book.isbn}</StyledTableCell>
               <StyledTableCell>{book.bookCount}</StyledTableCell>
-              <StyledTableCell>버튼</StyledTableCell>
+              <StyledTableCell>
+                <Stack spacing={2}>
+                  <Button variant="contained">수정</Button>
+                  <Button variant="contained" color="error">
+                    삭제
+                  </Button>
+                </Stack>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

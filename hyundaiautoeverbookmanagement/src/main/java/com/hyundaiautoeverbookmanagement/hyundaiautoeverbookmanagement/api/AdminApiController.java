@@ -1,12 +1,10 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishResponseDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Slf4j
 @RequestMapping("/api/admin")
 public class AdminApiController {
 
@@ -26,8 +25,9 @@ public class AdminApiController {
     private final BookService bookService;
 
     @GetMapping("/user")
-    public ResponseEntity<List<MemberDTO>> getUsers() {
-        List<MemberDTO> users = memberService.getAllMembers();
+    public ResponseEntity<List<MemberAdminResponseDTO>> getUsers() {
+        List<MemberAdminResponseDTO> users = memberService.getAllMembers();
+        log.info("!!users!! " + users);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

@@ -5,7 +5,7 @@ const AdminUserContainer = styled.div`
 `
 
 const AdminTitle = styled.div`
-  padding: 30px 0 0 30px;
+  padding: 30px 0 30px 30px;
 `
 
 const SearchBarContainer = styled.div`

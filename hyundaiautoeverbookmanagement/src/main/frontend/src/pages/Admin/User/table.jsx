@@ -28,16 +28,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
-function createData(userId, userEmail, userName, isRent, userState) {
-  return { userId, userEmail, userName, isRent, userState }
-}
-
-const rows = [
-  createData(1, 'dog94@gmail.com', '장호잔', '-', '연체중(2일)'),
-  createData(2, 'ghwls@gmail.com', '장석진', '대출중(3)', '-'),
-]
-
-export default function CustomizedTables() {
+export default function CustomizedTables({ users }) {
+  console.log('table users : ', users)
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -46,22 +38,33 @@ export default function CustomizedTables() {
             <StyledTableCell>번호</StyledTableCell>
             <StyledTableCell>이메일</StyledTableCell>
             <StyledTableCell>이름</StyledTableCell>
+            <StyledTableCell>가입일자</StyledTableCell>
             <StyledTableCell>대출 여부</StyledTableCell>
             <StyledTableCell>상태</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.userId}
-              </StyledTableCell>
-              <StyledTableCell>{row.userEmail}</StyledTableCell>
-              <StyledTableCell>{row.userName}</StyledTableCell>
-              <StyledTableCell>{row.isRent}</StyledTableCell>
-              <StyledTableCell>{row.userState}</StyledTableCell>
-            </StyledTableRow>
-          ))}
+          {users &&
+            users.length > 0 &&
+            users.map(user => (
+              <StyledTableRow key={user.name}>
+                <StyledTableCell component="th" scope="row">
+                  {user.id}
+                </StyledTableCell>
+                <StyledTableCell>{user.email}</StyledTableCell>
+                <StyledTableCell>{user.name}</StyledTableCell>
+                <StyledTableCell>
+                  {new Date(user.registDate).toLocaleDateString()}
+                </StyledTableCell>
+
+                <StyledTableCell>
+                  {user.rentCount == 0 ? '-' : `대출중(${user.rentCount}권)`}
+                </StyledTableCell>
+                <StyledTableCell>
+                  {user.lateDay == 0 ? '-' : `연채중(${user.lateDay}일)`}
+                </StyledTableCell>
+              </StyledTableRow>
+            ))}
         </TableBody>
       </Table>
     </TableContainer>
