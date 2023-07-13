@@ -6,6 +6,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Re
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
@@ -20,9 +21,9 @@ public class RentAdminResponseDTO {
     private Long id;
     private String title;
     private String userEmail;
-    private Date rentStartDate;
-    private Date rentEndDate;
-    private Optional<Date> rentReturnedDate;
+    private LocalDate rentStartDate;
+    private LocalDate rentEndDate;
+    private Optional<LocalDate> rentReturnedDate;
 
     public Rent toEntity(Member user, Copy copy) {
         Rent rent = new Rent();

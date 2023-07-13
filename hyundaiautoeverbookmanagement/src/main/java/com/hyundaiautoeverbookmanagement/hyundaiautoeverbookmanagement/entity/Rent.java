@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -25,11 +26,11 @@ public class Rent {
     private Copy copy;
 
     @Column(name = "RENT_START_DATE", nullable = false)
-    private Date rentStartDate;
+    private LocalDate rentStartDate;
 
     @Column(name = "RENT_END_DATE", nullable = false)
-    private Date rentEndDate;
+    private LocalDate rentEndDate;
 
     @Column(name = "RENT_RETURNED_DATE")
-    private Date rentReturnedDate;
+    private LocalDate rentReturnedDate;
 }
