@@ -1,5 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishType;
 import lombok.*;
@@ -15,10 +16,7 @@ import java.util.Optional;
 public class WishResponseDTO {
 
     private Long id;
-    private String title;
-    private String author;
-    private String publisher;
-    private Optional<String> ISBN;
+    private Book book;
     private String userEmail;
     private Date wishDate;
     private WishType wishType;

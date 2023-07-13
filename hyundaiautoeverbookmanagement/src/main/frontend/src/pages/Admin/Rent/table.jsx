@@ -29,36 +29,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
-function createData(
-  rentId,
-  bookName,
-  userEmail,
-  rentDate,
-  returnDate,
-  bookState
-) {
-  return { rentId, bookName, userEmail, rentDate, returnDate, bookState }
-}
-
-const rows = [
-  createData(
-    1,
-    '인간본성의 법칙',
-    'dog@gmail.com',
-    '2023.06.17',
-    '-',
-    '연체중(2일)'
-  ),
-  createData(
-    2,
-    '인간이해',
-    'dogsdfs@gmail.com',
-    '2023.06.12',
-    '2023.06.28',
-    '반납됨'
-  ),
-]
-
 export default function CustomizedTables({ rents }) {
   return (
     <TableContainer component={Paper}>

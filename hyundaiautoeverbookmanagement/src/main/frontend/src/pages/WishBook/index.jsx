@@ -5,7 +5,31 @@ import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import axios from 'axios'
 import { fetchUserInfo } from '../../context/UserContext'
-import { useNavigate } from 'react-router-dom' // useNavigate로 변경
+import { useNavigate } from 'react-router-dom'
+import SearchResultModal from './SearchResultModal'
+
+// Book 객체를 정의
+class Book {
+  constructor(
+    title,
+    author,
+    pubDate,
+    description,
+    isbn,
+    cover,
+    publisher,
+    categoryName
+  ) {
+    this.title = title
+    this.author = author
+    this.pubDate = pubDate
+    this.description = description
+    this.isbn = isbn
+    this.cover = cover
+    this.publisher = publisher
+    this.categoryName = categoryName
+  }
+}
 
 export default function WishBook() {
   const [wishBookName, setWishBookName] = useState('')
@@ -14,6 +38,10 @@ export default function WishBook() {
   const [wishBookISBN, setWishBookISBN] = useState('')
   const navigate = useNavigate() // useNavigate로 변경
   const [user, setUser] = useState(null)
+  // 새로운 상태 변수 추가
+  const [bookSearchResults, setBookSearchResults] = useState([])
+  const [openModal, setOpenModal] = useState(false)
+  const [selectedBook, setSelectedBook] = useState(null)
 
   useEffect(() => {
     const getUserInfo = async () => {
@@ -58,6 +86,71 @@ export default function WishBook() {
     }
   }
 
+  const callAladinAPI = async wishBookName => {
+    try {
+      const response = await axios.get('/aladin-api/ItemSearch.aspx', {
+        params: {
+          TTBKey: process.env.REACT_APP_TTB_KEY,
+          Query: wishBookName,
+          Output: 'JS',
+        },
+      })
+      let dataString = response.data
+      dataString = dataString.trim() // 공백 제거
+      dataString = dataString.substring(0, dataString.lastIndexOf('}')) + '}' // 마지막 세미콜론 제거
+
+      let dataObject
+      try {
+        dataObject = JSON.parse(dataString)
+      } catch (e) {
+        console.error(e)
+      }
+      // 배열로 변환된 data.item을 이용
+      const books = dataObject.item.map(book => ({
+        id: book.itemId,
+        title: book.title,
+        link: book.link,
+        author: book.author,
+        pubDate: book.pubDate,
+        description: book.description,
+        cover: book.cover,
+        publisher: book.publisher,
+      }))
+
+      console.log('callAladinAPI books : ', books) // 생성된 books 배열을 출력
+      return books
+    } catch (error) {
+      console.error(error)
+      return [] // 에러 발생 시 빈 배열 반환
+    }
+  }
+
+  // 도서 선택 함수
+  const handleSelectBook = book => {
+    setSelectedBook(book)
+    setBookSearchResults([]) // 검색 결과를 비우고
+    // 선택한 도서의 정보로 입력 필드를 채움
+    setWishBookName(book.title)
+    setWishBookAuthor(book.author)
+    setWishBookPublisher(book.publisher)
+    setWishBookISBN(book.isbn)
+    setOpenModal(false)
+  }
+  const handleSearch = async () => {
+    if (!wishBookName) {
+      alert('희망 도서명을 입력해주세요.')
+      return
+    }
+    const books = await callAladinAPI(wishBookName)
+    setBookSearchResults(books)
+    console.log('books : ', books)
+    console.log('bookSearchResults : ', bookSearchResults)
+    setOpenModal(true)
+  }
+  useEffect(() => {
+    console.log('bookSearchResults updated:', bookSearchResults)
+  }, [bookSearchResults])
+
   return (
     <S.InnerContainer>
       <Title text="희망도서 정보" />
@@ -81,9 +174,15 @@ export default function WishBook() {
               marginRight="50"
               width="300px"
             />
-            <Button size="large" variant="contained" onClick={onClickWishBook}>
+            <Button size="large" variant="contained" onClick={handleSearch}>
               검색
             </Button>
+            <SearchResultModal
+              open={openModal}
+              books={bookSearchResults}
+              onSelectBook={handleSelectBook}
+              handleClose={() => setOpenModal(false)}
+            />
           </S.LabelWrapper>
           <S.LabelWrapper>
             <S.LabelTitleWrapper>
