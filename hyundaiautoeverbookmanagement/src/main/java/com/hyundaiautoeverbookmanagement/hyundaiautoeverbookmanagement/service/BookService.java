@@ -62,6 +62,10 @@ public class BookService {
         return bookDto;
     }
 
+    public BookDTO getBookDetail(Long id) {
+        Book book = bookRepository.findById(id).orElse(null);
+        return mapToBookDTO(book);
+    }
 
 
 //    public BookDTO findBookById(Long bookId) {

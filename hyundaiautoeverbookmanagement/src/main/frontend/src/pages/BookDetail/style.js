@@ -37,8 +37,8 @@ const BookDetailContentWrapper = styled.div`
 `
 
 const BookDetailImageWrapper = styled.div`
-  width: 280px;
-  height: 380px;
+  width: 200px;
+  height: 300px;
   margin: 0 2rem 0 0;
 `
 
@@ -75,7 +75,6 @@ const BookDetailContentAnswerWrapper = styled.div`
 
 const BookDetailInfoContainer = styled.div`
   min-width: 1000px;
-  margin: 1rem 0;
   align-items: center;
 `
 

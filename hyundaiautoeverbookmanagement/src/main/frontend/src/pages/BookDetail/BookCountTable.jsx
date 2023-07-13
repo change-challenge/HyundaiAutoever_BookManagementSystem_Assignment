@@ -73,7 +73,7 @@ const handleClick = () => {
   alert('hey!')
 }
 
-const BookCountTable = () => {
+const BookCountTable = ({ bookId }) => {
   return (
     <TableWrapper>
       <Table>
@@ -82,7 +82,6 @@ const BookCountTable = () => {
             <TableHeader>번호</TableHeader>
             <TableHeader>대출상태</TableHeader>
             <TableHeader>반납 예정일</TableHeader>
-            <TableHeader>도서 예약</TableHeader>
             <TableHeader>도서 대여</TableHeader>
           </tr>
         </thead>
@@ -98,11 +97,6 @@ const BookCountTable = () => {
                 예약: {item.reservation.count}명
               </TableCell>
               <TableCell>{item.dueDate}</TableCell>
-              <TableCell>
-                <Button active={false} onClick={handleClick}>
-                  예약하기
-                </Button>
-              </TableCell>
               <TableCell>
                 <Button active={false} onClick={handleClick}>
                   대여하기
