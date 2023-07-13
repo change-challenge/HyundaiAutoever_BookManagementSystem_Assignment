@@ -41,13 +41,32 @@ export default function WishBook() {
   // 새로운 상태 변수 추가
   const [bookSearchResults, setBookSearchResults] = useState([])
   const [openModal, setOpenModal] = useState(false)
-  const [selectedBook, setSelectedBook] = useState(null)
+
+  const createWish = (book, user) => {
+    return {
+      id: null,
+      wish_date: new Date(),
+      status: 'Pending',
+      user_email: user.email,
+      book: {
+        id: null,
+        title: book.title,
+        author: book.author,
+        publisher: book.publisher,
+        category: book.categoryName,
+        rent_count: 0,
+        ISBN: book.isbn,
+        cover: book.cover,
+        pub_date: book.pubDate,
+      },
+    }
+  }
 
   useEffect(() => {
     const getUserInfo = async () => {
       const userInfo = await fetchUserInfo()
       setUser(userInfo)
-      console.log('WishBook userInfo ', userInfo)
+      console.log('user : ', user)
     }
     getUserInfo()
   }, [])
@@ -71,11 +90,9 @@ export default function WishBook() {
         wishDate: isoDate,
       }
 
-      console.log('requestData : ', requestData)
       axios
         .post('/api/wishbook/create', requestData)
         .then(response => {
-          console.log(response.data) // 성공적인 응답 처리
           alert('성공적으로 희망도서신청을 하였습니다.')
           navigate('/')
         })
@@ -112,12 +129,12 @@ export default function WishBook() {
         link: book.link,
         author: book.author,
         pubDate: book.pubDate,
+        isbn: book.isbn,
         description: book.description,
         cover: book.cover,
         publisher: book.publisher,
       }))
 
-      console.log('callAladinAPI books : ', books) // 생성된 books 배열을 출력
       return books
     } catch (error) {
       console.error(error)
@@ -127,8 +144,12 @@ export default function WishBook() {
 
   // 도서 선택 함수
   const handleSelectBook = book => {
-    setSelectedBook(book)
     setBookSearchResults([]) // 검색 결과를 비우고
+
+    console.log('book : ', book)
+
+    const wish = createWish(book, user)
+    console.log('wish : ', wish)
     // 선택한 도서의 정보로 입력 필드를 채움
     setWishBookName(book.title)
     setWishBookAuthor(book.author)
@@ -143,13 +164,9 @@ export default function WishBook() {
     }
     const books = await callAladinAPI(wishBookName)
     setBookSearchResults(books)
-    console.log('books : ', books)
-    console.log('bookSearchResults : ', bookSearchResults)
+
     setOpenModal(true)
   }
-  useEffect(() => {
-    console.log('bookSearchResults updated:', bookSearchResults)
-  }, [bookSearchResults])
 
   return (
     <S.InnerContainer>
