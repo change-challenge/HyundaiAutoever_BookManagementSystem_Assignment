@@ -11,6 +11,7 @@ export default function Main() {
 
   useEffect(() => {
     if (isSearchRequested && searchValue) {
+      sessionStorage.setItem('lastSearch', searchValue) // Save the search value
       navigate(`/search?query=${searchValue}`)
       setIsSearchRequested(false)
     }

@@ -56,7 +56,11 @@ root.render(
                   <Route path="/signup" element={<SignUp />}></Route>
                   <Route path="/mypage" element={<Mypage />} />
                   <Route path="/search" element={<BookSearch />} />
-                  <Route path="/search/detail" element={<BookDetail />} />
+                  <Route
+                    path="/search/detail/:bookId"
+                    element={<BookDetail />}
+                  />
+
                   <Route path="/wishbook" element={<WishBook />} />
                   <Route path="/admin" element={<AdminLayout />}>
                     <Route path="" element={<AdminMain />} />

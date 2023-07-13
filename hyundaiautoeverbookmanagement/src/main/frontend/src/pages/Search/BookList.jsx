@@ -56,14 +56,14 @@ const BookList = ({ book }) => {
   return (
     <BookListContentContainer>
       <BookListImageWrapper>
-        <Link to={process.env.PUBLIC_URL + `/search/detail`}>
+        <Link to={process.env.PUBLIC_URL + `/search/detail/${book.id}`}>
           <img alt="" src={book.cover} width="120px" height="160px" />
         </Link>
       </BookListImageWrapper>
       <BookListInfoWrapper>
         <BookListTitle>
           <Link
-            to={process.env.PUBLIC_URL + `/search/detail`}
+            to={process.env.PUBLIC_URL + `/search/detail/${book.id}`}
             style={{
               textDecoration: 'none',
             }}

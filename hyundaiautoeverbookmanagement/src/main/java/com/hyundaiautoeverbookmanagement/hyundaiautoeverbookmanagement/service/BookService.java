@@ -1,18 +1,21 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.CopyDetailDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.BookStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Copy;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.RentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -22,6 +25,7 @@ import java.util.stream.Collectors;
 public class BookService {
     private final BookRepository bookRepository;
     private final CopyRepository copyRepository;
+    private final RentRepository rentRepository;
 
     public List<BookDTO> searchBooks(String title) {
         List<Book> books = bookRepository.findByTitleContaining(title);
@@ -60,6 +64,32 @@ public class BookService {
                 .anyMatch(copy -> copy.getBookStatus() == BookStatus.AVAILABLE));
 
         return bookDto;
+    }
+
+    public BookDTO getBookDetail(Long id) {
+        Book book = bookRepository.findById(id).orElse(null);
+        return mapToBookDTO(book);
+    }
+
+    public List<CopyDetailDTO> getCopyDetails(Long bookId) {
+        // 책에 해당하는 모든 사본 찾기
+        List<Copy> copies = copyRepository.findByBookId(bookId);
+
+        // 결과를 저장할 리스트 생성
+        List<CopyDetailDTO> bookDetails = new ArrayList<>();
+
+        for (Copy copy : copies) {
+            // 사본의 상태가 UNAVAILABLE인 경우에만 처리
+            CopyDetailDTO dto = new CopyDetailDTO();
+            dto.setCopyId(copy.getCopyId());
+            if (copy.getBookStatus().equals(BookStatus.UNAVAILABLE)) {
+                Rent rent = rentRepository.findFirstByCopyIdOrderByRentEndDateDesc(copy.getCopyId());
+                dto.setRentEndDate(Optional.ofNullable(rent.getRentEndDate()));
+            }
+            bookDetails.add(dto);
+        }
+
+        return bookDetails;
     }
 
 

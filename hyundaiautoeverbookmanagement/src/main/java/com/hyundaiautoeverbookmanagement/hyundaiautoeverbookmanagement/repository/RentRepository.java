@@ -1,5 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Copy;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -17,4 +18,14 @@ public interface RentRepository extends JpaRepository<Rent, Long> {
     List<Rent> findByUserIdAndRentReturnedDateIsNull(Long userId);
 
     List<Rent> findAll();
+
+    @Query("SELECT r FROM Rent r WHERE r.copy = :copy ORDER BY r.rentEndDate DESC")
+    Rent findTopByCopyOrderByRentEndDateDesc(@Param("copy") Copy copy);
+
+
+    @Query("SELECT r FROM Rent r WHERE r.copy.copyId = :copyId ORDER BY r.rentEndDate DESC")
+    Rent findFirstByCopyIdOrderByRentEndDateDesc(@Param("copyId") Long copyId);
+
+
+
 }

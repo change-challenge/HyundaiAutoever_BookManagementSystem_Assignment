@@ -1,5 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
+import Button from '@mui/material/Button'
 
 const TableWrapper = styled.div`
   border: 1px solid #ccc;
@@ -40,40 +43,40 @@ const TableCell = styled.td`
   vertical-align: middle;
 `
 
-const Button = styled.button`
-  background-color: ${({ active }) => (active ? 'white' : '#6A4AFC')};
-  color: ${({ active }) => (active ? 'black' : 'white')};
-  border: none;
-  width: 50%;
-  height: 50%;
-  padding: 5px 10px;
-  cursor: pointer;
-  transition: background-color 0.3s, color 0.3s;
-  font-family: 'Apple SD Gothic Neo';
-  border-radius: 15px;
-  &:hover {
-    background-color: ${({ active }) => (active ? 'purple' : 'white')};
-    color: ${({ active }) => (active ? 'white' : 'black')};
-  }
-`
-
-const data = [
-  {
-    id: '01',
-    status: '대출불가',
-    reservation: {
-      count: 0,
-      status: '대출중',
-    },
-    dueDate: '2023-06-30',
-  },
-]
+//const Button = styled.button`
+//  background-color: ${({ active }) => (active ? 'white' : '#6A4AFC')};
+//  color: ${({ active }) => (active ? 'black' : 'white')};
+//  border: none;
+//  width: 50%;
+//  height: 50%;
+//  padding: 5px 10px;
+//  cursor: pointer;
+//  transition: background-color 0.3s, color 0.3s;
+//  font-family: 'Apple SD Gothic Neo';
+//  border-radius: 15px;
+//  &:hover {
+//    background-color: ${({ active }) => (active ? 'purple' : 'white')};
+//    color: ${({ active }) => (active ? 'white' : 'black')};
+//  }
+//`
 
 const handleClick = () => {
   alert('hey!')
 }
 
-const BookCountTable = () => {
+const BookCountTable = ({ bookId }) => {
+  const [copyDetail, setCopyDetail] = useState([])
+
+  const fetchRents = async () => {
+    const response = await axios.get(`/api/bookdetail/${bookId}`)
+    setCopyDetail(response.data)
+    console.log(response.data)
+  }
+
+  useEffect(() => {
+    fetchRents()
+  }, [])
+
   return (
     <TableWrapper>
       <Table>
@@ -82,31 +85,38 @@ const BookCountTable = () => {
             <TableHeader>번호</TableHeader>
             <TableHeader>대출상태</TableHeader>
             <TableHeader>반납 예정일</TableHeader>
-            <TableHeader>도서 예약</TableHeader>
             <TableHeader>도서 대여</TableHeader>
           </tr>
         </thead>
         <TableBody>
-          {data.map((item, index) => (
-            <TableRow key={item.id}>
-              <TableCell>{item.id}</TableCell>
-              <TableCell>
-                {item.status}
-                <br />
-                {`[대출중]`}
-                <br />
-                예약: {item.reservation.count}명
+          {copyDetail.map((item, index) => (
+            <TableRow key={index}>
+              <TableCell>{index + 1}</TableCell>
+              <TableCell style={{ fontWeight: 'bold' }}>
+                {item.rentEndDate === null ? (
+                  '대출가능'
+                ) : (
+                  <div>
+                    대출불가
+                    <br />
+                    [대출중]
+                    <br />
+                  </div>
+                )}
               </TableCell>
-              <TableCell>{item.dueDate}</TableCell>
               <TableCell>
-                <Button active={false} onClick={handleClick}>
-                  예약하기
-                </Button>
+                {item.rentEndDate === null ? '-' : `${item.rentEndDate}`}
               </TableCell>
               <TableCell>
-                <Button active={false} onClick={handleClick}>
-                  대여하기
-                </Button>
+                {item.rentEndDate === null ? (
+                  <Button variant="contained" onClick={handleClick}>
+                    대여하기
+                  </Button>
+                ) : (
+                  <Button variant="contained" onClick={handleClick} disabled>
+                    대여하기
+                  </Button>
+                )}
               </TableCell>
             </TableRow>
           ))}

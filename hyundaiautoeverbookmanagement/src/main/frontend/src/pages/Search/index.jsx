@@ -85,7 +85,7 @@ const BookSearch = () => {
             </S.BookSearchFilterWrapper>
             <S.BookListWrapper>
               {books.slice((page - 1) * 20, page * 20).map(book => (
-                <BookList key={book.id} book={book} />
+                <BookList key={book.id} book={book} query={query} />
               ))}
             </S.BookListWrapper>
             <S.PaginationWrapper>

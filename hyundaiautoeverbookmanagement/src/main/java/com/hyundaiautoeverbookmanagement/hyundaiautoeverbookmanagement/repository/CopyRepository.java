@@ -14,9 +14,9 @@ import java.util.Optional;
 @Repository
 public interface CopyRepository extends JpaRepository<Copy, Long> {
     List<Copy> findByBook(Book book);
+    List<Copy> findByBookId(Long bookId);
     Optional<Copy> findById(Long id);
     int countByBook(Book book);
     @Query("SELECT c.book FROM Copy c WHERE c.copyId = :copyId")
     Book findBookByCopyId(@Param("copyId") Long copyId);
-
 }

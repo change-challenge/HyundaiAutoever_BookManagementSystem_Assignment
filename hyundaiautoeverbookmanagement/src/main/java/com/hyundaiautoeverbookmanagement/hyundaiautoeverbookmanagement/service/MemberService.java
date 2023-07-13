@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,11 +30,10 @@ public class MemberService {
         List<Rent> rents = rentRepository.findByUserIdAndRentReturnedDateIsNull(userId);
 
         int totalDays = 0;
-        Date currentDate = new Date();
+        LocalDate currentDate = LocalDate.now();
 
         for(Rent rent : rents) {
-            long diffInMillies = Math.abs(currentDate.getTime() - rent.getRentStartDate().getTime());
-            long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+            long diff = ChronoUnit.DAYS.between(rent.getRentStartDate(), currentDate);
 
             if(diff > 7) {
                 totalDays += (diff - 7);
@@ -41,6 +42,7 @@ public class MemberService {
 
         return totalDays;
     }
+
 
     public List<MemberAdminResponseDTO> getAllMembers() {
         List<Member> members = memberRepository.findAll();
