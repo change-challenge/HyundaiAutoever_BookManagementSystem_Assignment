@@ -1,10 +1,13 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishBookDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishBook;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishBookRepository;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishRequestDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.WishService;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,19 +16,13 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 public class WishBookApiController {
 
-    @Autowired // 스프링 부트가 미리 생성해놓은 객체를 가져다가 자동 연결!
-    private WishBookRepository wishBookRepository;
+    @Autowired
+    private WishService wishService;
 
     @PostMapping("/api/wishbook/create")
-    public String createWishBook(@RequestBody WishBookDTO form) {
-        log.info(form.toString());
-        // 1. Dto를 변환! Entity!
-        WishBook wishbook = form.toEntity();
+    public ResponseEntity<String> createWishBook(@RequestBody WishRequestDTO form) {
+        log.info("form!!! : " + form);
+        return ResponseEntity.ok(wishService.saveWish(form));
 
-        // 2. Repository에게 Entity를 DB안에 저장하게 함!
-        WishBook saved = wishBookRepository.save(wishbook);
-        log.info(saved.toString());
-        return "Success";
     }
-
 }

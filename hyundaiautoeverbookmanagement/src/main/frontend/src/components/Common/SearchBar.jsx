@@ -2,27 +2,27 @@ import styled from 'styled-components'
 import SearchIcon from '../../assets/searchIcon.svg'
 import { useState } from 'react'
 
-const SearchWrapper = styled.div`
+const SearchContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: center;
   width: ${({ width }) => width};
   height: ${({ height }) => height};
   max-height: 100%;
   background-color: #f2f1fa;
   border-radius: 25px;
   overflow-y: auto;
-  /*margin: auto;*/
+`
+
+const SearchWrapper = styled.div`
+  /*min-width: 10px;*/
+  align-items: center;
+  /*overflow: hidden;*/
+  display: flex;
 `
 
 const SearchForm = styled.form`
-  width: ${({ width }) => width};
-  height: ${({ height }) => height};
+  min-width: 400px;
   padding: 0 16px;
   gap: 16px;
-  display: flex;
-  align-items: center;
-  overflow: hidden;
 `
 
 const SearchInput = styled.input`
@@ -34,7 +34,6 @@ const SearchInput = styled.input`
   text-align: left;
   padding-left: 20px;
   font-size: medium;
-
   &:focus {
     outline: none;
   }
@@ -56,8 +55,8 @@ const ClearButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 25px;
-  height: 25px;
+  width: 30px;
+  height: 30px;
   cursor: pointer;
   border: none;
   opacity: ${({ visible }) => (visible ? '1' : '0')};
@@ -71,7 +70,7 @@ const ClearButton = styled.button`
   }
 `
 
-const IconButton = ({ icon, type = 'button', ...rest }) => {
+const IconButton = ({ icon, type = 'submit', ...rest }) => {
   return (
     <Button type={type} {...rest}>
       <img src={icon} alt="logo" width="20px" height="20px" />
@@ -79,7 +78,7 @@ const IconButton = ({ icon, type = 'button', ...rest }) => {
   )
 }
 
-const SearchBar = ({ onSubmit, placeholder, width, height }) => {
+const SearchBar = ({ onSearchValueChange, placeholder, width, height }) => {
   const [searchValue, setSearchValue] = useState('')
 
   const handleInputChange = e => {
@@ -90,21 +89,28 @@ const SearchBar = ({ onSubmit, placeholder, width, height }) => {
     setSearchValue('')
   }
 
+  const handleSubmit = event => {
+    event.preventDefault()
+    onSearchValueChange(searchValue)
+  }
+
   return (
-    <SearchWrapper width={width} height={height}>
-      <SearchForm onSubmit={onSubmit} width={width} height={height}>
-        <SearchInput
-          type="text"
-          value={searchValue}
-          onChange={handleInputChange}
-          placeholder={placeholder || '도서명을 입력해주세요.'}
-        />
+    <SearchContainer width={width} height={height}>
+      <SearchWrapper>
+        <SearchForm onSubmit={handleSubmit}>
+          <SearchInput
+            type="text"
+            value={searchValue}
+            onChange={handleInputChange}
+            placeholder={placeholder || '도서명을 입력해주세요.'}
+          />
+        </SearchForm>
         <ClearButton visible={searchValue !== ''} onClick={handleClearClick}>
           X
         </ClearButton>
         <IconButton icon={SearchIcon} type="submit" />
-      </SearchForm>
-    </SearchWrapper>
+      </SearchWrapper>
+    </SearchContainer>
   )
 }
 

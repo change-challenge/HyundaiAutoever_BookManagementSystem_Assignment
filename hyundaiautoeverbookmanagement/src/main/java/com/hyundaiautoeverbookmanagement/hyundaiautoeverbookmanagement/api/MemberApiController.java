@@ -1,7 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDto;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.MemberService;
@@ -21,37 +21,14 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @GetMapping("/me")
-    public ResponseEntity<MemberResponseDto> findMemberInfoById() {
+    public ResponseEntity<MemberResponseDTO> findMemberInfoById() {
         log.info("SecurityUtil.getCurrentMemberId()" + SecurityUtil.getCurrentMemberId());
         return ResponseEntity.ok(memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId()));
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<MemberResponseDto> findMemberInfoByEmail(@PathVariable String email) {
+    public ResponseEntity<MemberResponseDTO> findMemberInfoByEmail(@PathVariable String email) {
         return ResponseEntity.ok(memberService.findMemberInfoByEmail(email));
-    }
-
-//
-    @Autowired // 스프링 부트가 미리 생성해놓은 객체를 가져다가 자동 연결!
-    private MemberRepository memberRepository;
-
-//    private final UserRepository userRepository;
-//
-//    @Autowired
-//    public UserApiController(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-
-    @PostMapping("/api/user/create")
-    public String createUser(@RequestBody MemberDTO form) {
-        log.info(form.toString());
-        // 1. Dto를 변환! Entity!
-        Member user = form.toEntity();
-
-        // 2. Repository에게 Entity를 DB안에 저장하게 함!
-        Member saved = memberRepository.save(user);
-        log.info(saved.toString());
-        return "success";
     }
 
 }

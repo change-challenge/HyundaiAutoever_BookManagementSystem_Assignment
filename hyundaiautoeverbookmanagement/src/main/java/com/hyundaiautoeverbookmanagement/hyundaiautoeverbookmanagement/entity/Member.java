@@ -3,6 +3,8 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.UserT
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "USERS")
 @AllArgsConstructor
@@ -28,4 +30,7 @@ public class Member {
     @Column
     @Enumerated(EnumType.STRING)
     private UserType usertype;
+
+    @Column(name = "REGIST_DATE", nullable = false)
+    private Date regist_date;
 }

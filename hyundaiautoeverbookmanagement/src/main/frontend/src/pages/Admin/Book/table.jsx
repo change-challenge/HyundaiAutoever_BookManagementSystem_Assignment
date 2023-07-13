@@ -7,6 +7,8 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -28,48 +30,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
-function createData(
-  bookId,
-  bookName,
-  bookAuthor,
-  bookcreateDate,
-  bookPublisher,
-  ISBN,
-  bookCount
-) {
-  return {
-    bookId,
-    bookName,
-    bookAuthor,
-    bookcreateDate,
-    bookPublisher,
-    ISBN,
-    bookCount,
-  }
-}
-
-const rows = [
-  createData(
-    1,
-    '인간본성의 법칙',
-    '로버트 그린',
-    '2023.06.17',
-    '위즈덤',
-    '9791190182560',
-    3
-  ),
-  createData(
-    2,
-    '인간이해',
-    '로버트 그린',
-    '2023.06.17',
-    '민음사',
-    '9791190182560',
-    1
-  ),
-]
-
-export default function CustomizedTables() {
+export default function CustomizedTables({ books }) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -79,25 +40,40 @@ export default function CustomizedTables() {
             <StyledTableCell>책제목</StyledTableCell>
             <StyledTableCell>저자</StyledTableCell>
             <StyledTableCell>발행일자</StyledTableCell>
-            <StyledTableCell>출핀사</StyledTableCell>
+            <StyledTableCell>출판사</StyledTableCell>
             <StyledTableCell>ISBN</StyledTableCell>
             <StyledTableCell>수량</StyledTableCell>
-            <StyledTableCell>버튼</StyledTableCell>
+            <StyledTableCell></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map(row => (
-            <StyledTableRow key={row.name}>
+          {books.map(book => (
+            <StyledTableRow key={book.bookId}>
               <StyledTableCell component="th" scope="row">
-                {row.bookId}
+                {book.id}
               </StyledTableCell>
-              <StyledTableCell>{row.bookName}</StyledTableCell>
-              <StyledTableCell>{row.bookAuthor}</StyledTableCell>
-              <StyledTableCell>{row.bookcreateDate}</StyledTableCell>
-              <StyledTableCell>{row.bookPublisher}</StyledTableCell>
-              <StyledTableCell>{row.ISBN}</StyledTableCell>
-              <StyledTableCell>{row.bookCount}</StyledTableCell>
-              <StyledTableCell>버튼</StyledTableCell>
+              <StyledTableCell title={book.title}>
+                {book.title.length > 15
+                  ? book.title.substring(0, 15) + '...'
+                  : book.title}
+              </StyledTableCell>
+
+              <StyledTableCell>{book.author}</StyledTableCell>
+              <StyledTableCell>
+                {new Date(book.pubDate).toLocaleDateString()}
+              </StyledTableCell>
+
+              <StyledTableCell>{book.publisher}</StyledTableCell>
+              <StyledTableCell>{book.isbn}</StyledTableCell>
+              <StyledTableCell>{book.bookCount}</StyledTableCell>
+              <StyledTableCell>
+                <Stack spacing={2}>
+                  <Button variant="contained">수정</Button>
+                  <Button variant="contained" color="error">
+                    삭제
+                  </Button>
+                </Stack>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

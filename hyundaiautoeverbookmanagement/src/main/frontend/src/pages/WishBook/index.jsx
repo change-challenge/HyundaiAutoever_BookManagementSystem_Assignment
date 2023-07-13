@@ -1,18 +1,53 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Text, LabelInput, Title } from '../../components/index'
 import * as S from './style'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
 import axios from 'axios'
-import { useNavigate } from 'react-router-dom' // useNavigate로 변경
+import { fetchUserInfo } from '../../context/UserContext'
+import { useNavigate } from 'react-router-dom'
+import SearchResultModal from './SearchResultModal'
 
 export default function WishBook() {
   const [wishBookName, setWishBookName] = useState('')
   const [wishBookAuthor, setWishBookAuthor] = useState('')
   const [wishBookPublisher, setWishBookPublisher] = useState('')
-  const [wishBookCreateDate, setWishBookCreateDate] = useState('')
   const [wishBookISBN, setWishBookISBN] = useState('')
   const navigate = useNavigate() // useNavigate로 변경
+  const [user, setUser] = useState(null)
+  // 새로운 상태 변수 추가
+  const [bookSearchResults, setBookSearchResults] = useState([])
+  const [openModal, setOpenModal] = useState(false)
+  const [wishBook, setWishBook] = useState({})
+
+  const createWish = (book, user) => {
+    return {
+      id: null,
+      wish_date: new Date().toISOString(),
+      status: 'Pending',
+      user_email: user.email,
+      book: {
+        title: book.title,
+        author: book.author,
+        publisher: book.publisher,
+        category: book.category,
+        info: book.info,
+        rent_count: 0,
+        isbn: book.isbn,
+        cover: book.cover,
+        pubDate: book.pubDate,
+      },
+    }
+  }
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const userInfo = await fetchUserInfo()
+      setUser(userInfo)
+      console.log('user : ', user)
+    }
+    getUserInfo()
+  }, [])
 
   const onClickWishBook = () => {
     if (!wishBookName || !wishBookAuthor || !wishBookPublisher) {
@@ -21,29 +56,84 @@ export default function WishBook() {
     }
     const confirm = window.confirm('희망도서를 신청하시겠습니까?')
     if (confirm) {
-      const currentDate = new Date()
-      const isoDate = currentDate.toISOString()
-
-      const requestData = {
-        title: wishBookName,
-        author: wishBookAuthor,
-        publisher: wishBookPublisher,
-        ISBN: wishBookISBN,
-        user_id: 123, // 사용자 ID를 적절히 설정해야 합니다.
-        createDate: isoDate,
-      }
-
       axios
-        .post('/api/wishbook/create', requestData)
+        .post('/api/wishbook/create', wishBook)
         .then(response => {
-          console.log(response.data) // 성공적인 응답 처리
+          alert('성공적으로 희망도서신청을 하였습니다.')
+          navigate('/')
         })
         .catch(error => {
+          alert('잠시 뒤에 다시 신청해주세요.')
           console.error(error) // 오류 처리
         })
-
-      navigate('/')
     }
+  }
+
+  const callAladinAPI = async wishBookName => {
+    try {
+      const response = await axios.get('/aladin-api/ItemSearch.aspx', {
+        params: {
+          TTBKey: process.env.REACT_APP_TTB_KEY,
+          Query: wishBookName,
+          Output: 'JS',
+        },
+      })
+      let dataString = response.data
+      dataString = dataString.trim() // 공백 제거
+      dataString = dataString.substring(0, dataString.lastIndexOf('}')) + '}' // 마지막 세미콜론 제거
+
+      let dataObject
+      try {
+        dataObject = JSON.parse(dataString)
+      } catch (e) {
+        console.error(e)
+      }
+
+      console.log('dataObject : ', dataObject)
+      // 배열로 변환된 data.item을 이용
+      const books = dataObject.item.map(book => ({
+        title: book.title,
+        author: book.author,
+        publisher: book.publisher,
+        pubDate: book.pubDate,
+        isbn: book.isbn,
+        info: book.description,
+        cover: book.cover,
+        category: book.categoryName,
+      }))
+
+      return books
+    } catch (error) {
+      console.error(error)
+      return [] // 에러 발생 시 빈 배열 반환
+    }
+  }
+
+  // 도서 선택 함수
+  const handleSelectBook = book => {
+    setBookSearchResults([]) // 검색 결과를 비우고
+
+    console.log('book : ', book)
+
+    const wish = createWish(book, user)
+    setWishBook(wish)
+    console.log('wish : ', wish)
+    // 선택한 도서의 정보로 입력 필드를 채움
+    setWishBookName(book.title)
+    setWishBookAuthor(book.author)
+    setWishBookPublisher(book.publisher)
+    setWishBookISBN(book.isbn)
+    setOpenModal(false)
+  }
+  const handleSearch = async () => {
+    if (!wishBookName) {
+      alert('희망 도서명을 입력해주세요.')
+      return
+    }
+    const books = await callAladinAPI(wishBookName)
+    setBookSearchResults(books)
+
+    setOpenModal(true)
   }
 
   return (
@@ -69,9 +159,15 @@ export default function WishBook() {
               marginRight="50"
               width="300px"
             />
-            <Button size="large" variant="contained" onClick={onClickWishBook}>
+            <Button size="large" variant="contained" onClick={handleSearch}>
               검색
             </Button>
+            <SearchResultModal
+              open={openModal}
+              books={bookSearchResults}
+              onSelectBook={handleSelectBook}
+              handleClose={() => setOpenModal(false)}
+            />
           </S.LabelWrapper>
           <S.LabelWrapper>
             <S.LabelTitleWrapper>
@@ -105,24 +201,6 @@ export default function WishBook() {
               placeholder=""
               value={wishBookPublisher}
               onChange={e => setWishBookPublisher(e.target.value)}
-              marginTop="0"
-              width="200px"
-            />
-          </S.LabelWrapper>
-          <S.LabelWrapper>
-            <S.LabelTitleWrapper>
-              <Text
-                text="발행연도"
-                color={({ theme }) => theme.colors.grey5}
-                fontSize={({ theme }) => theme.fontSize.sz16}
-              />
-            </S.LabelTitleWrapper>
-
-            <LabelInput
-              type="text"
-              placeholder=""
-              value={wishBookCreateDate}
-              onChange={e => setWishBookCreateDate(e.target.value)}
               marginTop="0"
               width="200px"
             />

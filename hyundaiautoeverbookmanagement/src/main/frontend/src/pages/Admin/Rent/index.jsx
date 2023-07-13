@@ -1,11 +1,30 @@
 import * as S from '../style'
-import { Text, SearchBar } from '../../../components/index'
+import { Text } from '../../../components/index'
 import { default as Table } from './table'
+import { useEffect, useState } from 'react'
+import Pagination from '@mui/material/Pagination'
+import axios from 'axios'
 
 const AdminRent = () => {
-  const handleSubmit = () => {
-    console.log('검색 폼 제출')
+  const [rents, setRents] = useState([])
+  const [page, setPage] = useState(1)
+
+  const fetchRents = async () => {
+    const response = await axios.get(`/api/admin/rent`)
+    setRents(response.data)
+    console.log(response.data)
   }
+
+  useEffect(() => {
+    fetchRents()
+  }, [])
+
+  const handlePageChange = (event, value) => {
+    setPage(value)
+  }
+
+  const rentsToShow = rents.slice((page - 1) * 20, page * 20)
+
   return (
     <S.AdminUserContainer>
       <S.AdminTitle>
@@ -15,19 +34,18 @@ const AdminRent = () => {
           fontWeight={'bold'}
           color={({ theme }) => theme.colors.black}
         />
-        <S.SearchBarContainer>
-          <SearchBar
-            align="row"
-            width="400px"
-            height="40px"
-            onSubmit={handleSubmit}
-            placeholder={'검색'}
-          />
-        </S.SearchBarContainer>
       </S.AdminTitle>
       <S.TableContainer>
-        <Table />
+        <Table rents={rentsToShow} />
       </S.TableContainer>
+      <S.PaginationWrapper>
+        <Pagination
+          count={Math.ceil(rents.length / 20)}
+          page={page}
+          onChange={handlePageChange}
+          shape="rounded"
+        />
+      </S.PaginationWrapper>
     </S.AdminUserContainer>
   )
 }

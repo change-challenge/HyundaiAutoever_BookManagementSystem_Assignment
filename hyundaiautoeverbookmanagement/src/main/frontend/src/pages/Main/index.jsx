@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { SearchBar } from '../../components/index'
 import { useNavigate } from 'react-router-dom'
 import * as S from './style'
@@ -5,13 +6,22 @@ import axios from 'axios'
 
 export default function Main() {
   const navigate = useNavigate()
+  const [searchValue, setSearchValue] = useState('')
+  const [isSearchRequested, setIsSearchRequested] = useState(false)
 
-  const handleSubmit = () => {
-    navigate('/search')
+  useEffect(() => {
+    if (isSearchRequested && searchValue) {
+      navigate(`/search?query=${searchValue}`)
+      setIsSearchRequested(false)
+    }
+  }, [searchValue, isSearchRequested, navigate])
+
+  const handleSearchValueChange = value => {
+    setSearchValue(value)
+    setIsSearchRequested(true)
   }
 
   const token = localStorage.getItem('token')
-  console.log('Stored token:', token)
 
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
@@ -20,7 +30,6 @@ export default function Main() {
       axios.defaults.headers.common['Authorization']
     )
   }
-  //  console.log(process.env.REACT_APP_ALADIN_API_KEY)
   return (
     <S.Container>
       <S.InnerWrapper>
@@ -34,7 +43,11 @@ export default function Main() {
         </S.SubGuide>
         {/*검색창*/}
         <S.SearchContainer>
-          <SearchBar width="500px" height="50px" onSubmit={handleSubmit} />
+          <SearchBar
+            width="500px"
+            height="50px"
+            onSearchValueChange={handleSearchValueChange}
+          />
         </S.SearchContainer>
         {/*검색창 끝*/}
       </S.InnerWrapper>

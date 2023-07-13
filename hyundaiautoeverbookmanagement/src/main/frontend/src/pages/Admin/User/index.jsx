@@ -1,11 +1,44 @@
 import * as S from '../style'
-import { Text, SearchBar } from '../../../components/index'
+import { Text } from '../../../components/index'
 import { default as Table } from './table'
+import { useEffect, useState } from 'react'
+import Pagination from '@mui/material/Pagination'
+import axios from 'axios'
 
 const AdminUser = () => {
-  const handleSubmit = () => {
-    console.log('검색 폼 제출')
+  const [users, setUsers] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState(null)
+  const [page, setPage] = useState(1)
+
+  const fetchUsers = async () => {
+    setLoading(true)
+    setError(null)
+    try {
+      const response = await axios.get(`/api/admin/user`)
+      setUsers(response.data)
+      setLoading(false)
+      //  console.log('hi 1 : ', response.data)
+      //  console.log('hi 2  : ', users)
+    } catch (error) {
+      setError(error)
+      setLoading(false)
+    }
   }
+
+  useEffect(() => {
+    fetchUsers()
+  }, [])
+
+  const handlePageChange = (event, value) => {
+    setPage(value)
+  }
+
+  const usersToShow = users.slice((page - 1) * 20, page * 20)
+
+  if (loading) return <div>Loading...</div>
+  if (error) return <div>Error occurred: {error.message}</div>
+
   return (
     <S.AdminUserContainer>
       <S.AdminTitle>
@@ -15,19 +48,18 @@ const AdminUser = () => {
           fontWeight={'bold'}
           color={({ theme }) => theme.colors.black}
         />
-        <S.SearchBarContainer>
-          <SearchBar
-            align="row"
-            width="400px"
-            height="40px"
-            onSubmit={handleSubmit}
-            placeholder={'검색'}
-          />
-        </S.SearchBarContainer>
       </S.AdminTitle>
       <S.TableContainer>
-        <Table />
+        <Table users={usersToShow} />
       </S.TableContainer>
+      <S.PaginationWrapper>
+        <Pagination
+          count={Math.ceil(users.length / 20)}
+          page={page}
+          onChange={handlePageChange}
+          shape="rounded"
+        />
+      </S.PaginationWrapper>
     </S.AdminUserContainer>
   )
 }
