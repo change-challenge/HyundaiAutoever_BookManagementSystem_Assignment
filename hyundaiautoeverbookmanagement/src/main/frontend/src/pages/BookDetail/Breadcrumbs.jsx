@@ -7,22 +7,17 @@ function handleClick() {
 }
 
 export default function CustomSeparator() {
+  const searchValue = sessionStorage.getItem('lastSearch')
+
   const breadcrumbs = [
-    <Link
-      underline="hover"
-      key="1"
-      color="inherit"
-      href="/"
-      onClick={handleClick}
-    >
+    <Link underline="hover" key="1" color="inherit" href="/">
       홈
     </Link>,
     <Link
       underline="hover"
       key="2"
       color="inherit"
-      href="/search"
-      onClick={handleClick}
+      href={`/search?query=${searchValue}`}
     >
       도서 검색
     </Link>,
