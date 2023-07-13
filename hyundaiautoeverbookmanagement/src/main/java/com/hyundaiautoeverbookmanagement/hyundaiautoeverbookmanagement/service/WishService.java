@@ -9,6 +9,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Bo
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,26 +20,38 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class WishService {
 
     private final WishRepository wishRepository;
 
-    public List<WishResponseDTO> getAllWishs() {
+    public List<WishRequestDTO> getAllWishs() {
         List<Wish> wishBooks = wishRepository.findAll();
-        List<WishResponseDTO> wishResponseDTOS = new ArrayList<>();
+        List<WishRequestDTO> wishRequestDTOS = new ArrayList<>();
 
         for (Wish wish: wishBooks) {
-            WishResponseDTO wishResponseDTO = new WishResponseDTO();
-            wishResponseDTO.setId(wish.getId());
-            wishResponseDTO.setUserEmail(wish.getUser_email());
-            wishResponseDTO.setTitle(wish.getTitle());
-            wishResponseDTO.setAuthor(wish.getAuthor());
-            wishResponseDTO.setWishDate(wish.getWish_date());
-            wishResponseDTO.setPublisher(wish.getPublisher());
-            wishResponseDTO.setWishType(wish.getWishType());
-            wishResponseDTOS.add(wishResponseDTO);
+            WishRequestDTO wishRequestDTO = new WishRequestDTO();
+            BookDTO bookDTO = new BookDTO();
+            wishRequestDTO.setId(wish.getId());
+            wishRequestDTO.setUser_email(wish.getUser_email());
+            wishRequestDTO.setStatus(wish.getWishType().toString());
+            wishRequestDTO.setWish_date(wish.getWish_date());
+            bookDTO.setId(null);
+            bookDTO.setTitle(wish.getTitle());
+            bookDTO.setAuthor(wish.getAuthor());
+            bookDTO.setPublisher(wish.getPublisher());
+            bookDTO.setIsbn(wish.getISBN());
+            bookDTO.setBookCount(0);
+            bookDTO.setCover(wish.getCover());
+            bookDTO.setBookStatus(false);
+            bookDTO.setCategory(wish.getCategory());
+            bookDTO.setPubDate(wish.getPubDate());
+            bookDTO.setInfo(wish.getInfo());
+            bookDTO.setRent_count(0);
+            wishRequestDTO.setBook(bookDTO);
+            wishRequestDTOS.add(wishRequestDTO);
         }
-        return wishResponseDTOS;
+        return wishRequestDTOS;
     }
 
     public String saveWish(WishRequestDTO form) {

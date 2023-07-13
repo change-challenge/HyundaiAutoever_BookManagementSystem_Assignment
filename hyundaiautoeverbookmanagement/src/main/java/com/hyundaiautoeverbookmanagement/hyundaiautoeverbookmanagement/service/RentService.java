@@ -30,8 +30,8 @@ public class RentService {
         List<RentAdminResponseDTO> rentAdminResponseDTOS = new ArrayList<>();
         for (Rent rent: rents) {
             RentAdminResponseDTO rentAdminResponseDTO = new RentAdminResponseDTO();
-            Long bookId = copyRepository.findBookIdByCopyId(rent.getCopy().getCopyId());
-
+            Book book = copyRepository.findBookByCopyId(rent.getCopy().getCopyId());
+            Long bookId = book.getId();
             rentAdminResponseDTO.setId(rent.getId());
             rentAdminResponseDTO.setUserEmail(rent.getUser().getEmail());
             rentAdminResponseDTO.setRentStartDate(rent.getRentStartDate());

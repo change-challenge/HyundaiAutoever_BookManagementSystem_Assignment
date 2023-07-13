@@ -3,20 +3,19 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.Date;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @ToString
 @Getter
 @Setter
 public class WishRequestDTO {
 
+    private Long id;
     private LocalDate wish_date;
     private String status;
     private String user_email;

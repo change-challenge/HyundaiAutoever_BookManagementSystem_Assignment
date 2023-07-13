@@ -7,6 +7,8 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,15 +50,22 @@ export default function CustomizedTables({ wishBooks }) {
           {wishBooks.map(wishbook => (
             <StyledTableRow key={wishbook.name}>
               <StyledTableCell component="th" scope="wishbook">
-                {wishbook.wishBookId}
+                {wishbook.id}
               </StyledTableCell>
-              <StyledTableCell>{wishbook.userEmail}</StyledTableCell>
-              <StyledTableCell>{wishbook.bookName}</StyledTableCell>
-              <StyledTableCell>{wishbook.bookAuthor}</StyledTableCell>
-              <StyledTableCell>{wishbook.bookcreateDate}</StyledTableCell>
-              <StyledTableCell>{wishbook.bookPublisher}</StyledTableCell>
-              <StyledTableCell>{wishbook.ISBN}</StyledTableCell>
-              <StyledTableCell>버튼</StyledTableCell>
+              <StyledTableCell>{wishbook.user_email}</StyledTableCell>
+              <StyledTableCell>{wishbook.book.title}</StyledTableCell>
+              <StyledTableCell>{wishbook.book.author}</StyledTableCell>
+              <StyledTableCell>{wishbook.book.pubDate}</StyledTableCell>
+              <StyledTableCell>{wishbook.book.publisher}</StyledTableCell>
+              <StyledTableCell>{wishbook.book.isbn}</StyledTableCell>
+              <StyledTableCell>
+                <Stack spacing={2}>
+                  <Button variant="contained">추가</Button>
+                  <Button variant="contained" color="error">
+                    반려
+                  </Button>
+                </Stack>
+              </StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>

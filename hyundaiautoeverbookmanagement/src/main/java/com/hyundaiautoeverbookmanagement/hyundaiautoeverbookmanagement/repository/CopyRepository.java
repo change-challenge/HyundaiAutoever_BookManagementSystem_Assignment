@@ -17,5 +17,6 @@ public interface CopyRepository extends JpaRepository<Copy, Long> {
     Optional<Copy> findById(Long id);
     int countByBook(Book book);
     @Query("SELECT c.book FROM Copy c WHERE c.copyId = :copyId")
-    Long findBookIdByCopyId(@Param("copyId") Long copyId);
+    Book findBookByCopyId(@Param("copyId") Long copyId);
+
 }

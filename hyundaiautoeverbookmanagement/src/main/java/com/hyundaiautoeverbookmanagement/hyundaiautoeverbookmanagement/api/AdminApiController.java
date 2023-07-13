@@ -44,8 +44,8 @@ public class AdminApiController {
     }
 
     @GetMapping("/wish")
-    public ResponseEntity<List<WishResponseDTO>> getWishBooks() {
-        List<WishResponseDTO> wishBooks = wishService.getAllWishs();
+    public ResponseEntity<List<WishRequestDTO>> getWishBooks() {
+        List<WishRequestDTO> wishBooks = wishService.getAllWishs();
         return new ResponseEntity<>(wishBooks, HttpStatus.OK);
     }
 }

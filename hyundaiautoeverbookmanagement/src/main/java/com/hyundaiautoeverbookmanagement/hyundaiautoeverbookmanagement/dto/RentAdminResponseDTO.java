@@ -4,6 +4,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Co
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
 import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Date;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.Optional;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Slf4j
 @ToString
 public class RentAdminResponseDTO {
 
@@ -30,6 +32,10 @@ public class RentAdminResponseDTO {
         rent.setRentReturnedDate(this.rentReturnedDate.orElse(null));
         rent.setUser(user);
         rent.setCopy(copy);
+
+        log.info("user!!!!!! ", user);
+        log.info("copy!!!!!! ", copy);
+
         return rent;
     }
 }
