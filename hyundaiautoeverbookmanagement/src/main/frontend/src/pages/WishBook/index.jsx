@@ -8,29 +8,6 @@ import { fetchUserInfo } from '../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import SearchResultModal from './SearchResultModal'
 
-// Book 객체를 정의
-class Book {
-  constructor(
-    title,
-    author,
-    pubDate,
-    description,
-    isbn,
-    cover,
-    publisher,
-    categoryName
-  ) {
-    this.title = title
-    this.author = author
-    this.pubDate = pubDate
-    this.description = description
-    this.isbn = isbn
-    this.cover = cover
-    this.publisher = publisher
-    this.categoryName = categoryName
-  }
-}
-
 export default function WishBook() {
   const [wishBookName, setWishBookName] = useState('')
   const [wishBookAuthor, setWishBookAuthor] = useState('')
@@ -41,23 +18,23 @@ export default function WishBook() {
   // 새로운 상태 변수 추가
   const [bookSearchResults, setBookSearchResults] = useState([])
   const [openModal, setOpenModal] = useState(false)
+  const [wishBook, setWishBook] = useState({})
 
   const createWish = (book, user) => {
     return {
-      id: null,
-      wish_date: new Date(),
+      wish_date: new Date().toISOString(),
       status: 'Pending',
       user_email: user.email,
       book: {
-        id: null,
         title: book.title,
         author: book.author,
         publisher: book.publisher,
-        category: book.categoryName,
+        category: book.category,
+        info: book.info,
         rent_count: 0,
-        ISBN: book.isbn,
+        isbn: book.isbn,
         cover: book.cover,
-        pub_date: book.pubDate,
+        pubDate: book.pubDate,
       },
     }
   }
@@ -78,20 +55,8 @@ export default function WishBook() {
     }
     const confirm = window.confirm('희망도서를 신청하시겠습니까?')
     if (confirm) {
-      const currentDate = new Date()
-      const isoDate = currentDate.toISOString()
-
-      const requestData = {
-        title: wishBookName,
-        author: wishBookAuthor,
-        publisher: wishBookPublisher,
-        ISBN: wishBookISBN,
-        userEmail: user?.email,
-        wishDate: isoDate,
-      }
-
       axios
-        .post('/api/wishbook/create', requestData)
+        .post('/api/wishbook/create', wishBook)
         .then(response => {
           alert('성공적으로 희망도서신청을 하였습니다.')
           navigate('/')
@@ -122,17 +87,18 @@ export default function WishBook() {
       } catch (e) {
         console.error(e)
       }
+
+      console.log('dataObject : ', dataObject)
       // 배열로 변환된 data.item을 이용
       const books = dataObject.item.map(book => ({
-        id: book.itemId,
         title: book.title,
-        link: book.link,
         author: book.author,
+        publisher: book.publisher,
         pubDate: book.pubDate,
         isbn: book.isbn,
-        description: book.description,
+        info: book.description,
         cover: book.cover,
-        publisher: book.publisher,
+        category: book.categoryName,
       }))
 
       return books
@@ -149,6 +115,7 @@ export default function WishBook() {
     console.log('book : ', book)
 
     const wish = createWish(book, user)
+    setWishBook(wish)
     console.log('wish : ', wish)
     // 선택한 도서의 정보로 입력 필드를 채움
     setWishBookName(book.title)

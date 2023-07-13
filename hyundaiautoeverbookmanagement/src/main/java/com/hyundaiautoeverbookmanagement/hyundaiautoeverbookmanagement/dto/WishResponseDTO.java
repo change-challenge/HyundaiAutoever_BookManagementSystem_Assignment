@@ -5,6 +5,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wi
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishType;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
@@ -16,9 +17,11 @@ import java.util.Optional;
 public class WishResponseDTO {
 
     private Long id;
-    private Book book;
     private String userEmail;
-    private Date wishDate;
+    private String title;
+    private String author;
+    private LocalDate wishDate;
+    private String publisher;
+    private String ISBN;
     private WishType wishType;
-
 }

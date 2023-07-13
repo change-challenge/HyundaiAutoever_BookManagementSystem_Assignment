@@ -29,31 +29,11 @@ public class WishService {
 
         for (Wish wish: wishBooks) {
             WishResponseDTO wishResponseDTO = new WishResponseDTO();
-            BookDTO bookDTO = new BookDTO();
-//            private Long id;
-//            private String email;
-//            private String name;
-//            private int rentCount;
-//            private int lateDay;
-//            private Date registDate;
-//            private UserType userType;
-
-            bookDTO.setBookCount(0);
-            bookDTO.setBookStatus(true);
-            bookDTO.setId(null);
-            bookDTO.setCover();
-
-
             wishResponseDTO.setId(wish.getId());
-            wishResponseDTO.setWishDate(wish.getWish_date());
-
-
-
+            wishResponseDTO.setUserEmail(wish.getUser_email());
             wishResponseDTO.setTitle(wish.getTitle());
             wishResponseDTO.setAuthor(wish.getAuthor());
-            wishResponseDTO.setISBN(Optional.ofNullable(wish.getISBN()));
-            wishResponseDTO.setUserEmail(wish.getUser_email());
-
+            wishResponseDTO.setWishDate(wish.getWish_date());
             wishResponseDTO.setPublisher(wish.getPublisher());
             wishResponseDTO.setWishType(wish.getWishType());
             wishResponseDTOS.add(wishResponseDTO);

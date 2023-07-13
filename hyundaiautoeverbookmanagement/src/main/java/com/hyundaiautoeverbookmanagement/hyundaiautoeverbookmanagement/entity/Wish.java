@@ -4,6 +4,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.UserT
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity // DB가 해당 객체를 인식 가능!
@@ -19,6 +20,16 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.AUTO) // 1, 2, 3, .... 자동 생성 어노테이션!
     private Long id;
 
+    @JoinColumn(name = "user_email", nullable = false)
+    private String user_email;
+
+    @Column(name = "WISH_DATE", nullable = false)
+    private LocalDate wish_date;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "STATUS", nullable = false)
+    private WishType wishType = WishType.PENDING;
+
     @Column(name = "TITLE", nullable = false)
     private String title;
 
@@ -31,13 +42,18 @@ public class Wish {
     @Column(name = "ISBN")
     private String ISBN;
 
-    @JoinColumn(name = "user_email", nullable = false)
-    private String user_email;
+    @Column(name = "CATEGORY", length = 50)
+    private String category;
 
-    @Column(name = "WISH_DATE", nullable = false)
-    private Date wish_date;
+    @Column(name = "INFO", length = 300)
+    private String info;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "STATUS", nullable = false)
-    private WishType wishType = WishType.PENDING;
+    @Column(name = "COVER", length = 255)
+    private String cover;
+
+    @Column(name = "PUB_DATE")
+    private LocalDate pubDate;
+
+    @Column(name = "RENT_COUNT")
+    private int rentCount;
 }

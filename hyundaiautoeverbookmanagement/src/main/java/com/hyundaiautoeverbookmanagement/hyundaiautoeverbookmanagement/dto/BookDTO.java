@@ -20,6 +20,7 @@ public class BookDTO {
     private String isbn;
     private String cover;
     private String info;
+    private int rent_count;
     private LocalDate pubDate;
     private boolean bookStatus;
     private int bookCount;

@@ -1,5 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishType;
 import lombok.AllArgsConstructor;
@@ -7,8 +8,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDate;
 import java.util.Date;
-import java.util.Optional;
 
 @AllArgsConstructor
 @ToString
@@ -16,15 +17,12 @@ import java.util.Optional;
 @Setter
 public class WishRequestDTO {
 
-    private String title;
-    private String author;
-    private String publisher;
-    private Optional<String> ISBN;
-    private String userEmail;
-    private Date wishDate;
-
+    private LocalDate wish_date;
+    private String status;
+    private String user_email;
+    private BookDTO book;
 
     public Wish toEntity() {
-        return new Wish(null, title, author, publisher, ISBN.orElse(null), this.userEmail, wishDate, WishType.PENDING);
+        return new Wish(null, user_email, wish_date, WishType.PENDING, book.getTitle(), book.getAuthor(), book.getPublisher(), book.getIsbn(), book.getCategory(), book.getInfo(), book.getCover(), book.getPubDate(), book.getRent_count());
     }
 }
