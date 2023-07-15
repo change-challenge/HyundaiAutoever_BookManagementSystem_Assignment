@@ -34,12 +34,10 @@ public class MemberService {
 
         for(Rent rent : rents) {
             long diff = ChronoUnit.DAYS.between(rent.getRentStartDate(), currentDate);
-
             if(diff > 7) {
                 totalDays += (diff - 7);
             }
         }
-
         return totalDays;
     }
 
@@ -50,7 +48,6 @@ public class MemberService {
 
         for (Member member: members) {
             MemberAdminResponseDTO memberAdminResponseDTO = new MemberAdminResponseDTO();
-
             memberAdminResponseDTO.setId(member.getId());
             memberAdminResponseDTO.setEmail(member.getEmail());
             memberAdminResponseDTO.setName(member.getName());

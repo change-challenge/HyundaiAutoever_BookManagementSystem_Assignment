@@ -26,8 +26,9 @@ public interface RentRepository extends JpaRepository<Rent, Long> {
     Optional<Rent> findByUserIdAndCopyIdAndRentReturnedDateIsNull(Long userId, Long copyId);
 
     // 대출중인 책 중복처리 막기 위해
-    Optional<Rent> findByUserIdAndCopy_Book_TitleAndRentReturnedDateIsNull(Long userId, String bookTitle);
-
+    // 먼저 현재 빌리고 있는 책 제목 리스트 가져오기
+    @Query("SELECT r.copy.book.title FROM Rent r WHERE r.user.id = :userId AND r.rentReturnedDate IS NULL")
+    List<String> findRentedBookTitlesByUserId(@Param("userId") Long userId);
 
 
     List<Rent> findAll();
