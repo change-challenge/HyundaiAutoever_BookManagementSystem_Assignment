@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useEffect, useState } from 'react'
+import { fetchUserInfo } from '../../context/UserContext'
 import axios from 'axios'
 import Button from '@mui/material/Button'
 
@@ -17,7 +18,6 @@ const Table = styled.table`
 
 const TableHeader = styled.th`
   background-color: ${({ theme }) => theme.colors.grey1};
-  /*color: ${({ theme }) => theme.colors.white};*/
   padding: 10px;
   text-align: center;
   font-weight: bold;
@@ -43,38 +43,47 @@ const TableCell = styled.td`
   vertical-align: middle;
 `
 
-//const Button = styled.button`
-//  background-color: ${({ active }) => (active ? 'white' : '#6A4AFC')};
-//  color: ${({ active }) => (active ? 'black' : 'white')};
-//  border: none;
-//  width: 50%;
-//  height: 50%;
-//  padding: 5px 10px;
-//  cursor: pointer;
-//  transition: background-color 0.3s, color 0.3s;
-//  font-family: 'Apple SD Gothic Neo';
-//  border-radius: 15px;
-//  &:hover {
-//    background-color: ${({ active }) => (active ? 'purple' : 'white')};
-//    color: ${({ active }) => (active ? 'white' : 'black')};
-//  }
-//`
-
-const handleClick = () => {
-  alert('hey!')
-}
-
 const BookCountTable = ({ bookId }) => {
   const [copyDetail, setCopyDetail] = useState([])
+  const [user, setUser] = useState(null)
 
-  const fetchRents = async () => {
+  const handleRentClick = copyId => {
+    if (!user) {
+      alert('로그인이 필요한 기능입니다!')
+    }
+    console.log('copyId : ', copyId)
+    makeRent(copyId)
+  }
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const userInfo = await fetchUserInfo()
+      setUser(userInfo)
+    }
+    getUserInfo()
+    console.log(user)
+  }, [])
+
+  const makeRent = async copyId => {
+    const currentDate = new Date()
+    const isoDate = currentDate.toISOString()
+
+    const response = await axios.post(`/api/rent/${copyId}`, {
+      copyId: copyId,
+      userEmail: user.email,
+      rentDate: isoDate,
+    })
+    console.log('makeRent: ', response.data)
+  }
+
+  const fetchCopys = async () => {
     const response = await axios.get(`/api/bookdetail/${bookId}`)
     setCopyDetail(response.data)
     console.log(response.data)
   }
 
   useEffect(() => {
-    fetchRents()
+    fetchCopys()
   }, [])
 
   return (
@@ -109,11 +118,14 @@ const BookCountTable = ({ bookId }) => {
               </TableCell>
               <TableCell>
                 {item.rentEndDate === null ? (
-                  <Button variant="contained" onClick={handleClick}>
+                  <Button
+                    variant="contained"
+                    onClick={() => handleRentClick(item.copyId)}
+                  >
                     대여하기
                   </Button>
                 ) : (
-                  <Button variant="contained" onClick={handleClick} disabled>
+                  <Button variant="contained" disabled>
                     대여하기
                   </Button>
                 )}

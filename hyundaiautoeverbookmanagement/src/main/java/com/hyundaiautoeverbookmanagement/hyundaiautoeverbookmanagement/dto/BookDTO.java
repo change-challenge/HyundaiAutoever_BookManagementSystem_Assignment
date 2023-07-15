@@ -26,6 +26,6 @@ public class BookDTO {
     private int bookCount;
 
     public Book toEntity() {
-        return new Book(null, title, author, publisher, category, isbn, cover, info, pubDate);
+        return new Book(null, title, author, publisher, category, rent_count, isbn, cover, info, pubDate);
     }
 }

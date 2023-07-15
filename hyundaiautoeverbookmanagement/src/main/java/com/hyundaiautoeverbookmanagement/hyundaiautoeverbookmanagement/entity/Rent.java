@@ -18,11 +18,11 @@ public class Rent {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", insertable = false, updatable = false)
+    @JoinColumn(name = "USER_ID", insertable = true, updatable = true)
     private Member user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "COPY_ID", insertable = false, updatable = false)
+    @JoinColumn(name = "COPY_ID", insertable = true, updatable = true)
     private Copy copy;
 
     @Column(name = "RENT_START_DATE", nullable = false)
