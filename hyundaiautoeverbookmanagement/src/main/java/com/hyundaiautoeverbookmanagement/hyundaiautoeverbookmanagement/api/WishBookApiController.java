@@ -23,6 +23,5 @@ public class WishBookApiController {
     public ResponseEntity<String> createWishBook(@RequestBody WishRequestDTO form) {
         log.info("form!!! : " + form);
         return ResponseEntity.ok(wishService.saveWish(form));
-
     }
 }

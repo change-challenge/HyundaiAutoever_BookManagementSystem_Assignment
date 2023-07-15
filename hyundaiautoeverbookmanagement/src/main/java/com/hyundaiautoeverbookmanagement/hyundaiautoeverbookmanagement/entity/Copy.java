@@ -2,10 +2,12 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "COPY")
 @Getter
+@Setter
 public class Copy {
 
     @Id

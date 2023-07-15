@@ -32,6 +32,9 @@ public class Book {
     private String category;
 
     @Column
+    private int rentCount;
+
+    @Column
     private String isbn;
 
     @Column

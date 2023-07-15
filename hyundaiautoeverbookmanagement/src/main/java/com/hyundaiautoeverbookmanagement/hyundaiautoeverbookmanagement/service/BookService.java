@@ -84,7 +84,11 @@ public class BookService {
             dto.setCopyId(copy.getCopyId());
             if (copy.getBookStatus().equals(BookStatus.UNAVAILABLE)) {
                 Rent rent = rentRepository.findFirstByCopyIdOrderByRentEndDateDesc(copy.getCopyId());
-                dto.setRentEndDate(Optional.ofNullable(rent.getRentEndDate()));
+                if (rent != null) {
+                    dto.setRentEndDate(Optional.ofNullable(rent.getRentEndDate()));
+                } else {
+                    dto.setRentEndDate(Optional.empty());
+                }
             }
             bookDetails.add(dto);
         }

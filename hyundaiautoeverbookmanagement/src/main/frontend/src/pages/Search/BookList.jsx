@@ -53,6 +53,7 @@ const BookListStatus = styled.div`
 `
 
 const BookList = ({ book }) => {
+  console.log('BookList : ', book)
   return (
     <BookListContentContainer>
       <BookListImageWrapper>
@@ -97,7 +98,7 @@ const BookList = ({ book }) => {
         </BookListAuthorPublisher>
         <BookListCreateDate>
           <Text
-            text={`발행월일 ${book.publishDate}`}
+            text={`발행월일 ${book.pubDate}`}
             color={({ theme }) => theme.colors.grey9}
             fontSize={({ theme }) => theme.fontSize.sz14}
           />
