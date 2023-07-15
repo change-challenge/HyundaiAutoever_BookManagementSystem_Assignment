@@ -41,6 +41,13 @@ const ButtonWrapper = styled.div`
   align-content: center;
 `
 
+const PaginationWrapper = styled.div`
+  display: flex;
+
+  justify-content: center;
+  width: 100%;
+`
+
 export {
   RentCountWrapper,
   RentDetailContainer,
@@ -48,4 +55,5 @@ export {
   RentTitleWrapper,
   RentDetailWrapper,
   ButtonWrapper,
+  PaginationWrapper,
 }

@@ -3,9 +3,15 @@ import { Text } from '../../../components/index'
 import * as S from './style'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import Pagination from '@mui/material/Pagination'
 
 const MypageWishBook = ({ user }) => {
   const [wishBooks, setWishBooks] = useState([])
+  const [page, setPage] = useState(1)
+
+  const handlePageChange = (event, value) => {
+    setPage(value)
+  }
 
   const fetchwishBook = async () => {
     const response = await axios.get(`/api/wishbook/read`, {
@@ -34,6 +40,8 @@ const MypageWishBook = ({ user }) => {
     }
   }
 
+  const wishsToShow = wishBooks.slice((page - 1) * 5, page * 5)
+
   return (
     <>
       <S.RentCountWrapper>
@@ -42,7 +50,7 @@ const MypageWishBook = ({ user }) => {
           textColor={({ theme }) => theme.colors.black}
         />
       </S.RentCountWrapper>
-      {wishBooks.map(wishBook => (
+      {wishsToShow.map(wishBook => (
         <S.RentDetailContainer>
           <S.RentInfoWrapper>
             <S.RentTitleWrapper>
@@ -64,7 +72,15 @@ const MypageWishBook = ({ user }) => {
             </S.RentDetailWrapper>
           </S.RentInfoWrapper>
         </S.RentDetailContainer>
-      ))}{' '}
+      ))}
+      <S.PaginationWrapper>
+        <Pagination
+          count={Math.ceil(wishBooks.length / 5)}
+          page={page}
+          onChange={handlePageChange}
+          shape="rounded"
+        />
+      </S.PaginationWrapper>
     </>
   )
 }

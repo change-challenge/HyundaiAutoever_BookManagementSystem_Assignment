@@ -85,6 +85,29 @@ public class RentService {
         return "Success";
     }
 
+    public String extendBook(RentRequestDTO form) {
+        Member member =  memberRepository.findByEmail(form.getUserEmail())
+                .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getUserEmail()));
+        Rent rent = rentRepository.findByUserIdAndCopyIdAndRentReturnedDateIsNull(member.getId(), form.getCopyId())
+                .orElseThrow(() -> new RuntimeException("해당 rent 정보가 없습니다."));
+        if(rent.getExtendable() == false) {
+            return "이미 연장을 하였습니다.";
+        }
+
+        LocalDate today = LocalDate.now();
+        if(rent.getRentEndDate().isBefore(today)) {
+            throw new RuntimeException("연체 중이기에 연장할 수 없습니다.");
+        }
+        if(rent.getRentEndDate().equals(today) || rent.getRentEndDate().equals(today.minusDays(1))) {
+            rent.setExtendable(false);
+            rent.setRentEndDate(rent.getRentEndDate().plusDays(7));
+        } else {
+            throw new RuntimeException("반납 하루 전에만 연장가능합니다.");
+        }
+        rentRepository.save(rent);
+        return "Success";
+    }
+
     // READ
     public List<RentResponseDTO> getAllRents() {
         List<Rent> rents = rentRepository.findAll();
@@ -117,8 +140,11 @@ public class RentService {
             rentResponseDTO.setRentEndDate(rent.getRentEndDate());
             rentResponseDTO.setRentReturnedDate(Optional.ofNullable(rent.getRentReturnedDate()));
             rentResponseDTO.setTitle(bookRepository.findTitleById(bookId));
+            rentResponseDTO.setExtendable(rent.getExtendable());
             rentResponseDTOS.add(rentResponseDTO);
         }
         return rentResponseDTOS;
     }
+
+
 }

@@ -3,9 +3,15 @@ import { Text } from '../../../components/index'
 import * as S from './style'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import Pagination from '@mui/material/Pagination'
 
 const MypageRentHistory = ({ user }) => {
   const [rents, setRents] = useState([])
+  const [page, setPage] = useState(1)
+
+  const handlePageChange = (event, value) => {
+    setPage(value)
+  }
 
   const fetchRents = async () => {
     const response = await axios.get(`/api/rent/history`, {
@@ -35,6 +41,8 @@ const MypageRentHistory = ({ user }) => {
     fetchRents()
   }, [])
 
+  const rentsToShow = rents.slice((page - 1) * 5, page * 5)
+
   return (
     <>
       <S.RentCountWrapper>
@@ -43,7 +51,7 @@ const MypageRentHistory = ({ user }) => {
           textColor={({ theme }) => theme.colors.black}
         />
       </S.RentCountWrapper>
-      {rents.map((rent, index) => (
+      {rentsToShow.map((rent, index) => (
         <S.RentDetailContainer key={index}>
           <S.RentInfoWrapper>
             <S.RentTitleWrapper>
@@ -71,6 +79,14 @@ const MypageRentHistory = ({ user }) => {
           </S.RentInfoWrapper>
         </S.RentDetailContainer>
       ))}
+      <S.PaginationWrapper>
+        <Pagination
+          count={Math.ceil(rents.length / 5)}
+          page={page}
+          onChange={handlePageChange}
+          shape="rounded"
+        />
+      </S.PaginationWrapper>
     </>
   )
 }

@@ -5,6 +5,7 @@ import Box from '@mui/material/Box'
 import { Text } from '../../../components/index'
 import { fetchUserInfo } from '../../../context/UserContext'
 import { useState, useEffect } from 'react'
+import Pagination from '@mui/material/Pagination'
 
 const Mypage = () => {
   const [user, setUser] = useState(null)

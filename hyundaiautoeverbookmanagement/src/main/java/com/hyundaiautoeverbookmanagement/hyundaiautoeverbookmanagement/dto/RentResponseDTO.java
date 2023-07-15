@@ -24,6 +24,7 @@ public class RentResponseDTO {
     private LocalDate rentStartDate;
     private LocalDate rentEndDate;
     private Optional<LocalDate> rentReturnedDate;
+    private boolean extendable;
 
     public Rent toEntity(Member user, Copy copy) {
         Rent rent = new Rent();
@@ -33,6 +34,7 @@ public class RentResponseDTO {
         rent.setRentReturnedDate(this.rentReturnedDate.orElse(null));
         rent.setUser(user);
         rent.setCopy(copy);
+        rent.setExtendable(this.extendable);
         return rent;
     }
 }
