@@ -14,12 +14,11 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/rent")
 @Slf4j
 public class RentApiController {
 
     private final RentService rentService;
-    @PostMapping("/{copyId}")
+    @PostMapping("/api/rent/{copyId}")
     public ResponseEntity<String> rent(@RequestBody RentRequestDTO dto) {
         try {
             String result = rentService.rent(dto);
@@ -33,14 +32,28 @@ public class RentApiController {
         }
     }
 
-    @GetMapping("/current")
+    @PostMapping("/api/return/{copyId}")
+    public ResponseEntity<String> returnBook(@RequestBody RentRequestDTO dto) {
+        try {
+            String result = rentService.returnBook(dto);
+            if ("Success".equals(result)) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/api/rent/current")
     public ResponseEntity<List<RentResponseDTO>> getCurrentRents(@RequestParam String userEmail) {
         List<RentResponseDTO> rent = rentService.getCurrentRents(userEmail);
         log.info("!!rent!! " + rent);
         return new ResponseEntity<>(rent, HttpStatus.OK);
     }
 
-    @GetMapping("/history")
+    @GetMapping("/api/rent/history")
     public ResponseEntity<List<RentResponseDTO>> getHistoryRents(@RequestParam String userEmail) {
         List<RentResponseDTO> rent = rentService.getHistoryRents(userEmail);
         log.info("!!rent!! " + rent);

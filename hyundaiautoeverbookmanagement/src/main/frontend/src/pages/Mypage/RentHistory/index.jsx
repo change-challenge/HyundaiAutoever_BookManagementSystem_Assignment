@@ -13,7 +13,21 @@ const MypageRentHistory = ({ user }) => {
         userEmail: user.email,
       },
     })
-    setRents(response.data)
+
+    let sortedRents = response.data.sort((a, b) => {
+      // 먼저, rentReturnedDate가 null인 요소를 뒤로 보냄
+      if (a.rentReturnedDate === null && b.rentReturnedDate !== null) {
+        return -1
+      }
+      if (a.rentReturnedDate !== null && b.rentReturnedDate === null) {
+        return 1
+      }
+
+      // 그 후, rentStartDate를 기준으로 최신 순서대로 정렬
+      return new Date(b.rentStartDate) - new Date(a.rentStartDate)
+    })
+
+    setRents(sortedRents)
     console.log('response.data : ', response.data)
   }
 
