@@ -18,6 +18,7 @@ import java.util.Optional;
 public class RentResponseDTO {
 
     private Long id;
+    private Long copyId;
     private String title;
     private String userEmail;
     private LocalDate rentStartDate;

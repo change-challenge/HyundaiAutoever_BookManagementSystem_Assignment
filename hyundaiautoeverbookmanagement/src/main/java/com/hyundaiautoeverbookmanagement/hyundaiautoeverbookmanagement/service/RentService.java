@@ -82,6 +82,7 @@ public class RentService {
             Book book = copyRepository.findBookByCopyId(rent.getCopy().getId());
             Long bookId = book.getId();
             rentResponseDTO.setId(rent.getId());
+            rentResponseDTO.setCopyId(rent.getCopy().getId());
             rentResponseDTO.setUserEmail(rent.getUser().getEmail());
             rentResponseDTO.setRentStartDate(rent.getRentStartDate());
             rentResponseDTO.setRentEndDate(rent.getRentEndDate());
@@ -98,5 +99,25 @@ public class RentService {
 
 
         return getRentResponseDTOS(rents);
+    }
+
+    public String returnBook(RentRequestDTO form) {
+        // 1. 유저인 지 체크
+        Member member =  memberRepository.findByEmail(form.getUserEmail())
+                .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getUserEmail()));
+
+        // 2. Rent에 Returned 데이터 넣기
+        Rent rent = rentRepository.findByUserIdAndCopyIdAndRentReturnedDateIsNull(member.getId(), form.getCopyId())
+                .orElseThrow(() -> new RuntimeException("No such rent"));
+        rent.setRentReturnedDate(LocalDate.now());
+        rentRepository.save(rent);
+
+        // 3. Copy의 Status를 AVALIABLE로 바꾸기
+        Copy copy = copyRepository.findById(form.getCopyId())
+                .orElseThrow(() -> new RuntimeException("No such copy"));
+        copy.setBookStatus(BookStatus.AVAILABLE);
+        copyRepository.save(copy);
+
+        return "Success";
     }
 }

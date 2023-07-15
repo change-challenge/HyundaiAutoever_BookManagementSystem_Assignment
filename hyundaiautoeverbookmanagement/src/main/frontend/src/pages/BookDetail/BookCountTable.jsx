@@ -71,14 +71,10 @@ const BookCountTable = ({ bookId }) => {
   }, [])
 
   const makeRent = async copyId => {
-    const currentDate = new Date()
-    const isoDate = currentDate.toISOString()
-
     const response = await axios
       .post(`/api/rent/${copyId}`, {
         copyId: copyId,
         userEmail: user.email,
-        rentDate: isoDate,
       })
       .then(response => {
         console.log('makeRent: ', response.data)
