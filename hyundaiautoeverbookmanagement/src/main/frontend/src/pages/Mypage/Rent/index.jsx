@@ -3,8 +3,10 @@ import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import { Text } from '../../../components/index'
 import * as S from './style'
+import { useEffect, useState } from 'react'
+import axios from 'axios'
 
-const MypageRent = () => {
+const MypageRent = ({ user }) => {
   return (
     <>
       <S.RentCountWrapper>

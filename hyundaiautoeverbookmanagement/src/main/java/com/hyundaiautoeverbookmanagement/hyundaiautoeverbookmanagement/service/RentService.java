@@ -1,6 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentAdminResponseDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.NoSuchUserException;
@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,22 +26,9 @@ public class RentService {
     private final CopyRepository copyRepository;
     private final BookRepository bookRepository;
 
-    public List<RentAdminResponseDTO> getAllRents() {
+    public List<RentResponseDTO> getAllRents() {
         List<Rent> rents = rentRepository.findAll();
-        List<RentAdminResponseDTO> rentAdminResponseDTOS = new ArrayList<>();
-        for (Rent rent: rents) {
-            RentAdminResponseDTO rentAdminResponseDTO = new RentAdminResponseDTO();
-            Book book = copyRepository.findBookByCopyId(rent.getCopy().getCopyId());
-            Long bookId = book.getId();
-            rentAdminResponseDTO.setId(rent.getId());
-            rentAdminResponseDTO.setUserEmail(rent.getUser().getEmail());
-            rentAdminResponseDTO.setRentStartDate(rent.getRentStartDate());
-            rentAdminResponseDTO.setRentEndDate(rent.getRentEndDate());
-            rentAdminResponseDTO.setRentReturnedDate(Optional.ofNullable(rent.getRentReturnedDate()));
-            rentAdminResponseDTO.setTitle(bookRepository.findTitleById(bookId));
-            rentAdminResponseDTOS.add(rentAdminResponseDTO);
-        }
-        return rentAdminResponseDTOS;
+        return getRentResponseDTOS(rents);
     }
 
     public String rent(RentRequestDTO form) {
@@ -81,5 +66,36 @@ public class RentService {
         book.setRentCount(book.getRentCount() + 1);
         bookRepository.save(book);
         return "Success";
+    }
+
+    public List<RentResponseDTO> getCurrentRents(String userEmail) {
+        Member member = memberRepository.findByEmail(userEmail).orElse(null);
+        List<Rent> rents = rentRepository.findByUserIdAndRentReturnedDateIsNull(member.getId()); // returned_date가 null이면 대출중
+        return getRentResponseDTOS(rents);
+    }
+
+    private List<RentResponseDTO> getRentResponseDTOS(List<Rent> rents) {
+        List<RentResponseDTO> rentResponseDTOS = new ArrayList<>();
+        for (Rent rent: rents) {
+            RentResponseDTO rentResponseDTO = new RentResponseDTO();
+            Book book = copyRepository.findBookByCopyId(rent.getCopy().getCopyId());
+            Long bookId = book.getId();
+            rentResponseDTO.setId(rent.getId());
+            rentResponseDTO.setUserEmail(rent.getUser().getEmail());
+            rentResponseDTO.setRentStartDate(rent.getRentStartDate());
+            rentResponseDTO.setRentEndDate(rent.getRentEndDate());
+            rentResponseDTO.setRentReturnedDate(Optional.ofNullable(rent.getRentReturnedDate()));
+            rentResponseDTO.setTitle(bookRepository.findTitleById(bookId));
+            rentResponseDTOS.add(rentResponseDTO);
+        }
+        return rentResponseDTOS;
+    }
+
+    public List<RentResponseDTO> getHistoryRents(String userEmail) {
+        Member member = memberRepository.findByEmail(userEmail).orElse(null);
+        List<Rent> rents = rentRepository.findByUserId(member.getId());
+
+
+        return getRentResponseDTOS(rents);
     }
 }

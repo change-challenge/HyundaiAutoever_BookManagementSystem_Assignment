@@ -64,10 +64,10 @@ export default function BasicTabs({ user }) {
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        <Rent />
+        <Rent user={user} />
       </TabPanel>
       <TabPanel value={value} index={1}>
-        <RentHistory />
+        <RentHistory user={user} />
       </TabPanel>
       <TabPanel value={value} index={2}>
         <WishBook user={user} />
