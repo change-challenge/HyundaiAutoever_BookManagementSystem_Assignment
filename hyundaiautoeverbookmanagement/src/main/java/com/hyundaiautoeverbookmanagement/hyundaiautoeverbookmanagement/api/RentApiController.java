@@ -46,6 +46,20 @@ public class RentApiController {
         }
     }
 
+    @PostMapping("/api/extend/{copyId}")
+    public ResponseEntity<String> extendBook(@RequestBody RentRequestDTO dto) {
+        try {
+            String result = rentService.extendBook(dto);
+            if ("Success".equals(result)) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/api/rent/current")
     public ResponseEntity<List<RentResponseDTO>> getCurrentRents(@RequestParam String userEmail) {
         List<RentResponseDTO> rent = rentService.getCurrentRents(userEmail);

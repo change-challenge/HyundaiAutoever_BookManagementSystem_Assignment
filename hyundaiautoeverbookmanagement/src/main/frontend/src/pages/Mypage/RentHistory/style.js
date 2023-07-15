@@ -35,10 +35,18 @@ const RentDetailWrapper = styled.div`
   margin-left: 15px;
 `
 
+const PaginationWrapper = styled.div`
+  display: flex;
+
+  justify-content: center;
+  width: 100%;
+`
+
 export {
   RentCountWrapper,
   RentDetailContainer,
   RentInfoWrapper,
   RentTitleWrapper,
   RentDetailWrapper,
+  PaginationWrapper,
 }
