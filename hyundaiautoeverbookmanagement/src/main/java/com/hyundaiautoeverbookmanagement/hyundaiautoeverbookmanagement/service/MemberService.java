@@ -14,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -25,22 +23,21 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RentRepository rentRepository;
 
-    private int calculateLateDays(Long userId) {
+    private int calculateLateDays(Long memberId) {
         // 해당 유저의 모든 대출 정보 가져오기
-        List<Rent> rents = rentRepository.findByUserIdAndRentReturnedDateIsNull(userId);
+        List<Rent> rents = rentRepository.findByMemberIdAndReturnedDateIsNull(memberId);
 
         int totalDays = 0;
         LocalDate currentDate = LocalDate.now();
 
         for(Rent rent : rents) {
-            long diff = ChronoUnit.DAYS.between(rent.getRentStartDate(), currentDate);
+            long diff = ChronoUnit.DAYS.between(rent.getStartDate(), currentDate);
             if(diff > 7) {
                 totalDays += (diff - 7);
             }
         }
         return totalDays;
     }
-
 
     public List<MemberAdminResponseDTO> getAllMembers() {
         List<Member> members = memberRepository.findAll();
@@ -51,17 +48,17 @@ public class MemberService {
             memberAdminResponseDTO.setId(member.getId());
             memberAdminResponseDTO.setEmail(member.getEmail());
             memberAdminResponseDTO.setName(member.getName());
-            memberAdminResponseDTO.setUserType(member.getUsertype());
-            memberAdminResponseDTO.setRegistDate(member.getRegist_date());
-            memberAdminResponseDTO.setRentCount(rentRepository.countByUserIdAndRentReturnedDateIsNull(member.getId()));
+            memberAdminResponseDTO.setMemberType(member.getMemberType());
+            memberAdminResponseDTO.setRegistDate(member.getRegistDate());
+            memberAdminResponseDTO.setRentCount(rentRepository.countByMemberIdAndReturnedDateIsNull(member.getId()));
             memberAdminResponseDTO.setLateDay(calculateLateDays(member.getId()));
             memberAdminResponseDTOS.add(memberAdminResponseDTO);
         }
         return memberAdminResponseDTOS;
     }
 
-    public MemberResponseDTO findMemberInfoById(Long userId) {
-        return memberRepository.findById(userId)
+    public MemberResponseDTO findMemberInfoById(Long memberId) {
+        return memberRepository.findById(memberId)
                 .map(MemberResponseDTO::of)
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
     }

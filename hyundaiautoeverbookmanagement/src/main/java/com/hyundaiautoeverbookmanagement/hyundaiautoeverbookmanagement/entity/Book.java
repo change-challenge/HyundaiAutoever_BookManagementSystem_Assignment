@@ -19,30 +19,33 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column
+    @Column(name = "TITLE")
     private String title;
 
-    @Column
+    @Column(name = "AUTHOR")
     private String author;
 
-    @Column
+    @Column(name = "PUBLISHER")
     private String publisher;
 
-    @Column
+    @Column(name = "CATEGORY")
     private String category;
 
-    @Column
+    @Column(name = "RENT_COUNT")
     private int rentCount;
 
-    @Column
+    @Column(name = "ISBN")
     private String isbn;
 
-    @Column
+    @Column(name = "COVER")
     private String cover;
 
-    @Column
+    @Column(name = "BIG_COVER")
+    private String bigCover;
+
+    @Column(name = "INFO")
     private String info;
 
-    @Column(name="pub_date")
+    @Column(name="PUB_DATE")
     private LocalDate pubDate;
 }

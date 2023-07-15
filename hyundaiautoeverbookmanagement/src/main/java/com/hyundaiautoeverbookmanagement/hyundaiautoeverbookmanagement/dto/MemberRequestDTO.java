@@ -20,7 +20,7 @@ public class MemberRequestDTO {
     private String name;
     private String email;
     private String password;
-    private UserType usertype;
+    private MemberType memberType;
     private Date registDate;
 
     public Member toUser(PasswordEncoder passwordEncoder) {
@@ -29,8 +29,9 @@ public class MemberRequestDTO {
         user.setEmail(this.email);
         user.setPassword(passwordEncoder.encode(password));
         user.setName(this.name);
-        user.setUsertype(UserType.USER);
-        user.setRegist_date(this.registDate);
+        user.setMemberType(MemberType.MEMBER);
+        user.setRegistDate(this.registDate);
+        user.setRentCount(0);
         return user;
     }
 

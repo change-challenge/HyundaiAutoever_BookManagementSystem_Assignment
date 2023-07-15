@@ -1,11 +1,9 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.UserType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity // DB가 해당 객체를 인식 가능!
 @Table(name = "WISH")
@@ -20,11 +18,11 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.AUTO) // 1, 2, 3, .... 자동 생성 어노테이션!
     private Long id;
 
-    @JoinColumn(name = "user_email", nullable = false)
-    private String userEmail;
+    @JoinColumn(name = "MEMBER_EMAIL", nullable = false)
+    private String memberEmail;
 
     @Column(name = "WISH_DATE", nullable = false)
-    private LocalDate wish_date;
+    private LocalDate wishDate;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false)

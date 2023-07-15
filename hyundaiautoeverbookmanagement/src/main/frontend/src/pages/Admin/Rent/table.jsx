@@ -56,23 +56,23 @@ export default function CustomizedTables({ rents }) {
                   : rent.title}
               </StyledTableCell>
 
-              <StyledTableCell>{rent.userEmail}</StyledTableCell>
+              <StyledTableCell>{rent.email}</StyledTableCell>
               <StyledTableCell>
-                {new Date(rent.rentStartDate).toLocaleDateString()}
+                {new Date(rent.startDate).toLocaleDateString()}
               </StyledTableCell>
               <StyledTableCell>
                 {' '}
-                {rent.rentReturnedDate ? rent.rentReturnedDate : '-'}
+                {rent.returnedDate ? rent.returnedDate : '-'}
               </StyledTableCell>
               <StyledTableCell>
                 {(() => {
-                  if (rent.rentReturnedDate) {
+                  if (rent.returnedDate) {
                     return '반납완료'
                   } else {
-                    let rentStartDate = new Date(rent.rentStartDate)
+                    let startDate = new Date(rent.startDate)
                     let today = new Date()
 
-                    let diffInMs = Math.abs(today - rentStartDate)
+                    let diffInMs = Math.abs(today - startDate)
 
                     let diffInDays = Math.floor(
                       diffInMs / (1000 * 60 * 60 * 24)
@@ -89,7 +89,7 @@ export default function CustomizedTables({ rents }) {
               </StyledTableCell>
 
               <StyledTableCell>
-                <Button variant="contained" disabled={!!rent.rentReturnedDate}>
+                <Button variant="contained" disabled={!!rent.returnedDate}>
                   반납하기
                 </Button>
               </StyledTableCell>

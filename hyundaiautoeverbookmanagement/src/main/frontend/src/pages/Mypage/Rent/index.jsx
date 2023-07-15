@@ -20,7 +20,7 @@ const MypageRent = ({ user }) => {
   const fetchRents = async () => {
     const response = await axios.get(`/api/rent/current`, {
       params: {
-        userEmail: user.email,
+        email: user.email,
       },
     })
     setRents(response.data)
@@ -55,7 +55,7 @@ const MypageRent = ({ user }) => {
     const response = await axios
       .post(`/api/extend/${copyId}`, {
         copyId: copyId,
-        userEmail: user.email,
+        email: user.email,
       })
       .then(response => {
         console.log('makeExtend: ', response.data)
@@ -90,7 +90,7 @@ const MypageRent = ({ user }) => {
     const response = await axios
       .post(`/api/return/${copyId}`, {
         copyId: copyId,
-        userEmail: user.email,
+        email: user.email,
       })
       .then(response => {
         console.log('makeReturn: ', response.data)
@@ -147,7 +147,7 @@ const MypageRent = ({ user }) => {
             </S.RentTitleWrapper>
             <S.RentDetailWrapper>
               <Text
-                text={`대출일 : ${rent.rentStartDate} | 반납예정일 : ${rent.rentEndDate}
+                text={`대출일 : ${rent.startDate} | 반납예정일 : ${rent.endDate}
 			  대출상태 : 대출중`}
                 fontSize={({ theme }) => theme.fontSize.sz16}
               />

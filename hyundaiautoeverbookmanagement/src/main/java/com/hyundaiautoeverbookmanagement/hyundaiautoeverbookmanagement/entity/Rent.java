@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 @Entity
 @Setter
@@ -18,22 +17,22 @@ public class Rent {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID", insertable = true, updatable = true)
-    private Member user;
+    @JoinColumn(name = "MEMBER_ID", insertable = true, updatable = true)
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "COPY_ID", insertable = true, updatable = true)
     private Copy copy;
 
-    @Column(name = "RENT_START_DATE", nullable = false)
-    private LocalDate rentStartDate;
+    @Column(name = "START_DATE", nullable = false)
+    private LocalDate startDate;
 
-    @Column(name = "RENT_END_DATE", nullable = false)
-    private LocalDate rentEndDate;
+    @Column(name = "END_DATE", nullable = false)
+    private LocalDate endDate;
 
-    @Column(name = "RENT_RETURNED_DATE")
-    private LocalDate rentReturnedDate;
+    @Column(name = "RETURNED_DATE")
+    private LocalDate returnedDate;
 
-    @Column(name = "EXTENDABLE")
-    private Boolean extendable;
+    @Column(name = "IS_EXTENDABLE", nullable = false)
+    private Boolean isExtendable;
 }

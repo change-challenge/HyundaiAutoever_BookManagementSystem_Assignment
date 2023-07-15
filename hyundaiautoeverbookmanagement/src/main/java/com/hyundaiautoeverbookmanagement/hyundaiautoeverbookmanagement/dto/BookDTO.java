@@ -19,13 +19,14 @@ public class BookDTO {
     private String category;
     private String isbn;
     private String cover;
+    private String bigCover;
     private String info;
-    private int rent_count;
+    private int rentCount;
     private LocalDate pubDate;
     private boolean bookStatus;
     private int bookCount;
 
     public Book toEntity() {
-        return new Book(null, title, author, publisher, category, rent_count, isbn, cover, info, pubDate);
+        return new Book(null, title, author, publisher, category, rentCount, isbn, cover, bigCover, info, pubDate);
     }
 }

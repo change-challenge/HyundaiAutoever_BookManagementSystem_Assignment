@@ -24,8 +24,8 @@ public class AdminApiController {
     private final WishService wishService;
     private final BookService bookService;
 
-    @GetMapping("/user")
-    public ResponseEntity<List<MemberAdminResponseDTO>> getUsers() {
+    @GetMapping("/member")
+    public ResponseEntity<List<MemberAdminResponseDTO>> getMembers() {
         List<MemberAdminResponseDTO> users = memberService.getAllMembers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }

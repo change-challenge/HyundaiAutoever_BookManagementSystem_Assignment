@@ -15,10 +15,10 @@ public class Copy {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "BOOK_ID")
     private Book book;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "book_status")
+    @Column(name = "BOOK_STATUS")
     private BookStatus bookStatus; // Enum type: AVAILABLE, UNAVAILABLE
 }

@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-@Table(name = "refresh_token")
+@Table(name = "REFRESH_TOKEN")
 @Entity
 public class RefreshToken {
 
     @Id
-    @Column(name = "rt_key")
+    @Column(name = "RT_KEY")
     private String key;
 
-    @Column(name = "rt_value")
+    @Column(name = "RT_VALUE")
     private String value;
 
     @Builder

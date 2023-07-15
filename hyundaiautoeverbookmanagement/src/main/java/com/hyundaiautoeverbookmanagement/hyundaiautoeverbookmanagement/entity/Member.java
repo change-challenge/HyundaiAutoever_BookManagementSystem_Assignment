@@ -1,12 +1,12 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.UserType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.Date;
 
 @Entity
-@Table(name = "USERS")
+@Table(name = "MEMBER")
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
@@ -21,16 +21,19 @@ public class Member {
     @Column(unique = true)
     private String email;
 
-    @Column
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Column
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column
+    @Column(name = "MEMBER_TYPE", nullable = false)
     @Enumerated(EnumType.STRING)
-    private UserType usertype;
+    private MemberType memberType;
 
     @Column(name = "REGIST_DATE", nullable = false)
-    private Date regist_date;
+    private Date registDate;
+
+    @Column(name = "RENT_COUNT", nullable = false)
+    private int RentCount;
 }

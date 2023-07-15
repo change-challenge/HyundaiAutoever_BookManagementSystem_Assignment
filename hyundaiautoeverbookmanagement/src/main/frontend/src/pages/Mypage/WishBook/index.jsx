@@ -16,7 +16,7 @@ const MypageWishBook = ({ user }) => {
   const fetchwishBook = async () => {
     const response = await axios.get(`/api/wishbook/read`, {
       params: {
-        userEmail: user.email,
+        email: user.email,
       },
     })
     setWishBooks(response.data)

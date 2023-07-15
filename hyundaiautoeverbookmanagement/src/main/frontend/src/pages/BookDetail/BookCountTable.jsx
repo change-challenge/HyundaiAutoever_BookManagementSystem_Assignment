@@ -74,7 +74,7 @@ const BookCountTable = ({ bookId }) => {
     const response = await axios
       .post(`/api/rent/${copyId}`, {
         copyId: copyId,
-        userEmail: user.email,
+        email: user.email,
       })
       .then(response => {
         console.log('makeRent: ', response.data)
@@ -132,7 +132,7 @@ const BookCountTable = ({ bookId }) => {
             <TableRow key={index}>
               <TableCell>{index + 1}</TableCell>
               <TableCell style={{ fontWeight: 'bold' }}>
-                {item.rentEndDate === null ? (
+                {item.endDate === null ? (
                   '대출가능'
                 ) : (
                   <div>
@@ -144,10 +144,10 @@ const BookCountTable = ({ bookId }) => {
                 )}
               </TableCell>
               <TableCell>
-                {item.rentEndDate === null ? '-' : `${item.rentEndDate}`}
+                {item.endDate === null ? '-' : `${item.endDate}`}
               </TableCell>
               <TableCell>
-                {item.rentEndDate === null ? (
+                {item.endDate === null ? (
                   <Button
                     variant="contained"
                     onClick={() => handleRentClick(item.copyId)}

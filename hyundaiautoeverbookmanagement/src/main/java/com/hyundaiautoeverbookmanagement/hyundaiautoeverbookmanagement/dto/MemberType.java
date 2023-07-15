@@ -1,6 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
-public enum UserType {
-    USER,
+public enum MemberType {
+    MEMBER,
     ADMIN
 }
