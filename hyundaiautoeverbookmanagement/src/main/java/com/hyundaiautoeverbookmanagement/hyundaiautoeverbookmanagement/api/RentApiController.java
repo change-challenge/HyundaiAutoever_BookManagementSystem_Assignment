@@ -21,7 +21,16 @@ public class RentApiController {
     private final RentService rentService;
     @PostMapping("/{copyId}")
     public ResponseEntity<String> rent(@RequestBody RentRequestDTO dto) {
-        return new ResponseEntity<String>(rentService.rent(dto), HttpStatus.OK);
+        try {
+            String result = rentService.rent(dto);
+            if ("Success".equals(result)) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/current")

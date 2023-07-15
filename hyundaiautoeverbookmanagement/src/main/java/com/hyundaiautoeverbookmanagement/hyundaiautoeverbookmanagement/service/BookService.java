@@ -81,9 +81,9 @@ public class BookService {
         for (Copy copy : copies) {
             // 사본의 상태가 UNAVAILABLE인 경우에만 처리
             CopyDetailDTO dto = new CopyDetailDTO();
-            dto.setCopyId(copy.getCopyId());
+            dto.setCopyId(copy.getId());
             if (copy.getBookStatus().equals(BookStatus.UNAVAILABLE)) {
-                Rent rent = rentRepository.findFirstByCopyIdOrderByRentEndDateDesc(copy.getCopyId());
+                Rent rent = rentRepository.findFirstByCopyIdOrderByRentEndDateDesc(copy.getId());
                 if (rent != null) {
                     dto.setRentEndDate(Optional.ofNullable(rent.getRentEndDate()));
                 } else {

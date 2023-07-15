@@ -12,7 +12,7 @@ public class Copy {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long copyId;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "book_id")

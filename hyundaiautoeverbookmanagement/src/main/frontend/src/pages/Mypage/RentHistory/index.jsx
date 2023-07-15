@@ -42,7 +42,7 @@ const MypageRentHistory = ({ user }) => {
             <S.RentDetailWrapper>
               {rent.rentReturnedDate === null ? (
                 <Text
-                  text={`대출일 : ${rent.rentStartDate} | 반납예정일 : ${rent.rentEndDate}
+                  text={`대출일 : ${rent.rentStartDate} | 반납일 : -
 			대출상태 : 대출중`}
                   fontSize={({ theme }) => theme.fontSize.sz16}
                 />

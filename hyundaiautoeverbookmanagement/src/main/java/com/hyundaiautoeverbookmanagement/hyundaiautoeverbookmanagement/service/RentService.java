@@ -32,15 +32,19 @@ public class RentService {
     }
 
     public String rent(RentRequestDTO form) {
-
-
         log.info("form.getCopyId() : {} ", form.getCopyId());
-
         // 1. 유저인 지 체크
         Member member =  memberRepository.findByEmail(form.getUserEmail())
                 .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getUserEmail()));
 
-        log.info("member.getId() : {} ", member.getId());
+        // 2. 대출 중인데 또 빌리려고 할 때 체크
+        Book book = copyRepository.findBookByCopyId(form.getCopyId());
+        log.info("책 제목? {}", book.getTitle());
+
+        Optional<Rent> existingRent = rentRepository.findByUserIdAndCopy_Book_TitleAndRentReturnedDateIsNull(member.getId(), book.getTitle());
+        if (existingRent.isPresent()) {
+            return "이미 도서를 빌렸습니다. ";
+        }
         // 2. Copy의 Status를 UNAVALIABLE로 바꾸기
         Copy copy = copyRepository.findById(form.getCopyId())
                 .orElseThrow(() -> new RuntimeException("No such copy"));
@@ -48,8 +52,6 @@ public class RentService {
         log.info("copy : {} ", copy);
         log.info("copy.getBook().getId() : {} ", copy.getBook().getId());
         copyRepository.save(copy);
-
-
         // 3. Rent를 save하기
         Rent rent = new Rent();
         rent.setUser(member);
@@ -61,8 +63,6 @@ public class RentService {
         log.info("rent.getId() : {} ", rent.getId());
 
         // 4. Book의 rent_count를 하나 올리기
-        Book book = bookRepository.findById(copy.getBook().getId())
-                .orElseThrow(() -> new RuntimeException("No such book "));
         book.setRentCount(book.getRentCount() + 1);
         bookRepository.save(book);
         return "Success";
@@ -78,7 +78,7 @@ public class RentService {
         List<RentResponseDTO> rentResponseDTOS = new ArrayList<>();
         for (Rent rent: rents) {
             RentResponseDTO rentResponseDTO = new RentResponseDTO();
-            Book book = copyRepository.findBookByCopyId(rent.getCopy().getCopyId());
+            Book book = copyRepository.findBookByCopyId(rent.getCopy().getId());
             Long bookId = book.getId();
             rentResponseDTO.setId(rent.getId());
             rentResponseDTO.setUserEmail(rent.getUser().getEmail());
