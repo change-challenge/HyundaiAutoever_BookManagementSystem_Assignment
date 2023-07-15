@@ -41,7 +41,7 @@ function a11yProps(index) {
   }
 }
 
-export default function BasicTabs() {
+export default function BasicTabs({ user }) {
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event, newValue) => {
@@ -70,7 +70,7 @@ export default function BasicTabs() {
         <RentHistory />
       </TabPanel>
       <TabPanel value={value} index={2}>
-        <WishBook />
+        <WishBook user={user} />
       </TabPanel>
     </Box>
   )
