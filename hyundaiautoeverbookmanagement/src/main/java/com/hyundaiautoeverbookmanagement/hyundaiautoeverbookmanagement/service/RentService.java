@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -56,8 +57,8 @@ public class RentService {
         Rent rent = new Rent();
         rent.setUser(member);
         rent.setCopy(copy);
-        rent.setRentStartDate(form.getRentDate());
-        rent.setRentEndDate(form.getRentDate().plusDays(7));
+        rent.setRentStartDate(LocalDate.now());
+        rent.setRentEndDate(LocalDate.now().plusDays(7));
 
         rentRepository.save(rent);
         log.info("rent.getId() : {} ", rent.getId());

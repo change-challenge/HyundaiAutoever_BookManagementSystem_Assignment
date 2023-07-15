@@ -12,8 +12,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class RentRequestDTO {
 
-    private LocalDate rentDate;
     private String userEmail;
     private Long copyId;
-
 }
