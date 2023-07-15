@@ -33,4 +33,7 @@ public class Rent {
 
     @Column(name = "RENT_RETURNED_DATE")
     private LocalDate rentReturnedDate;
+
+    @Column(name = "EXTENDABLE")
+    private Boolean extendable;
 }
