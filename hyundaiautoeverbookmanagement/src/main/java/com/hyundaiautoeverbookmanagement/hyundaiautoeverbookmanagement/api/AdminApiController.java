@@ -31,8 +31,8 @@ public class AdminApiController {
     }
 
     @GetMapping("/rent")
-    public ResponseEntity<List<RentAdminResponseDTO>> getRents() {
-        List<RentAdminResponseDTO> rent = rentService.getAllRents();
+    public ResponseEntity<List<RentResponseDTO>> getRents() {
+        List<RentResponseDTO> rent = rentService.getAllRents();
         log.info("!!rent!! " + rent);
         return new ResponseEntity<>(rent, HttpStatus.OK);
     }

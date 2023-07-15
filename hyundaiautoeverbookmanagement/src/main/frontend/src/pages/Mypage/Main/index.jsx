@@ -46,7 +46,7 @@ const Mypage = () => {
           />
         </S.MypageGreetingWrapper>
         <S.MypageTabsWrapper>
-          <BasicTabs />
+          <BasicTabs user={user} />
         </S.MypageTabsWrapper>
       </S.InnerWrapper>
     </S.MypageContainer>

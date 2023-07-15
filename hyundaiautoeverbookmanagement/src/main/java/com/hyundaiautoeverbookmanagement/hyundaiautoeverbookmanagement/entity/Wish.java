@@ -21,7 +21,7 @@ public class Wish {
     private Long id;
 
     @JoinColumn(name = "user_email", nullable = false)
-    private String user_email;
+    private String userEmail;
 
     @Column(name = "WISH_DATE", nullable = false)
     private LocalDate wish_date;

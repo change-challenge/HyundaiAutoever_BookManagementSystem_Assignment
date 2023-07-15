@@ -7,7 +7,6 @@ import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.Optional;
 
 @Getter
@@ -16,7 +15,7 @@ import java.util.Optional;
 @NoArgsConstructor
 @Slf4j
 @ToString
-public class RentAdminResponseDTO {
+public class RentResponseDTO {
 
     private Long id;
     private String title;
@@ -33,10 +32,6 @@ public class RentAdminResponseDTO {
         rent.setRentReturnedDate(this.rentReturnedDate.orElse(null));
         rent.setUser(user);
         rent.setCopy(copy);
-
-        log.info("user!!!!!! ", user);
-        log.info("copy!!!!!! ", copy);
-
         return rent;
     }
 }

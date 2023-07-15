@@ -24,6 +24,8 @@ const RentInfoWrapper = styled.div`
 `
 
 const RentTitleWrapper = styled.div`
+  max-width: 800px;
+  max-height: 30px;
   margin-top: 15px;
   margin-left: 15px;
 `

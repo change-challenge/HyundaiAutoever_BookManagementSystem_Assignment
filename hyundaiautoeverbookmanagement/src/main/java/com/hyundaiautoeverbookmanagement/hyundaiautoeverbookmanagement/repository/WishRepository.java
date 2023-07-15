@@ -9,5 +9,7 @@ import java.util.List;
 @Repository
 public interface WishRepository extends JpaRepository<Wish, Long> {
     List<Wish> findAll();
+    List<Wish> findByUserEmail(String userEmail);
+
     Wish save(Wish wish);
 }

@@ -1,9 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { fetchUserInfo } from '../../context/UserContext'
 import axios from 'axios'
 import Button from '@mui/material/Button'
+import { SnackbarContext } from '../../context/SnackbarContext'
 
 const TableWrapper = styled.div`
   border: 1px solid #ccc;
@@ -46,13 +47,18 @@ const TableCell = styled.td`
 const BookCountTable = ({ bookId }) => {
   const [copyDetail, setCopyDetail] = useState([])
   const [user, setUser] = useState(null)
+  const { setSnackbar } = useContext(SnackbarContext)
 
   const handleRentClick = copyId => {
     if (!user) {
       alert('로그인이 필요한 기능입니다!')
     }
     console.log('copyId : ', copyId)
-    makeRent(copyId)
+
+    const confirm = window.confirm('도서를 대여하시겠습니까?')
+    if (confirm) {
+      makeRent(copyId)
+    }
   }
 
   useEffect(() => {
@@ -68,12 +74,40 @@ const BookCountTable = ({ bookId }) => {
     const currentDate = new Date()
     const isoDate = currentDate.toISOString()
 
-    const response = await axios.post(`/api/rent/${copyId}`, {
-      copyId: copyId,
-      userEmail: user.email,
-      rentDate: isoDate,
-    })
-    console.log('makeRent: ', response.data)
+    const response = await axios
+      .post(`/api/rent/${copyId}`, {
+        copyId: copyId,
+        userEmail: user.email,
+        rentDate: isoDate,
+      })
+      .then(response => {
+        console.log('makeRent: ', response.data)
+
+        window.location.reload()
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: '도서 대여 성공!',
+        })
+      })
+      .catch(error => {
+        if (error.response) {
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: '이미 대여한 도서입니다.',
+          })
+          if (error.response.status === 400) {
+            console.error('Client error: ', error.response.data)
+          } else {
+            console.error('Server error: ', error.response.data)
+          }
+        } else if (error.request) {
+          console.error('No response: ', error.request)
+        } else {
+          console.error('Error: ', error.message)
+        }
+      })
   }
 
   const fetchCopys = async () => {
