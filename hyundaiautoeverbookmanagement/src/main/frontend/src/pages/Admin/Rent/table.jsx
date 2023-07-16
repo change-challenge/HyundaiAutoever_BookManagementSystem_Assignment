@@ -30,6 +30,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ rents }) {
+  const sortRents = (a, b) => {
+    // 먼저 returnedDate의 유무에 따라 정렬
+    if (a.returnedDate && b.returnedDate) {
+      return new Date(b.startDate) - new Date(a.startDate)
+    }
+    if (!a.returnedDate && b.returnedDate) {
+      return -1
+    }
+    if (a.returnedDate && !b.returnedDate) {
+      return 1
+    }
+    // 둘 다 returnedDate가 없는 경우 startDate를 기준으로 정렬
+    return new Date(b.startDate) - new Date(a.startDate)
+  }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -45,7 +59,7 @@ export default function CustomizedTables({ rents }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rents.map(rent => (
+          {rents.sort(sortRents).map(rent => (
             <StyledTableRow key={rent.name}>
               <StyledTableCell component="th" scope="rent">
                 {rent.id}
@@ -56,7 +70,7 @@ export default function CustomizedTables({ rents }) {
                   : rent.title}
               </StyledTableCell>
 
-              <StyledTableCell>{rent.email}</StyledTableCell>
+              <StyledTableCell>{rent.memberEmail}</StyledTableCell>
               <StyledTableCell>
                 {new Date(rent.startDate).toLocaleDateString()}
               </StyledTableCell>

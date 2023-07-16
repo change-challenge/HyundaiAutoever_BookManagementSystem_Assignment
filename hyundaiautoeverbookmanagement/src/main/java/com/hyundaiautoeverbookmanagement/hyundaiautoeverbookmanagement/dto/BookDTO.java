@@ -19,7 +19,6 @@ public class BookDTO {
     private String category;
     private String isbn;
     private String cover;
-    private String bigCover;
     private String info;
     private int rentCount;
     private LocalDate pubDate;
@@ -27,6 +26,6 @@ public class BookDTO {
     private int bookCount;
 
     public Book toEntity() {
-        return new Book(null, title, author, publisher, category, rentCount, isbn, cover, bigCover, info, pubDate);
+        return new Book(null, title, author, publisher, category, rentCount, isbn, cover, info, pubDate);
     }
 }

@@ -40,8 +40,6 @@ public class Book {
     @Column(name = "COVER")
     private String cover;
 
-    @Column(name = "BIG_COVER")
-    private String bigCover;
 
     @Column(name = "INFO")
     private String info;
