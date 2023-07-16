@@ -30,6 +30,7 @@ const MypageRent = ({ user }) => {
   const handleReturnClick = copyId => {
     if (!user) {
       alert('로그인이 필요한 기능입니다!')
+      return
     }
     console.log('copyId : ', copyId)
 
@@ -42,8 +43,8 @@ const MypageRent = ({ user }) => {
   const handleExtendClick = copyId => {
     if (!user) {
       alert('로그인이 필요한 기능입니다!')
+      return
     }
-    console.log('copyId : ', copyId)
 
     const confirm = window.confirm('도서를 연장하시겠습니까?')
     if (confirm) {

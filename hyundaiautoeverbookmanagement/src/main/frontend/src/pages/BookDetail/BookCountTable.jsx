@@ -52,6 +52,7 @@ const BookCountTable = ({ bookId }) => {
   const handleRentClick = copyId => {
     if (!user) {
       alert('로그인이 필요한 기능입니다!')
+      return
     }
     console.log('copyId : ', copyId)
 
@@ -87,13 +88,21 @@ const BookCountTable = ({ bookId }) => {
       })
       .catch(error => {
         if (error.response) {
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: '이미 대여한 도서입니다.',
-          })
           if (error.response.status === 400) {
-            console.error('Client error: ', error.response.data)
+            if (error.response.data == '세권초과') {
+              setSnackbar({
+                open: true,
+                severity: 'error',
+                message: '도서는 3권까지 빌릴 수 있습니다.',
+              })
+            }
+            if (error.response.data == '빌린도서') {
+              setSnackbar({
+                open: true,
+                severity: 'error',
+                message: '이미 대여한 도서입니다.',
+              })
+            }
           } else {
             console.error('Server error: ', error.response.data)
           }
