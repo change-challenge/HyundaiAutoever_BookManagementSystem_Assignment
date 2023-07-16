@@ -147,7 +147,7 @@ const MypageRent = ({ user }) => {
             </S.RentTitleWrapper>
             <S.RentDetailWrapper>
               <Text
-                text={`대출일 : ${rent.rentStartDate} | 반납예정일 : ${rent.rentEndDate}
+                text={`대출일 : ${rent.startDate} | 반납예정일 : ${rent.endDate}
 			  대출상태 : 대출중`}
                 fontSize={({ theme }) => theme.fontSize.sz16}
               />

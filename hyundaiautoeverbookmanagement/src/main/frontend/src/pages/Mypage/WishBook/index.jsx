@@ -62,7 +62,7 @@ const MypageWishBook = ({ user }) => {
             </S.RentTitleWrapper>
             <S.RentDetailWrapper>
               <Text
-                text={`신청일 : ${wishBook.wish_date}`}
+                text={`신청일 : ${wishBook.wishDate}`}
                 fontSize={({ theme }) => theme.fontSize.sz16}
               />
               <Text
