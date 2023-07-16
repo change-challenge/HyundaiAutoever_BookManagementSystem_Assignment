@@ -31,6 +31,17 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ wishBooks }) {
+  const sortWishBooks = (a, b) => {
+    // 먼저 status에 따라 정렬
+    if (a.status === 'PENDING' && b.status !== 'PENDING') {
+      return -1
+    }
+    if (a.status !== 'PENDING' && b.status === 'PENDING') {
+      return 1
+    }
+    // status가 같은 경우 wishDate를 기준으로 정렬
+    return new Date(b.wishDate) - new Date(a.wishDate)
+  }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -38,6 +49,7 @@ export default function CustomizedTables({ wishBooks }) {
           <TableRow>
             <StyledTableCell>번호</StyledTableCell>
             <StyledTableCell>신청자</StyledTableCell>
+            <StyledTableCell>신청일자</StyledTableCell>
             <StyledTableCell>책제목</StyledTableCell>
             <StyledTableCell>저자</StyledTableCell>
             <StyledTableCell>발행일자</StyledTableCell>
@@ -47,12 +59,13 @@ export default function CustomizedTables({ wishBooks }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {wishBooks.map(wishbook => (
+          {wishBooks.sort(sortWishBooks).map(wishbook => (
             <StyledTableRow key={wishbook.name}>
               <StyledTableCell component="th" scope="wishbook">
                 {wishbook.id}
               </StyledTableCell>
-              <StyledTableCell>{wishbook.user_email}</StyledTableCell>
+              <StyledTableCell>{wishbook.email}</StyledTableCell>
+              <StyledTableCell>{wishbook.wishDate}</StyledTableCell>
               <StyledTableCell>{wishbook.book.title}</StyledTableCell>
               <StyledTableCell>{wishbook.book.author}</StyledTableCell>
               <StyledTableCell>{wishbook.book.pubDate}</StyledTableCell>

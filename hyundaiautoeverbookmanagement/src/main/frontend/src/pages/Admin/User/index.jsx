@@ -15,11 +15,9 @@ const AdminUser = () => {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.get(`/api/admin/user`)
+      const response = await axios.get(`/api/admin/member`)
       setUsers(response.data)
       setLoading(false)
-      //  console.log('hi 1 : ', response.data)
-      //  console.log('hi 2  : ', users)
     } catch (error) {
       setError(error)
       setLoading(false)

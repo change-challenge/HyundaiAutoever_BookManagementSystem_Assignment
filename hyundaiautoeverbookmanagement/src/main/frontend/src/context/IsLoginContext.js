@@ -8,18 +8,6 @@ import React, {
 
 const initialToken = localStorage.getItem('token') || ''
 
-//export function TokenProvider({ children }) {
-//  const [token, setToken] = useState(initialToken)
-
-//  useEffect(() => {
-//    localStorage.setItem('token', token) // 토큰 값이 변경될 때마다 로컬 스토리지에 저장
-//  }, [token])
-
-//  const value = useMemo(() => ({ token, setToken: updateToken }), [token])
-
-//  return <TokenContext.Provider value={value}>{children}</TokenContext.Provider>
-//}
-
 export function useTokenState() {
   const context = useContext(IsLoginContext)
   if (!context) {

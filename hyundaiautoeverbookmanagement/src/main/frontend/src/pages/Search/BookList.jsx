@@ -10,7 +10,6 @@ const BookListContentContainer = styled.div`
   padding: 15px 0;
 `
 const BookListImageWrapper = styled.div`
-  border: 5px;
   width: 120px;
   height: 160px;
 `

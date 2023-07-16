@@ -14,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -83,24 +82,15 @@ public class BookService {
             CopyDetailDTO dto = new CopyDetailDTO();
             dto.setCopyId(copy.getId());
             if (copy.getBookStatus().equals(BookStatus.UNAVAILABLE)) {
-                Rent rent = rentRepository.findFirstByCopyIdOrderByRentEndDateDesc(copy.getId());
+                Rent rent = rentRepository.findFirstByCopyIdAndReturnedDateIsNullOrderByEndDateDesc(copy.getId());
                 if (rent != null) {
-                    dto.setRentEndDate(Optional.ofNullable(rent.getRentEndDate()));
+                    dto.setEndDate(Optional.ofNullable(rent.getEndDate()));
                 } else {
-                    dto.setRentEndDate(Optional.empty());
+                    dto.setEndDate(Optional.empty());
                 }
             }
             bookDetails.add(dto);
         }
-
         return bookDetails;
     }
-
-
-
-//    public BookDTO findBookById(Long bookId) {
-//        return bookRepository.findById(bookId)
-//                .map(BookDTO::of)
-//                .orElseThrow(() -> new RuntimeException("해당 책 정보가 없습니다."));
-//    }
 }

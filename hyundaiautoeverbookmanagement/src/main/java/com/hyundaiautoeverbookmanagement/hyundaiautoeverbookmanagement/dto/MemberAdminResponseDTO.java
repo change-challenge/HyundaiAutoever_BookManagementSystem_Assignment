@@ -19,15 +19,15 @@ public class MemberAdminResponseDTO {
     private int rentCount;
     private int lateDay;
     private Date registDate;
-    private UserType userType;
+    private MemberType memberType;
 
 
     public Member toEntity() {
-        Member user = new Member();
-        user.setId(null);
-        user.setEmail(this.email);
-        user.setName(this.name);
-        user.setUsertype(UserType.USER);
-        return user;
+        Member member = new Member();
+        member.setId(null);
+        member.setEmail(this.email);
+        member.setName(this.name);
+        member.setMemberType(MemberType.MEMBER);
+        return member;
     }
 }

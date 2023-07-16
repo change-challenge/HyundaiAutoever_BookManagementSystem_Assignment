@@ -16,7 +16,7 @@ const MypageWishBook = ({ user }) => {
   const fetchwishBook = async () => {
     const response = await axios.get(`/api/wishbook/read`, {
       params: {
-        userEmail: user.email,
+        email: user.email,
       },
     })
     setWishBooks(response.data)
@@ -62,7 +62,7 @@ const MypageWishBook = ({ user }) => {
             </S.RentTitleWrapper>
             <S.RentDetailWrapper>
               <Text
-                text={`신청일 : ${wishBook.wish_date}`}
+                text={`신청일 : ${wishBook.wishDate}`}
                 fontSize={({ theme }) => theme.fontSize.sz16}
               />
               <Text

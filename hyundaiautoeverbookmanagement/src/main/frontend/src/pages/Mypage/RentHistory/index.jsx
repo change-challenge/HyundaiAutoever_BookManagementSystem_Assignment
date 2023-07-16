@@ -16,21 +16,21 @@ const MypageRentHistory = ({ user }) => {
   const fetchRents = async () => {
     const response = await axios.get(`/api/rent/history`, {
       params: {
-        userEmail: user.email,
+        email: user.email,
       },
     })
 
     let sortedRents = response.data.sort((a, b) => {
       // 먼저, rentReturnedDate가 null인 요소를 뒤로 보냄
-      if (a.rentReturnedDate === null && b.rentReturnedDate !== null) {
+      if (a.returnedDate === null && b.returnedDate !== null) {
         return -1
       }
-      if (a.rentReturnedDate !== null && b.rentReturnedDate === null) {
+      if (a.returnedDate !== null && b.returnedDate === null) {
         return 1
       }
 
-      // 그 후, rentStartDate를 기준으로 최신 순서대로 정렬
-      return new Date(b.rentStartDate) - new Date(a.rentStartDate)
+      // 그 후, startDate를 기준으로 최신 순서대로 정렬
+      return new Date(b.startDate를) - new Date(a.startDate를)
     })
 
     setRents(sortedRents)
@@ -62,15 +62,15 @@ const MypageRentHistory = ({ user }) => {
               />
             </S.RentTitleWrapper>
             <S.RentDetailWrapper>
-              {rent.rentReturnedDate === null ? (
+              {rent.returnedDate === null ? (
                 <Text
-                  text={`대출일 : ${rent.rentStartDate} | 반납일 : -
+                  text={`대출일 : ${rent.startDate} | 반납일 : -
 			대출상태 : 대출중`}
                   fontSize={({ theme }) => theme.fontSize.sz16}
                 />
               ) : (
                 <Text
-                  text={`대출일 : ${rent.rentStartDate} | 반납일 : ${rent.rentReturnedDate}
+                  text={`대출일 : ${rent.startDate} | 반납일 : ${rent.returnedDate}
 			  대출상태 : 반납됨`}
                   fontSize={({ theme }) => theme.fontSize.sz16}
                 />

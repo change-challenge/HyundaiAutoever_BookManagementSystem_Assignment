@@ -20,21 +20,21 @@ public class RentResponseDTO {
     private Long id;
     private Long copyId;
     private String title;
-    private String userEmail;
-    private LocalDate rentStartDate;
-    private LocalDate rentEndDate;
-    private Optional<LocalDate> rentReturnedDate;
-    private boolean extendable;
+    private String memberEmail;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private Optional<LocalDate> returnedDate;
+    private boolean isExtendable;
 
-    public Rent toEntity(Member user, Copy copy) {
+    public Rent toEntity(Member member, Copy copy) {
         Rent rent = new Rent();
         rent.setId(this.id);
-        rent.setRentStartDate(this.rentStartDate);
-        rent.setRentEndDate(this.rentEndDate);
-        rent.setRentReturnedDate(this.rentReturnedDate.orElse(null));
-        rent.setUser(user);
+        rent.setStartDate(this.startDate);
+        rent.setEndDate(this.endDate);
+        rent.setReturnedDate(this.returnedDate.orElse(null));
+        rent.setMember(member);
         rent.setCopy(copy);
-        rent.setExtendable(this.extendable);
+        rent.setIsExtendable(this.isExtendable);
         return rent;
     }
 }

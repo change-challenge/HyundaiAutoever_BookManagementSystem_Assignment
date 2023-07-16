@@ -21,14 +21,14 @@ export async function fetchUserInfo() {
           Authorization: `Bearer ${token}`,
         },
       }
-      const response = await axios.get('/api/user/me', config)
+      const response = await axios.get('/api/member/me', config)
       const userInfo = response.data
       console.log('Token! GET!')
       return userInfo
     }
     return null
   } catch (error) {
-    console.error('Failed to fetch user info', error)
+    console.error('Failed to fetch member info', error)
     localStorage.clear()
     return null
   }

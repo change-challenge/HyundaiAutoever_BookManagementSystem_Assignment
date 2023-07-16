@@ -12,5 +12,5 @@ import java.util.Optional;
 @Setter
 public class CopyDetailDTO {
     private Long copyId;
-    private Optional<LocalDate> rentEndDate;
+    private Optional<LocalDate> endDate;
 }

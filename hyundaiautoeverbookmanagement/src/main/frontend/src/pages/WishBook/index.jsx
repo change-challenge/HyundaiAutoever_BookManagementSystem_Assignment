@@ -23,9 +23,8 @@ export default function WishBook() {
   const createWish = (book, user) => {
     return {
       id: null,
-      wish_date: new Date().toISOString(),
       status: 'Pending',
-      user_email: user.email,
+      email: user.email,
       book: {
         title: book.title,
         author: book.author,
