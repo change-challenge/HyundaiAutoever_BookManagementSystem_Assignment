@@ -20,6 +20,6 @@ public class WishRequestDTO {
     private BookDTO book;
 
     public Wish toEntity() {
-        return new Wish(null, email, wishDate, WishType.PENDING, book.getTitle(), book.getAuthor(), book.getPublisher(), book.getIsbn(), book.getCategory(), book.getInfo(), book.getCover(), book.getPubDate(), book.getRentCount());
+        return new Wish(null, email, LocalDate.now(), WishType.PENDING, book.getTitle(), book.getAuthor(), book.getPublisher(), book.getIsbn(), book.getCategory(), book.getInfo(), book.getCover(), book.getPubDate(), book.getRentCount());
     }
 }

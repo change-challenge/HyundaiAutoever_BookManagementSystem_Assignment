@@ -18,7 +18,7 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.AUTO) // 1, 2, 3, .... 자동 생성 어노테이션!
     private Long id;
 
-    @JoinColumn(name = "MEMBER_EMAIL", nullable = false)
+    @JoinColumn(name = "EMAIL", nullable = false)
     private String memberEmail;
 
     @Column(name = "WISH_DATE", nullable = false)
