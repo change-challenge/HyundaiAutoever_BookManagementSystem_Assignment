@@ -2,10 +2,7 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.CopyDetailDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.BookStatus;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Copy;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.RentRepository;
@@ -49,7 +46,11 @@ public class BookService {
         bookDto.setTitle(book.getTitle());
         bookDto.setAuthor(book.getAuthor());
         bookDto.setPublisher(book.getPublisher());
-        bookDto.setCategory(book.getCategory());
+        try {
+            bookDto.setCategory(book.getCategory().getDescription());
+        } catch (IllegalArgumentException e) {
+            log.info("book Category 문제");
+        }
         bookDto.setIsbn(book.getIsbn());
         bookDto.setInfo(book.getInfo());
         bookDto.setCover(book.getCover());

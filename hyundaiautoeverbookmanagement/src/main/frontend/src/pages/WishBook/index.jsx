@@ -90,17 +90,23 @@ export default function WishBook() {
 
       console.log('dataObject : ', dataObject)
       // 배열로 변환된 data.item을 이용
-      const books = dataObject.item.map(book => ({
-        title: book.title,
-        author: book.author,
-        publisher: book.publisher,
-        pubDate: book.pubDate,
-        isbn: book.isbn,
-        info: book.description,
-        cover: book.cover,
-        category: book.categoryName,
-      }))
+      const books = dataObject.item.map(book => {
+        const categoryParts = book.categoryName.split('>')
+        const category =
+          categoryParts.length > 1 ? categoryParts[1].trim() : book.categoryName
 
+        return {
+          title: book.title,
+          author: book.author,
+          publisher: book.publisher,
+          pubDate: book.pubDate,
+          isbn: book.isbn,
+          info: book.description,
+          cover: book.cover,
+          category: category,
+        }
+      })
+      console.log('books ', books)
       return books
     } catch (error) {
       console.error(error)

@@ -39,7 +39,11 @@ public class WishService {
             bookDTO.setBookCount(0);
             bookDTO.setCover(wish.getCover());
             bookDTO.setBookStatus(false);
-            bookDTO.setCategory(wish.getCategory());
+            try {
+                bookDTO.setCategory(wish.getCategory().getDescription());
+            } catch (IllegalArgumentException e) {
+                log.info("wish Category 문제");
+            }
             bookDTO.setPubDate(wish.getPubDate());
             bookDTO.setInfo(wish.getInfo());
             bookDTO.setRentCount(0);
@@ -68,7 +72,11 @@ public class WishService {
             bookDTO.setBookCount(0);
             bookDTO.setCover(wish.getCover());
             bookDTO.setBookStatus(false);
-            bookDTO.setCategory(wish.getCategory());
+            try {
+                bookDTO.setCategory(wish.getCategory().getDescription());
+            } catch (IllegalArgumentException e) {
+                log.info("wish Category 문제");
+            }
             bookDTO.setPubDate(wish.getPubDate());
             bookDTO.setInfo(wish.getInfo());
             bookDTO.setRentCount(0);
