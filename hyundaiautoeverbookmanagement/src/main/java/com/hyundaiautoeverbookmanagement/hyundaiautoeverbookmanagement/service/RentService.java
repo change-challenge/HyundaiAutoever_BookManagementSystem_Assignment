@@ -33,19 +33,20 @@ public class RentService {
         Member member =  memberRepository.findByEmail(form.getEmail())
                 .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getEmail()));
 
-        if (member.getRentCount() > 3) {
-            return "3권 이상 빌리셨습니다.";
+        if (member.getRentCount() >= 3) {
+            return "세권초과";
         }
-        member.setRentCount(member.getRentCount() + 1);
-        memberRepository.save(member);
 
         // 2. 대출 중인데 또 빌리려고 할 때 체크
         Book book = copyRepository.findBookByCopyId(form.getCopyId());
 
         List<String> currentRentedBookTitles = rentRepository.findRentedBookTitlesByMemberId(member.getId());
         if (currentRentedBookTitles.contains(book.getTitle())) {
-            return "이미 도서를 빌렸습니다. ";
+            return "빌린도서";
         }
+
+        member.setRentCount(member.getRentCount() + 1);
+        memberRepository.save(member);
 
         // 3. Copy의 Status를 UNAVALIABLE로 바꾸기
         Copy copy = copyRepository.findById(form.getCopyId())
