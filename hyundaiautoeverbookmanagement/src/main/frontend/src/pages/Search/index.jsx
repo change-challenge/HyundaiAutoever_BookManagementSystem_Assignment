@@ -18,6 +18,7 @@ const BookSearch = () => {
   const searchParams = new URLSearchParams(location.search)
   const query = searchParams.get('query') // 검색어 가져오기
 
+  const [selectedFilter, setSelectedFilter] = useState('정확도순')
   const [books, setBooks] = useState([])
   const [filteredBooks, setFilteredBooks] = useState([])
   const [selectedCategory, setSelectedCategory] = useState('전체')
@@ -29,6 +30,7 @@ const BookSearch = () => {
       const response = await axios.get(`/api/book/search?title=${query}`)
       setBooks(response.data)
       setFilteredBooks(response.data)
+      setFilteredBooks(sortBooks(response.data))
       console.log(books)
 
       const counts = response.data.reduce((acc, book) => {
@@ -42,6 +44,10 @@ const BookSearch = () => {
   }, [])
 
   useEffect(() => {
+    setFilteredBooks(sortBooks(books))
+  }, [selectedCategory, selectedFilter])
+
+  useEffect(() => {
     if (selectedCategory === '전체') {
       setFilteredBooks(books)
     } else {
@@ -51,6 +57,21 @@ const BookSearch = () => {
 
   const handlePageChange = (event, value) => {
     setPage(value)
+  }
+
+  const sortBooks = books => {
+    let sortedBooks = books.slice()
+    if (selectedFilter === '발행일순') {
+      sortedBooks.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate))
+    } else if (selectedFilter === '인기순') {
+      sortedBooks.sort((a, b) => b.rentCount - a.rentCount)
+    }
+    if (selectedCategory !== '전체') {
+      sortedBooks = sortedBooks.filter(
+        book => book.category === selectedCategory
+      )
+    }
+    return sortedBooks
   }
 
   return (
@@ -83,24 +104,22 @@ const BookSearch = () => {
                   flexWrap: 'wrap',
                 }}
               >
-                {filters.map(category => (
-                  <li key={category.id} style={{ margin: '0 10px 0 10px' }}>
-                    <Link
-                      to={`/search`}
+                {filters.map(filter => (
+                  <li key={filter.id} style={{ margin: '0 10px 0 10px' }}>
+                    <button
                       style={{
                         textDecoration: 'none',
                         color: 'gray',
-                        fontWeight: 400,
+                        fontWeight:
+                          selectedFilter === filter.name ? 'bolder' : 'normal',
+                        border: 'none',
+                        backgroundColor: 'transparent',
+                        cursor: 'pointer',
                       }}
-                      onMouseOver={e => {
-                        e.target.style.fontWeight = 700
-                      }}
-                      onMouseOut={e => {
-                        e.target.style.fontWeight = 400
-                      }}
+                      onClick={() => setSelectedFilter(filter.name)}
                     >
-                      {category.name}
-                    </Link>
+                      {filter.name}
+                    </button>
                   </li>
                 ))}
               </ul>
