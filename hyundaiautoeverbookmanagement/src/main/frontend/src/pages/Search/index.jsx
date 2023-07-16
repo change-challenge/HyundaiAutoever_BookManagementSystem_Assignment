@@ -19,16 +19,35 @@ const BookSearch = () => {
   const query = searchParams.get('query') // 검색어 가져오기
 
   const [books, setBooks] = useState([])
+  const [filteredBooks, setFilteredBooks] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState('전체')
+  const [categoryCounts, setCategoryCounts] = useState({})
   const [page, setPage] = useState(1)
 
   useEffect(() => {
     const fetchBooks = async () => {
       const response = await axios.get(`/api/book/search?title=${query}`)
       setBooks(response.data)
+      setFilteredBooks(response.data)
       console.log(books)
+
+      const counts = response.data.reduce((acc, book) => {
+        acc[book.category] = (acc[book.category] || 0) + 1
+        return acc
+      }, {})
+      counts['전체'] = response.data.length
+      setCategoryCounts(counts)
     }
     fetchBooks()
-  }, [query])
+  }, [])
+
+  useEffect(() => {
+    if (selectedCategory === '전체') {
+      setFilteredBooks(books)
+    } else {
+      setFilteredBooks(books.filter(book => book.category === selectedCategory))
+    }
+  }, [selectedCategory])
 
   const handlePageChange = (event, value) => {
     setPage(value)
@@ -45,14 +64,17 @@ const BookSearch = () => {
             fontSize={({ theme }) => theme.fontSize.sz28}
           />
           <Text
-            text={`에 대한 ${books.length}개의 검색 결과`}
+            text={`에 대한 ${filteredBooks.length}개의 검색 결과`}
             color={({ theme }) => theme.colors.black}
             fontWeight={'bold'}
             fontSize={({ theme }) => theme.fontSize.sz28}
           />
         </S.BookSearchTitleWrapper>
         <S.BookSearchContainer>
-          <SideBar />
+          <SideBar
+            setSelectedCategory={setSelectedCategory}
+            categoryCounts={categoryCounts}
+          />
           <S.BookSearchContentWrapper>
             <S.BookSearchFilterWrapper>
               <ul
@@ -84,7 +106,7 @@ const BookSearch = () => {
               </ul>
             </S.BookSearchFilterWrapper>
             <S.BookListWrapper>
-              {books.slice((page - 1) * 20, page * 20).map(book => (
+              {filteredBooks.slice((page - 1) * 20, page * 20).map(book => (
                 <BookList key={book.id} book={book} query={query} />
               ))}
             </S.BookListWrapper>
