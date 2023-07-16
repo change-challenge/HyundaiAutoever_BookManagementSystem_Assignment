@@ -40,8 +40,9 @@ public class Wish {
     @Column(name = "ISBN")
     private String ISBN;
 
-    @Column(name = "CATEGORY", length = 50)
-    private String category;
+    @Column(name = "CATEGORY")
+    @Convert(converter = CategoryTypeConverter.class)
+    private CategoryType category;
 
     @Column(name = "INFO", length = 300)
     private String info;

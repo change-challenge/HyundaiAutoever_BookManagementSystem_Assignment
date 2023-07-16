@@ -29,7 +29,8 @@ public class Book {
     private String publisher;
 
     @Column(name = "CATEGORY")
-    private String category;
+    @Convert(converter = CategoryTypeConverter.class)
+    private CategoryType category;
 
     @Column(name = "RENT_COUNT")
     private int rentCount;
@@ -39,7 +40,6 @@ public class Book {
 
     @Column(name = "COVER")
     private String cover;
-
 
     @Column(name = "INFO")
     private String info;

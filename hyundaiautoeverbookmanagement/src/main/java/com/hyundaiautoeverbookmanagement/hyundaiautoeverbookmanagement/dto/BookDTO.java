@@ -1,6 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.CategoryType;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -26,6 +27,6 @@ public class BookDTO {
     private int bookCount;
 
     public Book toEntity() {
-        return new Book(null, title, author, publisher, category, rentCount, isbn, cover, info, pubDate);
+        return new Book(null, title, author, publisher, CategoryType.ToEnglish(category), rentCount, isbn, cover, info, pubDate);
     }
 }
