@@ -33,6 +33,12 @@ public class RentService {
         Member member =  memberRepository.findByEmail(form.getEmail())
                 .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getEmail()));
 
+        if (member.getRentCount() > 3) {
+            return "3권 이상 빌리셨습니다.";
+        }
+        member.setRentCount(member.getRentCount() + 1);
+        memberRepository.save(member);
+
         // 2. 대출 중인데 또 빌리려고 할 때 체크
         Book book = copyRepository.findBookByCopyId(form.getCopyId());
 
@@ -66,6 +72,11 @@ public class RentService {
         // 1. 유저인 지 체크
         Member member =  memberRepository.findByEmail(form.getEmail())
                 .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getEmail()));
+
+        if (member.getRentCount() > 0) {
+            member.setRentCount(member.getRentCount() - 1);
+            memberRepository.save(member);
+        }
 
         // 2. Rent에 Returned 데이터 넣기
         Rent rent = rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(member.getId(), form.getCopyId())

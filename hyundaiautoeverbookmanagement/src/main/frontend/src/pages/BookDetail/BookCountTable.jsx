@@ -78,7 +78,6 @@ const BookCountTable = ({ bookId }) => {
       })
       .then(response => {
         console.log('makeRent: ', response.data)
-
         window.location.reload()
         setSnackbar({
           open: true,

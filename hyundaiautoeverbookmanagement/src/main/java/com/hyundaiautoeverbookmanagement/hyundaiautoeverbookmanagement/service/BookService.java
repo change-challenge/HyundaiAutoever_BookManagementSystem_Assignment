@@ -82,7 +82,7 @@ public class BookService {
             CopyDetailDTO dto = new CopyDetailDTO();
             dto.setCopyId(copy.getId());
             if (copy.getBookStatus().equals(BookStatus.UNAVAILABLE)) {
-                Rent rent = rentRepository.findFirstByCopyIdOrderByEndDateDesc(copy.getId());
+                Rent rent = rentRepository.findFirstByCopyIdAndReturnedDateIsNullOrderByEndDateDesc(copy.getId());
                 if (rent != null) {
                     dto.setEndDate(Optional.ofNullable(rent.getEndDate()));
                 } else {
