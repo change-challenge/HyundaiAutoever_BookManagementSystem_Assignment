@@ -24,6 +24,9 @@ public interface RentRepository extends JpaRepository<Rent, Long> {
     // 현재 대출중인 특정한 책 가져오
     Optional<Rent> findByMemberIdAndCopyIdAndReturnedDateIsNull(Long memberId, Long copyId);
 
+    List<Rent> findByCopyId(Long copyId);
+
+
     // 대출중인 책 중복처리 막기 위해
     // 먼저 현재 빌리고 있는 책 제목 리스트 가져오기
     @Query("SELECT r.copy.book.title FROM Rent r WHERE r.member.id = :memberId AND r.returnedDate IS NULL")
@@ -31,6 +34,8 @@ public interface RentRepository extends JpaRepository<Rent, Long> {
 
 
     List<Rent> findAll();
+
+
 
 
     @Query("SELECT r FROM Rent r WHERE r.copy.id = :copyId AND r.returnedDate IS NULL ORDER BY r.endDate DESC")

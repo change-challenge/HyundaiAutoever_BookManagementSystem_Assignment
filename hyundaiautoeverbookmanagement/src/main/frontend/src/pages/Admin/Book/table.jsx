@@ -66,9 +66,16 @@ export default function CustomizedTables({ books }) {
     setBookId(id)
   }
 
-  //  const HandleDeleteClick = id => {
+  const HandleDeleteClick = bookId => {
+    const confirm = window.confirm(
+      '도서를 삭제하시겠습니까? 삭제 후 복구가 불가능합니다.'
+    )
 
-  //  }
+    if (confirm) {
+      axios.post('/api/admin/book/delete', { bookId })
+      window.location.reload()
+    }
+  }
 
   return (
     <>
@@ -117,7 +124,7 @@ export default function CustomizedTables({ books }) {
                     <Button
                       variant="contained"
                       color="error"
-                      //  onClick={() => HandleDeleteClick(book.id)}
+                      onClick={() => HandleDeleteClick(book.id)}
                     >
                       삭제
                     </Button>

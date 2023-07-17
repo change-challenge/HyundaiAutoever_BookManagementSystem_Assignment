@@ -6,6 +6,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.Membe
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.RentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final CopyRepository copyRepository;
     private final RentRepository rentRepository;
+    private final MemberRepository memberRepository;
 
     public List<BookDTO> searchBooks(String title) {
         List<Book> books = bookRepository.findByTitleContaining(title);
@@ -99,11 +101,10 @@ public class BookService {
     }
 
     @Transactional
-    public String updateBook(String bookIddStr, String bookCountStr) {
-        Long bookId = Long.parseLong(bookIddStr);
+    public String updateBook(String bookIdStr, String bookCountStr) {
+        Long bookId = Long.parseLong(bookIdStr);
         int bookCount = Integer.parseInt(bookCountStr);
 
-        log.info("SERVICE : bookId {} || bookCount {} ", bookId, bookCount);
         // 1. 신청자가 admin인 지 확인
         if (getCurrentMemberType() != MemberType.ADMIN) {
             return "당신은 Admin이 아닙니다.";
@@ -128,9 +129,47 @@ public class BookService {
         else if (currentCount > bookCount) {
             copies.sort(Comparator.comparing(Copy::getId).reversed());
             for (int i = 0; i < currentCount - bookCount; i++) {
-                copyRepository.delete(copies.get(i));
+                deleteRentRelatedCopyAndCopy(copies, i);
             }
         }
         return "Success";
+    }
+
+    @Transactional
+    public String deleteBook(String bookIdStr) {
+        Long bookId = Long.parseLong(bookIdStr);
+
+        // 1. 신청자가 admin인 지 확인
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            return "당신은 Admin이 아닙니다.";
+        }
+
+        // 2. bookId로 Book을 찾는다.
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Invalid bookId"));
+
+        // 3. bookId를 가지고 있는 모든 Copy를 삭제한다.
+        List<Copy> copies = copyRepository.findByBook(book);
+        int currentCount = copies.size();
+        if (currentCount != 0) {
+            for (int i = 0; i < currentCount; i++) {
+                deleteRentRelatedCopyAndCopy(copies, i);
+            }
+        }
+        // 4. 마지막으로 bookId로 book도 삭제한다.
+        bookRepository.delete(book);
+        return "Success";
+    }
+
+    private void deleteRentRelatedCopyAndCopy(List<Copy> copies, int i) {
+        List<Rent> rents = rentRepository.findByCopyId(copies.get(i).getId());
+        int currentRentCount = rents.size();
+        for (int j = 0; j < currentRentCount; j++) {
+            Member member = rents.get(j).getMember();
+            member.setRentCount(member.getRentCount() - 1);
+            memberRepository.save(member);
+            rentRepository.delete(rents.get(j));
+        }
+        copyRepository.delete(copies.get(i));
     }
 }

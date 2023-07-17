@@ -89,6 +89,21 @@ public class AdminApiController {
         }
     }
 
+    @PostMapping("/book/delete")
+    public ResponseEntity<String> deleteBook(@RequestBody Map<String, String> request) {
+        try {
+            String bookId = request.get("bookId");
+            String result = bookService.deleteBook(bookId);
+            if ("Success".equals(result)) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @GetMapping("/wish")
     public ResponseEntity<List<WishRequestDTO>> getWishBooks() {
         List<WishRequestDTO> wishBooks = wishService.getAllWishs();
