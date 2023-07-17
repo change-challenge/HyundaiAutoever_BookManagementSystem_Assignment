@@ -36,11 +36,13 @@ export async function fetchUserInfo() {
 
 export function UserProvider({ children }) {
   const [userInfo, setUserInfo] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getUserInfo = async () => {
       const userInfo = await fetchUserInfo()
       setUserInfo(userInfo)
+      setLoading(false)
     }
     getUserInfo()
   }, [])
@@ -49,6 +51,10 @@ export function UserProvider({ children }) {
     () => ({ userInfo, setUserInfo }),
     [userInfo, setUserInfo]
   )
+
+  if (loading) {
+    return <div>Loading...</div> // or return null, or a loading spinner, etc.
+  }
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>
 }

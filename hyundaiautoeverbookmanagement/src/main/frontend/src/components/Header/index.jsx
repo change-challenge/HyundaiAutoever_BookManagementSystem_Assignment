@@ -9,7 +9,7 @@ import {
   useTokenDispatch,
 } from '../../context/IsLoginContext'
 import axios from 'axios'
-import { useUserState, useUserDispatch } from '../../context/UserContext'
+import { useUserDispatch } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
 
 const basicNavMenu = [
@@ -28,7 +28,6 @@ function Header() {
 
   const navigate = useNavigate()
   const isLogin = useIsLoginState()
-  const userInfo = useUserState()
   const setUserInfo = useUserDispatch()
   const setIsLogin = useIsLoginDispatch()
   const setToken = useTokenDispatch() // 추가: 토큰 디스패치 함수
@@ -36,16 +35,16 @@ function Header() {
   const handleLogout = async () => {
     try {
       await axios.post('/api/auth/logout')
-      setIsLogin(false) // 클라이언트 측에서 인증 상태 해제
+      setIsLogin(false)
       setUserInfo(null)
-      setToken(null) // 추가: 토큰 초기화
+      setToken(null)
       localStorage.removeItem('token')
       setSnackbar({
         open: true,
         severity: 'error',
         message: '로그아웃 성공!',
       })
-      navigate('/') // 로그아웃 후 리다이렉트 등의 작업 수행
+      navigate('/')
       window.location.reload()
     } catch (error) {
       console.error('로그아웃 실패:', error)
