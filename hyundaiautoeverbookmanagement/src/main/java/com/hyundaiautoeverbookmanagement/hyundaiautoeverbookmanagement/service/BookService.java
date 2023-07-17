@@ -2,9 +2,11 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.CopyDetailDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.RentRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class BookService {
     private final BookRepository bookRepository;
     private final CopyRepository copyRepository;
     private final RentRepository rentRepository;
+    private final MemberRepository memberRepository;
 
     public List<BookDTO> searchBooks(String title) {
         List<Book> books = bookRepository.findByTitleContaining(title);
@@ -93,5 +98,78 @@ public class BookService {
             bookDetails.add(dto);
         }
         return bookDetails;
+    }
+
+    @Transactional
+    public String updateBook(String bookIdStr, String bookCountStr) {
+        Long bookId = Long.parseLong(bookIdStr);
+        int bookCount = Integer.parseInt(bookCountStr);
+
+        // 1. 신청자가 admin인 지 확인
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            return "당신은 Admin이 아닙니다.";
+        }
+
+        // 2. bookId로 Book을 찾는다.
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Invalid bookId"));
+
+        // 3. Copy의 갯수를 새어서 bookCount와 비교하여 bookCount가 더 많으면 그 만큼 Copy를 만들어야한다.
+        List<Copy> copies = copyRepository.findByBook(book);
+        int currentCount = copies.size();
+        if (currentCount < bookCount) {
+            for (int i = 0; i < bookCount - currentCount; i++) {
+                Copy newCopy = new Copy();
+                newCopy.setBook(book);
+                newCopy.setBookStatus(BookStatus.AVAILABLE);  // Or other default status
+                copyRepository.save(newCopy);
+            }
+        }
+        // 3-1. 반대로 bookCount가 더 적으면 copyId 큰 순으로 지워야한다.
+        else if (currentCount > bookCount) {
+            copies.sort(Comparator.comparing(Copy::getId).reversed());
+            for (int i = 0; i < currentCount - bookCount; i++) {
+                deleteRentRelatedCopyAndCopy(copies, i);
+            }
+        }
+        return "Success";
+    }
+
+    @Transactional
+    public String deleteBook(String bookIdStr) {
+        Long bookId = Long.parseLong(bookIdStr);
+
+        // 1. 신청자가 admin인 지 확인
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            return "당신은 Admin이 아닙니다.";
+        }
+
+        // 2. bookId로 Book을 찾는다.
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Invalid bookId"));
+
+        // 3. bookId를 가지고 있는 모든 Copy를 삭제한다.
+        List<Copy> copies = copyRepository.findByBook(book);
+        int currentCount = copies.size();
+        if (currentCount != 0) {
+            for (int i = 0; i < currentCount; i++) {
+                deleteRentRelatedCopyAndCopy(copies, i);
+            }
+        }
+        // 4. 마지막으로 bookId로 book도 삭제한다.
+        bookRepository.delete(book);
+        return "Success";
+    }
+
+    private void deleteRentRelatedCopyAndCopy(List<Copy> copies, int i) {
+        List<Rent> rents = rentRepository.findByCopyId(copies.get(i).getId());
+        int currentRentCount = rents.size();
+        for (int j = 0; j < currentRentCount; j++) {
+            Member member = rents.get(j).getMember();
+            member.setRentCount(member.getRentCount() - 1);
+            memberRepository.save(member);
+            rentRepository.delete(rents.get(j));
+        }
+        copyRepository.delete(copies.get(i));
     }
 }

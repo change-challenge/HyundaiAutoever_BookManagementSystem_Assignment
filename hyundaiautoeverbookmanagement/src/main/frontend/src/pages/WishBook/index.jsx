@@ -75,6 +75,7 @@ export default function WishBook() {
           TTBKey: process.env.REACT_APP_TTB_KEY,
           Query: wishBookName,
           Output: 'JS',
+          Cover: 'Big',
         },
       })
       let dataString = response.data

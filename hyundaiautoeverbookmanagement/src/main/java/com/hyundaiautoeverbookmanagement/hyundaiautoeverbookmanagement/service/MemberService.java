@@ -3,11 +3,13 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberAdminResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.RentRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,8 +17,10 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class MemberService {
@@ -67,5 +71,29 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                 .map(MemberResponseDTO::of)
                 .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
+    }
+
+    @Transactional
+    public String changeMemberType(String email, String myEmail) {
+        // 1. 신청자가 admin인 지 확인
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            return "당신은 Admin이 아닙니다.";
+        }
+
+        log.info("email : {} ", email);
+        log.info("myEmail : {} ", myEmail);
+        // 2. 본인을 바꾸려고 하는 지 확인
+        if (email.equals(myEmail)) {
+            return "당신을 바꿀 수 없습니다.";
+        }
+
+        // 3. email로 member Data 가져오기
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
+
+        member.setMemberType(member.getMemberType() == MemberType.MEMBER ? MemberType.ADMIN : MemberType.MEMBER);
+        log.info("왜 안변함 : {}", member.getMemberType());
+        memberRepository.save(member);
+        return "Success";
     }
 }

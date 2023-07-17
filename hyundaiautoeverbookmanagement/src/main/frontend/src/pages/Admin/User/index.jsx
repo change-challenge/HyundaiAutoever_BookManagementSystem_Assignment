@@ -5,7 +5,8 @@ import { useEffect, useState } from 'react'
 import Pagination from '@mui/material/Pagination'
 import axios from 'axios'
 
-const AdminUser = () => {
+const AdminUser = ({ user }) => {
+  console.log('AdminUser user : ', user)
   const [users, setUsers] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -48,7 +49,7 @@ const AdminUser = () => {
         />
       </S.AdminTitle>
       <S.TableContainer>
-        <Table users={usersToShow} />
+        <Table users={usersToShow} myInfo={user} />
       </S.TableContainer>
       <S.PaginationWrapper>
         <Pagination

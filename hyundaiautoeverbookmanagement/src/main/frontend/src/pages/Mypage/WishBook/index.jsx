@@ -31,10 +31,10 @@ const MypageWishBook = ({ user }) => {
     switch (status) {
       case 'PENDING':
         return '처리중'
-      case 'DECLINED':
-        return '반려'
+      case 'REJECTED':
+        return '반려됨'
       case 'APPROVED':
-        return '승인'
+        return '승인됨'
       default:
         return status
     }

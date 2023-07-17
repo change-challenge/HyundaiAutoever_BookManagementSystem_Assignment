@@ -1,5 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
@@ -16,6 +17,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
 @Service
 @RequiredArgsConstructor
@@ -66,6 +69,35 @@ public class RentService {
         // 5. Book의 rent_count를 하나 올리기
         book.setRentCount(book.getRentCount() + 1);
         bookRepository.save(book);
+        return "Success";
+    }
+
+    public String adminReturnBook(RentRequestDTO form) {
+        // 1. 신청자가 admin인 지 확인
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            return "당신은 Admin이 아닙니다.";
+        }
+
+        // 2. 유저인 지 체크
+        Member member =  memberRepository.findByEmail(form.getEmail())
+                .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getEmail()));
+
+        if (member.getRentCount() > 0) {
+            member.setRentCount(member.getRentCount() - 1);
+            memberRepository.save(member);
+        }
+
+        // 3. Rent에 Returned 데이터 넣기
+        Rent rent = rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(member.getId(), form.getCopyId())
+                .orElseThrow(() -> new RuntimeException("No such rent"));
+        rent.setReturnedDate(LocalDate.now());
+        rentRepository.save(rent);
+
+        // 4. Copy의 Status를 AVALIABLE로 바꾸기
+        Copy copy = copyRepository.findById(form.getCopyId())
+                .orElseThrow(() -> new RuntimeException("No such copy"));
+        copy.setBookStatus(BookStatus.AVAILABLE);
+        copyRepository.save(copy);
         return "Success";
     }
 

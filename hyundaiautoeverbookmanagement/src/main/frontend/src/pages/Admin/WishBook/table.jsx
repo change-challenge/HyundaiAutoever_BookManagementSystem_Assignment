@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
+import { useState } from 'react'
+import axios from 'axios'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,9 +41,39 @@ export default function CustomizedTables({ wishBooks }) {
     if (a.status !== 'PENDING' && b.status === 'PENDING') {
       return 1
     }
-    // status가 같은 경우 wishDate를 기준으로 정렬
     return new Date(b.wishDate) - new Date(a.wishDate)
   }
+
+  const handleUpdateButtonClick = async wishbookId => {
+    const confirm = window.confirm('희망 도서를 반려하시겠습니까?')
+    const response = await axios.post('/api/admin/wish/reject', {
+      wishId: wishbookId,
+    })
+    window.location.reload()
+  }
+
+  const handleAddButtonClick = async wishbook => {
+    const confirm = window.confirm('희망 도서를 추가하시겠습니까?')
+    const response = await axios.post('/api/admin/wish/add', {
+      id: wishbook.id,
+      status: wishbook.status,
+      email: null,
+      book: {
+        title: wishbook.book.title,
+        author: wishbook.book.author,
+        publisher: wishbook.book.publisher,
+        category: wishbook.book.category,
+        info: wishbook.book.info,
+        rent_count: 0,
+        isbn: wishbook.book.isbn,
+        cover: wishbook.book.cover,
+        pubDate: wishbook.book.pubDate,
+      },
+    })
+
+    console.log(response)
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -73,8 +105,19 @@ export default function CustomizedTables({ wishBooks }) {
               <StyledTableCell>{wishbook.book.isbn}</StyledTableCell>
               <StyledTableCell>
                 <Stack spacing={2}>
-                  <Button variant="contained">추가</Button>
-                  <Button variant="contained" color="error">
+                  <Button
+                    variant="contained"
+                    disabled={wishbook.status !== 'PENDING'}
+                    onClick={() => handleAddButtonClick(wishbook)}
+                  >
+                    추가
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    disabled={wishbook.status !== 'PENDING'}
+                    onClick={() => handleUpdateButtonClick(wishbook.id)}
+                  >
                     반려
                   </Button>
                 </Stack>
