@@ -42,51 +42,6 @@ tasks.named('test') {
 
 
 // 개발용
-//def frontendDir = "$projectDir/src/main/frontend"
-//
-//sourceSets {
-//	main {
-//		resources { srcDirs = ["$projectDir/src/main/resources"]
-//		}
-//	}
-//}
-//
-//processResources { dependsOn "copyReactBuildFiles" }
-//
-//task installReact(type: Exec) {
-//	workingDir "$frontendDir"
-//	inputs.dir "$frontendDir"
-//	group = BasePlugin.BUILD_GROUP
-//	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-//		commandLine "npm.cmd", "audit", "fix"
-//		commandLine 'npm.cmd', 'install' }
-//	else {
-//		commandLine "npm", "audit", "fix" commandLine 'npm', 'install'
-//	}
-//}
-//
-//task buildReact(type: Exec) {
-//	dependsOn "installReact"
-//	workingDir "$frontendDir"
-//	inputs.dir "$frontendDir"
-//	group = BasePlugin.BUILD_GROUP
-//	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-//		commandLine "npm.cmd", "run-script", "build"
-//	} else {
-//		commandLine "npm", "run-script", "build"
-//	}
-//}
-//
-//task copyReactBuildFiles(type: Copy) {
-//	dependsOn "buildReact"
-//	from "$frontendDir/build"
-//	into "$projectDir/src/main/resources/static"
-//}
-
-
-
-
-// 배포용
 def frontendDir = "$projectDir/src/main/frontend"
 
 sourceSets {
@@ -97,41 +52,85 @@ sourceSets {
 	}
 }
 
-tasks.register('installReact', Exec) {
+tasks.register("installReact", Exec) {
 	workingDir "$frontendDir"
 	inputs.dir "$frontendDir"
 	group = BasePlugin.BUILD_GROUP
 	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		commandLine 'npm.cmd', 'audit', 'fix'
+		commandLine "npm.cmd", "audit", "fix"
 		commandLine 'npm.cmd', 'install'
 	} else {
-		commandLine 'npm', 'audit', 'fix'
+		commandLine "npm", "audit", "fix"
 		commandLine 'npm', 'install'
 	}
 }
 
-tasks.register('buildReact', Exec) {
-	dependsOn 'installReact'
+tasks.register("buildReact", Exec) {
+	dependsOn("installReact")
 	workingDir "$frontendDir"
 	inputs.dir "$frontendDir"
 	group = BasePlugin.BUILD_GROUP
 	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		commandLine 'npm.cmd', 'run-script', 'build'
+		commandLine "npm.cmd", "run-script", "build"
 	} else {
-		commandLine 'npm', 'run-script', 'build'
+		commandLine "npm", "run-script", "build"
 	}
 }
 
-tasks.register('cleanStatic', Delete) {
-	delete "$projectDir/src/main/resources/static"
+tasks.register("copyReactBuildFiles", Copy) {
+	dependsOn("buildReact")
+	from("$frontendDir/build")
+	into("$projectDir/src/main/resources/static")
 }
 
-tasks.register('copyReactBuildFiles', Copy) {
-	dependsOn 'cleanStatic', 'buildReact'
-	from "$frontendDir/build"
-	into "$projectDir/src/main/resources/static"
-}
 
-tasks.named('processResources') {
-	dependsOn 'copyReactBuildFiles'
-}
+
+// 배포용
+//def frontendDir = "$projectDir/src/main/frontend"
+//
+//sourceSets {
+//	main {
+//		resources {
+//			srcDirs = ["$projectDir/src/main/resources"]
+//		}
+//	}
+//}
+//
+//tasks.register('installReact', Exec) {
+//	workingDir "$frontendDir"
+//	inputs.dir "$frontendDir"
+//	group = BasePlugin.BUILD_GROUP
+//	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+//		commandLine 'npm.cmd', 'audit', 'fix'
+//		commandLine 'npm.cmd', 'install'
+//	} else {
+//		commandLine 'npm', 'audit', 'fix'
+//		commandLine 'npm', 'install'
+//	}
+//}
+//
+//tasks.register('buildReact', Exec) {
+//	dependsOn 'installReact'
+//	workingDir "$frontendDir"
+//	inputs.dir "$frontendDir"
+//	group = BasePlugin.BUILD_GROUP
+//	if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+//		commandLine 'npm.cmd', 'run-script', 'build'
+//	} else {
+//		commandLine 'npm', 'run-script', 'build'
+//	}
+//}
+//
+//tasks.register('cleanStatic', Delete) {
+//	delete "$projectDir/src/main/resources/static"
+//}
+//
+//tasks.register('copyReactBuildFiles', Copy) {
+//	dependsOn 'cleanStatic', 'buildReact'
+//	from "$frontendDir/build"
+//	into "$projectDir/src/main/resources/static"
+//}
+//
+//tasks.named('processResources') {
+//	dependsOn 'copyReactBuildFiles'
+//}
