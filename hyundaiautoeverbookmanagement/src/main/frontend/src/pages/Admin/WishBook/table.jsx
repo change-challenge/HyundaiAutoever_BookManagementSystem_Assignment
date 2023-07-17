@@ -9,6 +9,8 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
+import { useState } from 'react'
+import axios from 'axios'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -39,9 +41,17 @@ export default function CustomizedTables({ wishBooks }) {
     if (a.status !== 'PENDING' && b.status === 'PENDING') {
       return 1
     }
-    // status가 같은 경우 wishDate를 기준으로 정렬
     return new Date(b.wishDate) - new Date(a.wishDate)
   }
+
+  const handleButtonClick = async wishbookId => {
+    const confirm = window.confirm('희망 도서를 반려하시겠습니까?')
+    const response = await axios.post('/api/admin/wish/reject', {
+      wishId: wishbookId,
+    })
+    window.location.reload()
+  }
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -73,8 +83,18 @@ export default function CustomizedTables({ wishBooks }) {
               <StyledTableCell>{wishbook.book.isbn}</StyledTableCell>
               <StyledTableCell>
                 <Stack spacing={2}>
-                  <Button variant="contained">추가</Button>
-                  <Button variant="contained" color="error">
+                  <Button
+                    variant="contained"
+                    disabled={wishbook.status === 'REJECTED'}
+                  >
+                    추가
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="error"
+                    disabled={wishbook.status === 'REJECTED'}
+                    onClick={() => handleButtonClick(wishbook.id)}
+                  >
                     반려
                   </Button>
                 </Stack>

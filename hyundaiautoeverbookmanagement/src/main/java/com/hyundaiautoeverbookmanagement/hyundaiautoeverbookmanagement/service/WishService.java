@@ -2,8 +2,10 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
 
 @Service
@@ -93,12 +97,31 @@ public class WishService {
 
     public String saveWish(WishRequestDTO form) {
         // 1. 책 존재하는 지 확인
-        if (bookRepository.existsByisbn(form.getBook().getIsbn())) {
-            throw new RuntimeException("이미 존재하는 책입니다");
+        if (bookRepository.existsByIsbn(form.getBook().getIsbn())) {
+            throw new RuntimeException("이미 존재하는 책입니다.");
         }
 
         Wish wish = form.toEntity();
         Wish saved = wishRepository.save(wish);
+        return "Success";
+    }
+
+    public String rejectedWish(String wishIdStr) {
+        Long wishId = Long.parseLong(wishIdStr);
+
+        // 1. 신청자가 admin인 지 확인
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            return "당신은 Admin이 아닙니다.";
+        }
+
+        // 2. wishId로 Wish 찾기
+        Wish wish = wishRepository.findById(wishId)
+                .orElseThrow(() -> new RuntimeException("해당 wish가 존재하지 않습니다."));
+
+        // 3. wish Status 변경
+        wish.setWishType(WishType.REJECTED);
+        wishRepository.save(wish);
+
         return "Success";
     }
 }

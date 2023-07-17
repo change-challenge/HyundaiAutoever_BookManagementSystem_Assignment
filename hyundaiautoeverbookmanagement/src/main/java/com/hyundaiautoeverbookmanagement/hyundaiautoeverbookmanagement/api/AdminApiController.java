@@ -110,4 +110,18 @@ public class AdminApiController {
         return new ResponseEntity<>(wishBooks, HttpStatus.OK);
     }
 
+    @PostMapping("/wish/reject")
+    public ResponseEntity<String> rejecteddWish(@RequestBody Map<String, String> request) {
+        try {
+            String wishId = request.get("wishId");
+            String result = wishService.rejectedWish(wishId);
+            if ("Success".equals(result)) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
