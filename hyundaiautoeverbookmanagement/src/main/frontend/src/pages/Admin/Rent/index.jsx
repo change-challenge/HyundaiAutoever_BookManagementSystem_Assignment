@@ -23,7 +23,21 @@ const AdminRent = () => {
     setPage(value)
   }
 
-  const rentsToShow = rents.slice((page - 1) * 20, page * 20)
+  const sortRents = (a, b) => {
+    // 먼저 returnedDate의 유무에 따라 정렬
+    if (a.returnedDate && b.returnedDate) {
+      return new Date(b.startDate) - new Date(a.startDate)
+    }
+    if (!a.returnedDate && b.returnedDate) {
+      return -1
+    }
+    if (a.returnedDate && !b.returnedDate) {
+      return 1
+    }
+    // 둘 다 returnedDate가 없는 경우 startDate를 기준으로 정렬
+    return new Date(b.startDate) - new Date(a.startDate)
+  }
+  const rentsToShow = rents.sort(sortRents).slice((page - 1) * 20, page * 20)
 
   return (
     <S.AdminUserContainer>

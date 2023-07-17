@@ -46,12 +46,25 @@ public class AdminApiController {
         }
     }
 
-
     @GetMapping("/rent")
     public ResponseEntity<List<RentResponseDTO>> getRents() {
         List<RentResponseDTO> rent = rentService.getAllRents();
         log.info("!!rent!! " + rent);
         return new ResponseEntity<>(rent, HttpStatus.OK);
+    }
+
+    @PostMapping("/return/{copyId}")
+    public ResponseEntity<String> returnBook(@RequestBody RentRequestDTO dto) {
+        try {
+            String result = rentService.adminReturnBook(dto);
+            if ("Success".equals(result)) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @GetMapping("/book")

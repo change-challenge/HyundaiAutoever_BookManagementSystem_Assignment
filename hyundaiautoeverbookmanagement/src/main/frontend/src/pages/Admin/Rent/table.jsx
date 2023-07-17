@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -8,6 +8,9 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
+import { SnackbarContext } from '../../../context/SnackbarContext'
+
+import axios from 'axios'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -30,19 +33,48 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ rents }) {
-  const sortRents = (a, b) => {
-    // 먼저 returnedDate의 유무에 따라 정렬
-    if (a.returnedDate && b.returnedDate) {
-      return new Date(b.startDate) - new Date(a.startDate)
+  const { setSnackbar } = useContext(SnackbarContext)
+
+  const handleReturnClick = (copyId, memberEmail) => {
+    const confirm = window.confirm('도서를 반납하시겠습니까?')
+    if (confirm) {
+      makeReturn(copyId, memberEmail)
     }
-    if (!a.returnedDate && b.returnedDate) {
-      return -1
-    }
-    if (a.returnedDate && !b.returnedDate) {
-      return 1
-    }
-    // 둘 다 returnedDate가 없는 경우 startDate를 기준으로 정렬
-    return new Date(b.startDate) - new Date(a.startDate)
+  }
+
+  const makeReturn = async (copyId, memberEmail) => {
+    const response = await axios
+      .post(`/api/admin/return/${copyId}`, {
+        copyId: copyId,
+        email: memberEmail,
+      })
+      .then(response => {
+        console.log('makeReturn: ', response.data)
+        window.location.reload()
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: '도서 반납 성공!',
+        })
+      })
+      .catch(error => {
+        if (error.response) {
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: '도서를 반납할 수 없습니다.',
+          })
+          if (error.response.status === 400) {
+            console.error('Client error: ', error.response.data)
+          } else {
+            console.error('Server error: ', error.response.data)
+          }
+        } else if (error.request) {
+          console.error('No response: ', error.request)
+        } else {
+          console.error('Error: ', error.message)
+        }
+      })
   }
   return (
     <TableContainer component={Paper}>
@@ -59,7 +91,7 @@ export default function CustomizedTables({ rents }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {rents.sort(sortRents).map(rent => (
+          {rents.map(rent => (
             <StyledTableRow key={rent.name}>
               <StyledTableCell component="th" scope="rent">
                 {rent.id}
@@ -103,7 +135,13 @@ export default function CustomizedTables({ rents }) {
               </StyledTableCell>
 
               <StyledTableCell>
-                <Button variant="contained" disabled={!!rent.returnedDate}>
+                <Button
+                  variant="contained"
+                  disabled={!!rent.returnedDate}
+                  onClick={() =>
+                    handleReturnClick(rent.copyId, rent.memberEmail)
+                  }
+                >
                   반납하기
                 </Button>
               </StyledTableCell>

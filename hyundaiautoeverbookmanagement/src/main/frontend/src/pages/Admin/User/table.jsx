@@ -10,8 +10,8 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import axios from 'axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
-import { fetchUserInfo } from '../../../context/UserContext'
 import { useEffect, useState, useContext } from 'react'
+import { fetchUserInfo } from '../../../context/UserContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
