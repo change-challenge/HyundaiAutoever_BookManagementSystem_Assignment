@@ -44,12 +44,34 @@ export default function CustomizedTables({ wishBooks }) {
     return new Date(b.wishDate) - new Date(a.wishDate)
   }
 
-  const handleButtonClick = async wishbookId => {
+  const handleUpdateButtonClick = async wishbookId => {
     const confirm = window.confirm('희망 도서를 반려하시겠습니까?')
     const response = await axios.post('/api/admin/wish/reject', {
       wishId: wishbookId,
     })
     window.location.reload()
+  }
+
+  const handleAddButtonClick = async wishbook => {
+    const confirm = window.confirm('희망 도서를 추가하시겠습니까?')
+    const response = await axios.post('/api/admin/wish/add', {
+      id: wishbook.id,
+      status: wishbook.status,
+      email: null,
+      book: {
+        title: wishbook.book.title,
+        author: wishbook.book.author,
+        publisher: wishbook.book.publisher,
+        category: wishbook.book.category,
+        info: wishbook.book.info,
+        rent_count: 0,
+        isbn: wishbook.book.isbn,
+        cover: wishbook.book.cover,
+        pubDate: wishbook.book.pubDate,
+      },
+    })
+
+    console.log(response)
   }
 
   return (
@@ -85,15 +107,16 @@ export default function CustomizedTables({ wishBooks }) {
                 <Stack spacing={2}>
                   <Button
                     variant="contained"
-                    disabled={wishbook.status === 'REJECTED'}
+                    disabled={wishbook.status !== 'PENDING'}
+                    onClick={() => handleAddButtonClick(wishbook)}
                   >
                     추가
                   </Button>
                   <Button
                     variant="contained"
                     color="error"
-                    disabled={wishbook.status === 'REJECTED'}
-                    onClick={() => handleButtonClick(wishbook.id)}
+                    disabled={wishbook.status !== 'PENDING'}
+                    onClick={() => handleUpdateButtonClick(wishbook.id)}
                   >
                     반려
                   </Button>
