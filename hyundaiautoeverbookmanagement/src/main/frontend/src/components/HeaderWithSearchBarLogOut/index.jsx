@@ -1,4 +1,4 @@
-import React from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../../assets/logo.svg'
 import * as S from './style'
@@ -16,10 +16,22 @@ const basicNavMenu = [
 ]
 
 function HeaderWithSearchBarLogOut() {
-  const handleSubmit = () => {
-    console.log('마이 페이지 검색창')
-  }
   const navigate = useNavigate()
+
+  const [searchValue, setSearchValue] = useState('')
+  const [isSearchRequested, setIsSearchRequested] = useState(false)
+  useEffect(() => {
+    if (isSearchRequested && searchValue) {
+      sessionStorage.setItem('lastSearch', searchValue) // Save the search value
+      navigate(`/search?query=${searchValue}`)
+      setIsSearchRequested(false)
+    }
+  }, [searchValue, isSearchRequested, navigate])
+
+  const handleSearchValueChange = value => {
+    setSearchValue(value)
+    setIsSearchRequested(true)
+  }
 
   const logoClick = () => {
     navigate('/')
@@ -45,7 +57,11 @@ function HeaderWithSearchBarLogOut() {
           />
         </S.LogoWrapper>
         <S.SearchContainer>
-          <SearchBar width="500px" height="50px" onSubmit={handleSubmit} />
+          <SearchBar
+            width="500px"
+            height="50px"
+            onSearchValueChange={handleSearchValueChange}
+          />
         </S.SearchContainer>
         <S.NavWrapper>
           <S.LinkButtonWrapper>

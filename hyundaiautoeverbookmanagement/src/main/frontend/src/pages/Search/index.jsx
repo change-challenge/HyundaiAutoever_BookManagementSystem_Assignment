@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import * as S from './style'
 import SideBar from './SideBar'
 import { Text } from '../../components/index'
-import { Link, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 import BookList from './BookList'
 import Pagination from '@mui/material/Pagination'
 import axios from 'axios'
@@ -41,7 +41,7 @@ const BookSearch = () => {
       setCategoryCounts(counts)
     }
     fetchBooks()
-  }, [])
+  }, [query])
 
   useEffect(() => {
     setFilteredBooks(sortBooks(books))
