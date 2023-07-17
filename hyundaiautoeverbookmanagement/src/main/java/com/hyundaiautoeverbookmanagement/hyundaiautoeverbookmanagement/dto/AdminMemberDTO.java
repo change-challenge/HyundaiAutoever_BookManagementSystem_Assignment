@@ -10,12 +10,9 @@ import java.util.Date;
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
-public class MemberDTO {
+public class AdminMemberDTO {
 
-    private Long id;
-    private String email;
-    private String name;
-    private MemberType memberType;
-    private Date registDate;
-
+    private String adminEmail;
+    private String adminToken;
+    private String userEmail;
 }

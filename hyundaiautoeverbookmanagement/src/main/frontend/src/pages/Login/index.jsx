@@ -47,6 +47,7 @@ function Login() {
         email,
         password: pw,
       })
+      console.log('onClickConfirmButton : ', response.data)
       const accessToken = response.data.accessToken
       localStorage.setItem('token', accessToken) // 추가: localStorage에 토큰 저장
       axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}` // 추가: 헤더에 Access Token 설정

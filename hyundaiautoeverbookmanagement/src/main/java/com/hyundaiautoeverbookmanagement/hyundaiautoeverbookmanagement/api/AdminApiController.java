@@ -8,10 +8,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +31,12 @@ public class AdminApiController {
         List<MemberAdminResponseDTO> users = memberService.getAllMembers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
+
+    @PostMapping("/member/type")
+    public ResponseEntity<String> changeMemberType(String email) {
+        return new ResponseEntity<>(memberService.changeMemberType(email), HttpStatus.OK);
+    }
+
 
     @GetMapping("/rent")
     public ResponseEntity<List<RentResponseDTO>> getRents() {
@@ -48,4 +56,5 @@ public class AdminApiController {
         List<WishRequestDTO> wishBooks = wishService.getAllWishs();
         return new ResponseEntity<>(wishBooks, HttpStatus.OK);
     }
+
 }

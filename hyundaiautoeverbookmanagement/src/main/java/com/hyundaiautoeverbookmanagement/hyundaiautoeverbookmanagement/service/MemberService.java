@@ -3,6 +3,7 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberAdminResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
 @Service
 @RequiredArgsConstructor
@@ -67,5 +69,20 @@ public class MemberService {
         return memberRepository.findByEmail(email)
                 .map(MemberResponseDTO::of)
                 .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
+    }
+
+    public String changeMemberType(String email) {
+
+        // 1. 신청자가 admin인 지 확인
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            return "당신은 Admin이 아닙니다.";
+        }
+
+        // 2. email로 member Data 가져오기
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
+        
+
+
     }
 }

@@ -29,6 +29,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
+const changeUserType = () => {
+  const confirm = window.confirm('유저의 상태를 바꾸시겠습니까?')
+
+  if (confirm) {
+  }
+}
+
 export default function CustomizedTables({ users }) {
   console.log('table users : ', users)
   return (
@@ -67,9 +74,15 @@ export default function CustomizedTables({ users }) {
                 </StyledTableCell>
                 <StyledTableCell>
                   {user.userType === 'ADMIN' ? (
-                    <Button variant="contained">TO USER</Button>
+                    <Button variant="contained" onClick={changeUserType}>
+                      TO USER
+                    </Button>
                   ) : (
-                    <Button variant="contained" color="error">
+                    <Button
+                      variant="contained"
+                      color="error"
+                      onClick={changeUserType}
+                    >
                       TO ADMIN
                     </Button>
                   )}

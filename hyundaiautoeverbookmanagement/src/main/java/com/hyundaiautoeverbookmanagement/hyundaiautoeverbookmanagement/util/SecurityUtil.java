@@ -1,5 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,5 +24,15 @@ public class SecurityUtil {
         }
 
         return Long.parseLong(authentication.getName());
+    }
+
+    public static MemberType getCurrentMemberType() {
+        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || authentication.getName() == null) {
+            throw new RuntimeException("Security Context 에 인증 정보가 없습니다.");
+        }
+        log.info("heyyyyyyyyyyy: {} " , authentication.getAuthorities());
+        return MemberType.MEMBER;
     }
 }
