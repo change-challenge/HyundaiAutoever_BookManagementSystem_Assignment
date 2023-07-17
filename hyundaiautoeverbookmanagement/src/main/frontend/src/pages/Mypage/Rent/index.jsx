@@ -40,6 +40,41 @@ const MypageRent = ({ user }) => {
     }
   }
 
+  const makeReturn = async copyId => {
+    const response = await axios
+      .post(`/api/return/${copyId}`, {
+        copyId: copyId,
+        email: user.email,
+      })
+      .then(response => {
+        console.log('makeReturn: ', response.data)
+        window.location.reload()
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: '도서 반납 성공!',
+        })
+      })
+      .catch(error => {
+        if (error.response) {
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: '도서를 반납할 수 없습니다.',
+          })
+          if (error.response.status === 400) {
+            console.error('Client error: ', error.response.data)
+          } else {
+            console.error('Server error: ', error.response.data)
+          }
+        } else if (error.request) {
+          console.error('No response: ', error.request)
+        } else {
+          console.error('Error: ', error.message)
+        }
+      })
+  }
+
   const handleExtendClick = copyId => {
     if (!user) {
       alert('로그인이 필요한 기능입니다!')
@@ -73,41 +108,6 @@ const MypageRent = ({ user }) => {
             open: true,
             severity: 'error',
             message: '도서를 연장할 수 없습니다.',
-          })
-          if (error.response.status === 400) {
-            console.error('Client error: ', error.response.data)
-          } else {
-            console.error('Server error: ', error.response.data)
-          }
-        } else if (error.request) {
-          console.error('No response: ', error.request)
-        } else {
-          console.error('Error: ', error.message)
-        }
-      })
-  }
-
-  const makeReturn = async copyId => {
-    const response = await axios
-      .post(`/api/return/${copyId}`, {
-        copyId: copyId,
-        email: user.email,
-      })
-      .then(response => {
-        console.log('makeReturn: ', response.data)
-        window.location.reload()
-        setSnackbar({
-          open: true,
-          severity: 'success',
-          message: '도서 반납 성공!',
-        })
-      })
-      .catch(error => {
-        if (error.response) {
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: '도서를 반납할 수 없습니다.',
           })
           if (error.response.status === 400) {
             console.error('Client error: ', error.response.data)

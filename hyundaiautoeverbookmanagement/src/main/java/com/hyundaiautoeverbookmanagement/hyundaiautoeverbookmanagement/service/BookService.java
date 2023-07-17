@@ -2,6 +2,7 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.CopyDetailDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
@@ -13,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
 @Slf4j
 @Service
@@ -93,5 +96,41 @@ public class BookService {
             bookDetails.add(dto);
         }
         return bookDetails;
+    }
+
+    @Transactional
+    public String updateBook(String bookIddStr, String bookCountStr) {
+        Long bookId = Long.parseLong(bookIddStr);
+        int bookCount = Integer.parseInt(bookCountStr);
+
+        log.info("SERVICE : bookId {} || bookCount {} ", bookId, bookCount);
+        // 1. 신청자가 admin인 지 확인
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            return "당신은 Admin이 아닙니다.";
+        }
+
+        // 2. bookId로 Book을 찾는다.
+        Book book = bookRepository.findById(bookId)
+                .orElseThrow(() -> new RuntimeException("Invalid bookId"));
+
+        // 3. Copy의 갯수를 새어서 bookCount와 비교하여 bookCount가 더 많으면 그 만큼 Copy를 만들어야한다.
+        List<Copy> copies = copyRepository.findByBook(book);
+        int currentCount = copies.size();
+        if (currentCount < bookCount) {
+            for (int i = 0; i < bookCount - currentCount; i++) {
+                Copy newCopy = new Copy();
+                newCopy.setBook(book);
+                newCopy.setBookStatus(BookStatus.AVAILABLE);  // Or other default status
+                copyRepository.save(newCopy);
+            }
+        }
+        // 3-1. 반대로 bookCount가 더 적으면 copyId 큰 순으로 지워야한다.
+        else if (currentCount > bookCount) {
+            copies.sort(Comparator.comparing(Copy::getId).reversed());
+            for (int i = 0; i < currentCount - bookCount; i++) {
+                copyRepository.delete(copies.get(i));
+            }
+        }
+        return "Success";
     }
 }
