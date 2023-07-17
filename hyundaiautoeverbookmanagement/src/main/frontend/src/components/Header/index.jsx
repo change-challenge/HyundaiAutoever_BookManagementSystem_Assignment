@@ -46,6 +46,7 @@ function Header() {
         message: '로그아웃 성공!',
       })
       navigate('/') // 로그아웃 후 리다이렉트 등의 작업 수행
+      window.location.reload()
     } catch (error) {
       console.error('로그아웃 실패:', error)
     }
