@@ -7,12 +7,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -33,8 +31,19 @@ public class AdminApiController {
     }
 
     @PostMapping("/member/type")
-    public ResponseEntity<String> changeMemberType(String email) {
-        return new ResponseEntity<>(memberService.changeMemberType(email), HttpStatus.OK);
+    public ResponseEntity<String> changeMemberType(@RequestBody Map<String, String> request) {
+        try {
+            String email = request.get("email");
+            String myEmail = request.get("myEmail");
+            String result = memberService.changeMemberType(email, myEmail);
+            if ("Success".equals(result)) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 

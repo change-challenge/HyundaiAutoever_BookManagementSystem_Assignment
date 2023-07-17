@@ -22,7 +22,6 @@ public class SecurityUtil {
         if (authentication == null || authentication.getName() == null) {
             throw  new RuntimeException("Security Context 에 인증 정보가 없습니다.");
         }
-
         return Long.parseLong(authentication.getName());
     }
 
@@ -32,7 +31,7 @@ public class SecurityUtil {
         if (authentication == null || authentication.getName() == null) {
             throw new RuntimeException("Security Context 에 인증 정보가 없습니다.");
         }
-        log.info("heyyyyyyyyyyy: {} " , authentication.getAuthorities());
-        return MemberType.MEMBER;
+        String authority = authentication.getAuthorities().iterator().next().getAuthority();
+        return MemberType.valueOf(authority);
     }
 }

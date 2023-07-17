@@ -35,5 +35,4 @@ public interface RentRepository extends JpaRepository<Rent, Long> {
 
     @Query("SELECT r FROM Rent r WHERE r.copy.id = :copyId AND r.returnedDate IS NULL ORDER BY r.endDate DESC")
     Rent findFirstByCopyIdAndReturnedDateIsNullOrderByEndDateDesc(@Param("copyId") Long copyId);
-
 }

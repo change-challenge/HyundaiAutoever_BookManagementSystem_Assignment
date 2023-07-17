@@ -8,6 +8,10 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
+import axios from 'axios'
+import { SnackbarContext } from '../../../context/SnackbarContext'
+import { fetchUserInfo } from '../../../context/UserContext'
+import { useEffect, useState, useContext } from 'react'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -29,15 +33,47 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }))
 
-const changeUserType = () => {
-  const confirm = window.confirm('유저의 상태를 바꾸시겠습니까?')
-
-  if (confirm) {
-  }
-}
-
 export default function CustomizedTables({ users }) {
-  console.log('table users : ', users)
+  const { setSnackbar } = useContext(SnackbarContext)
+  const [myInfo, setMyInfo] = useState(null)
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const userInfo = await fetchUserInfo()
+      setMyInfo(userInfo)
+    }
+    getUserInfo()
+    console.log(myInfo)
+  }, [])
+
+  console.log('myInfo : ', myInfo)
+  const ChangeMemberType = async email => {
+    console.log('email : ', email)
+    const response = await axios
+      .post(`/api/admin/member/type`, {
+        email: email,
+        myEmail: myInfo.email,
+      })
+      .then(response => {
+        window.location.reload()
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: '유저 권한 변경!',
+        })
+      })
+      .catch(error => {
+        console.log(error)
+      })
+  }
+
+  const HandleClick = email => {
+    const confirm = window.confirm('유저 권한을 바꾸시겠습니까?')
+
+    if (confirm) {
+      ChangeMemberType(email)
+    }
+  }
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -73,15 +109,18 @@ export default function CustomizedTables({ users }) {
                   {user.lateDay === 0 ? '-' : `연채중(${user.lateDay}일)`}
                 </StyledTableCell>
                 <StyledTableCell>
-                  {user.userType === 'ADMIN' ? (
-                    <Button variant="contained" onClick={changeUserType}>
+                  {user.memberType === 'ADMIN' ? (
+                    <Button
+                      variant="contained"
+                      onClick={() => HandleClick(user.email)}
+                    >
                       TO USER
                     </Button>
                   ) : (
                     <Button
                       variant="contained"
                       color="error"
-                      onClick={changeUserType}
+                      onClick={() => HandleClick(user.email)}
                     >
                       TO ADMIN
                     </Button>
