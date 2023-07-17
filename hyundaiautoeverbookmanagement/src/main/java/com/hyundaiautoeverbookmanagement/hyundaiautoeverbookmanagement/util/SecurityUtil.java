@@ -2,8 +2,6 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -32,6 +30,9 @@ public class SecurityUtil {
             throw new RuntimeException("Security Context 에 인증 정보가 없습니다.");
         }
         String authority = authentication.getAuthorities().iterator().next().getAuthority();
+        if (authority.equals("ROLE_ANONYMOUS")) {
+            throw new RuntimeException("인증되지 않은 사용자입니다.");
+        }
         return MemberType.valueOf(authority);
     }
 }

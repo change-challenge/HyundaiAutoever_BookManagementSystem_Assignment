@@ -3,6 +3,7 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.*;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
 
 @RestController
@@ -133,6 +136,21 @@ public class AdminApiController {
                 return new ResponseEntity<>(result, HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/allow")
+    public  ResponseEntity<String> isAllowed() {
+        try {
+            log.info("와이라노 : {}", SecurityUtil.getCurrentMemberType());
+            if (SecurityUtil.getCurrentMemberType().equals(MemberType.ADMIN)) {
+                return new ResponseEntity<String>("Success", HttpStatus.OK);
+            }
+            else {
+                return new ResponseEntity<String>("Failed", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
