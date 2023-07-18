@@ -82,7 +82,15 @@ const SearchBar = ({ onSearchValueChange, placeholder, width, height }) => {
   const [searchValue, setSearchValue] = useState('')
 
   const handleInputChange = e => {
-    setSearchValue(e.target.value)
+    const value = e.target.value
+    const regExp = /^[ㄱ-ㅎ가-힣a-zA-Z0-9\s]*$/
+    if (regExp.test(value)) {
+      setSearchValue(value)
+    } else {
+      // 입력값이 허용되지 않는 문자를 포함하는 경우, 해당 문자를 제거합니다.
+      const newValue = value.replace(/[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]/g, '')
+      setSearchValue(newValue)
+    }
   }
 
   const handleClearClick = () => {

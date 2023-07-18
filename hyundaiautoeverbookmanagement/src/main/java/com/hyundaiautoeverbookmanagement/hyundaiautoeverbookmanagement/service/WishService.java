@@ -81,9 +81,6 @@ public class WishService {
             bookDTO.setCover(wish.getCover());
             bookDTO.setBookStatus(false);
             try {
-                log.info("CATEGORY는 ?");
-                log.info("CATEGORY는 ? : {}", wish.getCategory());
-                log.info("CATEGORY는 ? : {}", wish.getCategory().getDescription());
                 bookDTO.setCategory(wish.getCategory().getDescription());
             } catch (IllegalArgumentException e) {
                 log.info("wish Category 문제");
