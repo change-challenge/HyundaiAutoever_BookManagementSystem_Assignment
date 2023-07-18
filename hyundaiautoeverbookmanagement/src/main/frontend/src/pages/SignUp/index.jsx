@@ -1,10 +1,13 @@
 import { useNavigate } from 'react-router-dom'
 import { Title, LabelInput } from '../../components/index'
 import * as S from './style'
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useEffect } from 'react'
+import { fetchUserInfo } from '../../context/UserContext'
+import { SnackbarContext } from '../../context/SnackbarContext'
 
 function SignUp() {
+  const { setSnackbar } = useContext(SnackbarContext)
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
   const [pwSame, setPwSame] = useState('')
@@ -18,6 +21,17 @@ function SignUp() {
   const [notAllow, setNotAllow] = useState(true)
 
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const userInfo = await fetchUserInfo()
+      if (userInfo) {
+        alert('이미 로그인을 하셨습니다.')
+        navigate('/')
+      }
+    }
+    getUserInfo()
+  }, [])
 
   const handleEmail = e => {
     setEmail(e.target.value)
@@ -56,7 +70,6 @@ function SignUp() {
     // 회원가입 버튼 클릭 시 호출되는 함수
     if (emailValid && pwValid && pwSameValid && nameValid) {
       // 필수 입력 사항이 모두 입력되었을 때 API 호출
-      // fetch 또는 axios를 사용하여 백엔드 API로 데이터 전송
       const currentDate = new Date()
       const isoDate = currentDate.toISOString()
       const data = {
@@ -79,6 +92,11 @@ function SignUp() {
             if (response.ok) {
               // 회원가입 성공 처리
               navigate('/login')
+              setSnackbar({
+                open: true,
+                severity: 'success',
+                message: '회원가입 성공!',
+              })
             } else {
               alert('가입불가')
             }

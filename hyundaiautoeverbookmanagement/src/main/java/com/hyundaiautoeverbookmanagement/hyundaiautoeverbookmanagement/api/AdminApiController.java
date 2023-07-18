@@ -2,6 +2,7 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.*;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -12,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-
-import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
 
 @RestController
@@ -27,13 +26,34 @@ public class AdminApiController {
     private final WishService wishService;
     private final BookService bookService;
 
+
+    // GET 관련 메소드
     @GetMapping("/member")
-    public ResponseEntity<List<MemberAdminResponseDTO>> getMembers() {
-        List<MemberAdminResponseDTO> users = memberService.getAllMembers();
+    public ResponseEntity<List<AdminMemberDTO>> getMembers() {
+        List<AdminMemberDTO> users = memberService.getAllMembers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
-    @PostMapping("/member/type")
+    @GetMapping("/book")
+    public ResponseEntity<List<BookDTO>> getBooks() {
+        List<BookDTO> books = bookService.getAllBooks();
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+    @GetMapping("/rent")
+    public ResponseEntity<List<RentResponseDTO>> getRents() {
+        List<RentResponseDTO> rent = rentService.getAllRents();
+        return new ResponseEntity<>(rent, HttpStatus.OK);
+    }
+
+    @GetMapping("/wish")
+    public ResponseEntity<List<WishRequestDTO>> getWishs() {
+        List<WishRequestDTO> wishBooks = wishService.getAllWishs();
+        return new ResponseEntity<>(wishBooks, HttpStatus.OK);
+    }
+
+    // Member의 권한 바꾸기
+    @PatchMapping("/member/type")
     public ResponseEntity<String> changeMemberType(@RequestBody Map<String, String> request) {
         try {
             String email = request.get("email");
@@ -49,14 +69,8 @@ public class AdminApiController {
         }
     }
 
-    @GetMapping("/rent")
-    public ResponseEntity<List<RentResponseDTO>> getRents() {
-        List<RentResponseDTO> rent = rentService.getAllRents();
-        log.info("!!rent!! " + rent);
-        return new ResponseEntity<>(rent, HttpStatus.OK);
-    }
-
-    @PostMapping("/return/{copyId}")
+    // Admin에서 반납하기
+    @PatchMapping("/return/{copyId}")
     public ResponseEntity<String> returnBook(@RequestBody RentRequestDTO dto) {
         try {
             String result = rentService.adminReturnBook(dto);
@@ -70,18 +84,13 @@ public class AdminApiController {
         }
     }
 
-    @GetMapping("/book")
-    public ResponseEntity<List<BookDTO>> getBooks() {
-        List<BookDTO> books = bookService.getAllBooks();
-        return new ResponseEntity<>(books, HttpStatus.OK);
-    }
-
-    @PostMapping("/book/update")
-    public ResponseEntity<String> updateBook(@RequestBody Map<String, String> request) {
+    // Copy 증가 및 삭제
+    @PatchMapping("/book/update")
+    public ResponseEntity<String> updateBookCount(@RequestBody Map<String, String> request) {
         try {
             String bookId = request.get("bookId");
             String bookCount = request.get("bookCount");
-            String result = bookService.updateBook(bookId, bookCount);
+            String result = bookService.updateBookCount(bookId, bookCount);
             if ("Success".equals(result)) {
                 return new ResponseEntity<>(result, HttpStatus.OK);
             } else {
@@ -92,6 +101,7 @@ public class AdminApiController {
         }
     }
 
+    // Book 삭제
     @PostMapping("/book/delete")
     public ResponseEntity<String> deleteBook(@RequestBody Map<String, String> request) {
         try {
@@ -107,14 +117,23 @@ public class AdminApiController {
         }
     }
 
-    @GetMapping("/wish")
-    public ResponseEntity<List<WishRequestDTO>> getWishBooks() {
-        List<WishRequestDTO> wishBooks = wishService.getAllWishs();
-        return new ResponseEntity<>(wishBooks, HttpStatus.OK);
+    //
+    @PostMapping("/wish/approve")
+    public ResponseEntity<String> approveWish(@RequestBody WishRequestDTO WishDTO) {
+        try {
+            String result = wishService.approveWish(WishDTO);
+            if ("Success".equals(result)) {
+                return new ResponseEntity<>(result, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+            }
+        } catch (Exception e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
-    @PostMapping("/wish/reject")
-    public ResponseEntity<String> rejectedWish(@RequestBody Map<String, String> request) {
+    @PatchMapping("/wish/reject")
+    public ResponseEntity<String> rejectWish(@RequestBody Map<String, String> request) {
         try {
             String wishId = request.get("wishId");
             String result = wishService.rejectedWish(wishId);
@@ -128,24 +147,9 @@ public class AdminApiController {
         }
     }
 
-    @PostMapping("/wish/add")
-    public ResponseEntity<String> addWish(@RequestBody WishRequestDTO WishDTO) {
-        try {
-            String result = wishService.createWishBook(WishDTO);
-            if ("Success".equals(result)) {
-                return new ResponseEntity<>(result, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
-            }
-        } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
-
     @GetMapping("/allow")
     public  ResponseEntity<String> isAllowed() {
         try {
-            log.info("와이라노 : {}", SecurityUtil.getCurrentMemberType());
             if (SecurityUtil.getCurrentMemberType().equals(MemberType.ADMIN)) {
                 return new ResponseEntity<String>("Success", HttpStatus.OK);
             }

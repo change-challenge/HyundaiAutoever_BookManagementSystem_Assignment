@@ -1,11 +1,9 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import lombok.extern.slf4j.Slf4j;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.MemberType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-
-import java.util.Optional;
 
 @Slf4j
 public class SecurityUtil {
@@ -35,4 +33,11 @@ public class SecurityUtil {
         }
         return MemberType.valueOf(authority);
     }
+
+    public static void checkAdminAuthority() {
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            throw new RuntimeException("당신은 Admin이 아닙니다.");
+        }
+    }
+
 }

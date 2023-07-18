@@ -10,6 +10,5 @@ import java.util.List;
 public interface WishRepository extends JpaRepository<Wish, Long> {
     List<Wish> findAll();
     List<Wish> findByMemberEmail(String email);
-
     Wish save(Wish wish);
 }

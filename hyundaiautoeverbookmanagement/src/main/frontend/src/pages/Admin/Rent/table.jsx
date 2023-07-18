@@ -26,7 +26,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   '&:last-child td, &:last-child th': {
     border: 0,
   },
@@ -44,7 +43,7 @@ export default function CustomizedTables({ rents }) {
 
   const makeReturn = async (copyId, memberEmail) => {
     const response = await axios
-      .post(`/api/admin/return/${copyId}`, {
+      .patch(`/api/admin/return/${copyId}`, {
         copyId: copyId,
         email: memberEmail,
       })
@@ -67,7 +66,7 @@ export default function CustomizedTables({ rents }) {
           if (error.response.status === 400) {
             console.error('Client error: ', error.response.data)
           } else {
-            console.error('Server error: ', error.response.data)
+            alert('당신은 Admin이 아닙니다.')
           }
         } else if (error.request) {
           console.error('No response: ', error.request)

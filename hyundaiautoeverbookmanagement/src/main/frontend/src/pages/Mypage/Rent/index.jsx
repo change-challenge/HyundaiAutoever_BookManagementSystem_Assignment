@@ -24,7 +24,6 @@ const MypageRent = ({ user }) => {
       },
     })
     setRents(response.data)
-    console.log('response.data : ', response.data)
   }
 
   const handleReturnClick = copyId => {

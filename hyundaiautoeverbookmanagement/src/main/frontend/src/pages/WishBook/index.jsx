@@ -21,6 +21,42 @@ export default function WishBook() {
   const [wishBook, setWishBook] = useState({})
 
   const createWish = (book, user) => {
+    const categories = [
+      '가정/요리/뷰티',
+      '건강/취미/레저',
+      '경제경영',
+      '고등학교참고서',
+      '고전',
+      '과학',
+      '달력/기타',
+      '대학교재/전문서적',
+      '만화',
+      '사회과학',
+      '소설/시/희곡',
+      '수험생/자격증',
+      '어린이',
+      '에세이',
+      '여행',
+      '역사',
+      '예술/대중문화',
+      '외국어',
+      '유아',
+      '인문학',
+      '자기계발',
+      '잡지',
+      '전집/중고전집',
+      '중교/역학',
+      '중학생참고서',
+      '청소년',
+      '초등학교참고서',
+      '컴퓨터/모바일',
+      'Gift',
+    ]
+
+    const bookCategory = categories.includes(book.category)
+      ? book.category
+      : '달력/기타'
+
     return {
       id: null,
       status: 'Pending',
@@ -29,7 +65,7 @@ export default function WishBook() {
         title: book.title,
         author: book.author,
         publisher: book.publisher,
-        category: book.category,
+        category: bookCategory,
         info: book.info,
         rent_count: 0,
         isbn: book.isbn,
@@ -60,13 +96,17 @@ export default function WishBook() {
     const confirm = window.confirm('희망도서를 신청하시겠습니까?')
     if (confirm) {
       axios
-        .post('/api/wishbook/create', wishBook)
+        .post('/api/wish/create', wishBook)
         .then(response => {
           alert('성공적으로 희망도서신청을 하였습니다.')
           navigate('/')
         })
         .catch(error => {
-          alert('잠시 뒤에 다시 신청해주세요.')
+          if (error.response.status === 500) {
+            alert('이미 존재하는 도서입니다.')
+          } else {
+            alert('잠시 뒤에 다시 신청해주세요.')
+          }
           console.error(error) // 오류 처리
         })
     }

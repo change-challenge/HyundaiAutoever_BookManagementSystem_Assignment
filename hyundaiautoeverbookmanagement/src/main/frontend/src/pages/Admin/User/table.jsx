@@ -27,7 +27,6 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   '&:nth-of-type(odd)': {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   '&:last-child td, &:last-child th': {
     border: 0,
   },
@@ -50,7 +49,7 @@ export default function CustomizedTables({ users }) {
   const ChangeMemberType = async email => {
     console.log('email : ', email)
     const response = await axios
-      .post(`/api/admin/member/type`, {
+      .patch(`/api/admin/member/type`, {
         email: email,
         myEmail: myInfo.email,
       })
@@ -63,6 +62,7 @@ export default function CustomizedTables({ users }) {
         })
       })
       .catch(error => {
+        alert('당신은 Admin이 아닙니다.')
         console.log(error)
       })
   }

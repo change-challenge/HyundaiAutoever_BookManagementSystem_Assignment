@@ -14,13 +14,12 @@ const MypageWishBook = ({ user }) => {
   }
 
   const fetchwishBook = async () => {
-    const response = await axios.get(`/api/wishbook/read`, {
+    const response = await axios.get(`/api/wish/read`, {
       params: {
         email: user.email,
       },
     })
     setWishBooks(response.data)
-    console.log('response.data : ', response.data)
   }
 
   useEffect(() => {

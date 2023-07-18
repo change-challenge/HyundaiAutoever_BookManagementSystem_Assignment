@@ -63,14 +63,12 @@ public class RentApiController {
     @GetMapping("/api/rent/current")
     public ResponseEntity<List<RentResponseDTO>> getCurrentRents(@RequestParam String email) {
         List<RentResponseDTO> rent = rentService.getCurrentRents(email);
-        log.info("!!rent!! " + rent);
         return new ResponseEntity<>(rent, HttpStatus.OK);
     }
 
     @GetMapping("/api/rent/history")
     public ResponseEntity<List<RentResponseDTO>> getHistoryRents(@RequestParam String email) {
         List<RentResponseDTO> rent = rentService.getHistoryRents(email);
-        log.info("!!rent!! " + rent);
         return new ResponseEntity<>(rent, HttpStatus.OK);
     }
 }

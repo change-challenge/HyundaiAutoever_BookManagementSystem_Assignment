@@ -1,5 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.MemberType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import lombok.*;
 
 import java.util.Date;
@@ -12,7 +14,20 @@ import java.util.Date;
 @AllArgsConstructor
 public class AdminMemberDTO {
 
-    private String adminEmail;
-    private String adminToken;
-    private String userEmail;
+    private Long id;
+    private String email;
+    private String name;
+    private int rentCount;
+    private int lateDay;
+    private Date registDate;
+    private MemberType memberType;
+
+    public Member toEntity() {
+        Member member = new Member();
+        member.setId(null);
+        member.setEmail(this.email);
+        member.setName(this.name);
+        member.setMemberType(MemberType.MEMBER);
+        return member;
+    }
 }

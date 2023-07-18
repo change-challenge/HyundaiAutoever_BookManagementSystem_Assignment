@@ -21,6 +21,7 @@ import {
   BookSearch,
   BookDetail,
   WishBook,
+  Error,
 } from './pages/index'
 
 const App = () => {
@@ -66,6 +67,7 @@ const App = () => {
           <Route path="book" element={<AdminBook />} />
           <Route path="wishbook" element={<AdminWishBook />} />
         </Route>
+        <Route path="/*" element={<Error />} />
       </Routes>
     </>
   )

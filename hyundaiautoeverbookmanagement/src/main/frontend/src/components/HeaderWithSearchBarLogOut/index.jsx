@@ -22,7 +22,7 @@ function HeaderWithSearchBarLogOut() {
   const [isSearchRequested, setIsSearchRequested] = useState(false)
   useEffect(() => {
     if (isSearchRequested && searchValue) {
-      sessionStorage.setItem('lastSearch', searchValue) // Save the search value
+      sessionStorage.setItem('lastSearch', searchValue)
       navigate(`/search?query=${searchValue}`)
       setIsSearchRequested(false)
     }

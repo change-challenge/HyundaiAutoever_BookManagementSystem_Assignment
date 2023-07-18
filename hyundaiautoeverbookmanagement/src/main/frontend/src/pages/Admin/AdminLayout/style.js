@@ -10,8 +10,6 @@ const AdminWrapper = styled.div`
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  /*align-items: center;
-  justify-content: space-between;*/
 `
 
 export { AdminContainer, AdminWrapper }

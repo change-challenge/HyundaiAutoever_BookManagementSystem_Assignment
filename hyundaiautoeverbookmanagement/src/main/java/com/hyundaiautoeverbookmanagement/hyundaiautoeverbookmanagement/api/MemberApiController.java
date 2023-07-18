@@ -20,9 +20,4 @@ public class MemberApiController {
     public ResponseEntity<MemberResponseDTO> findMemberInfoById() {
         return ResponseEntity.ok(memberService.findMemberInfoById(SecurityUtil.getCurrentMemberId()));
     }
-
-    @GetMapping("/{email}")
-    public ResponseEntity<MemberResponseDTO> findMemberInfoByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(memberService.findMemberInfoByEmail(email));
-    }
 }

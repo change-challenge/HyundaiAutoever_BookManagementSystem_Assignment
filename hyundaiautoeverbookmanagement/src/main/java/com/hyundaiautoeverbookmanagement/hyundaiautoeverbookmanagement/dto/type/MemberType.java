@@ -1,4 +1,4 @@
-package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
+package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type;
 
 import org.springframework.security.core.GrantedAuthority;
 

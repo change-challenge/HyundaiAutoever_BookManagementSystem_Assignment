@@ -1,6 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.WishType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.WishStatus;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -19,5 +19,5 @@ public class WishResponseDTO {
     private LocalDate wishDate;
     private String publisher;
     private String ISBN;
-    private WishType wishType;
+    private WishStatus wishStatus;
 }

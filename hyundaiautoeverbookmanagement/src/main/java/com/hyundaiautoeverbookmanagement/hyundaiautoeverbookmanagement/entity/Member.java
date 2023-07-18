@@ -1,5 +1,5 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.MemberType;
 import jakarta.persistence.*;
 import lombok.*;
 

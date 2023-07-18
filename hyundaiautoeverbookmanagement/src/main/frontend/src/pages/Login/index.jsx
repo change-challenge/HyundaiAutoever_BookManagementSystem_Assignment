@@ -1,25 +1,33 @@
 import { useNavigate } from 'react-router-dom'
 import { LabelInput, Title } from '../../components/index'
 import * as S from './style'
-import React, { useState, useContext } from 'react'
-import { useEffect } from 'react'
+import React, { useState, useContext, useEffect } from 'react'
 import { useTokenDispatch, IsLoginContext } from '../../context/IsLoginContext'
 import { fetchUserInfo } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
-import axios from 'axios' // axios import 추가
+import axios from 'axios'
 
 function Login() {
   const setToken = useTokenDispatch()
   const { setSnackbar } = useContext(SnackbarContext)
-
   const { setIsLogin } = useContext(IsLoginContext)
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
-
   const [emailValid, setEmailValid] = useState(false)
   const [pwValid, setPwValid] = useState(false)
   const [notAllow, setNotAllow] = useState(true)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const getUserInfo = async () => {
+      const userInfo = await fetchUserInfo()
+      if (userInfo) {
+        alert('이미 로그인을 하셨습니다.')
+        navigate('/')
+      }
+    }
+    getUserInfo()
+  }, [])
 
   const handleEmail = e => {
     setEmail(e.target.value)

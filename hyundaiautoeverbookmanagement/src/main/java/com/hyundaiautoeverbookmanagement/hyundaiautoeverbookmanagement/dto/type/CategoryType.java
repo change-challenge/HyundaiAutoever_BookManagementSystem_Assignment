@@ -1,4 +1,4 @@
-package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
+package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type;
 
 public enum CategoryType {
     HOME_COOKING_BEAUTY("가정/요리/뷰티"),
@@ -42,6 +42,9 @@ public enum CategoryType {
     }
 
     public static CategoryType ToEnglish(String description) {
+        if (description == null) {
+            return CategoryType.CALENDAR_ETC;
+        }
         for (CategoryType category : CategoryType.values()) {
             if (category.getDescription().equals(description)) {
                 return category;

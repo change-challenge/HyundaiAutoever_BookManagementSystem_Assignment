@@ -1,5 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.CategoryType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.CategoryTypeConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,7 +32,7 @@ public class Book {
 
     @Column(name = "CATEGORY")
     @Convert(converter = CategoryTypeConverter.class)
-    private CategoryType category;
+    private CategoryType category = CategoryType.CALENDAR_ETC;;
 
     @Column(name = "RENT_COUNT")
     private int rentCount;

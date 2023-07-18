@@ -12,7 +12,6 @@ const AdminWishBook = () => {
   const fetchwishBook = async () => {
     const response = await axios.get(`/api/admin/wish`)
     setWishBook(response.data)
-    console.log(response.data)
   }
 
   useEffect(() => {

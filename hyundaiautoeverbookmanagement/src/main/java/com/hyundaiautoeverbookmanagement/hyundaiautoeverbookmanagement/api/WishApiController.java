@@ -11,21 +11,21 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/wishbook")
+@RequestMapping("/api/wish")
 @Slf4j
-public class WishBookApiController {
+public class WishApiController {
 
     @Autowired
     private WishService wishService;
 
     @PostMapping("/create")
-    public ResponseEntity<String> createWishBook(@RequestBody WishRequestDTO form) {
+    public ResponseEntity<String> createWish(@RequestBody WishRequestDTO form) {
         return ResponseEntity.ok(wishService.saveWish(form));
     }
 
     @GetMapping("/read")
-    public ResponseEntity<List<WishRequestDTO>> getWishBook(@RequestParam String email) {
-        List<WishRequestDTO> wishBooks = wishService.getWish(email);
+    public ResponseEntity<List<WishRequestDTO>> getWish(@RequestParam String email) {
+        List<WishRequestDTO> wishBooks = wishService.getWishByEmail(email);
         return new ResponseEntity<>(wishBooks, HttpStatus.OK);
     }
 }
