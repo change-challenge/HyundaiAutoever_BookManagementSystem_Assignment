@@ -62,6 +62,7 @@ export default function CustomizedTables({ users }) {
         })
       })
       .catch(error => {
+        alert('당신은 Admin이 아닙니다.')
         console.log(error)
       })
   }

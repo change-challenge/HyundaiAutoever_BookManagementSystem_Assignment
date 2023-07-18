@@ -38,8 +38,6 @@ const AdminLayout = () => {
   useEffect(() => {
     const fetchAdmin = async () => {
       const result = await checkAdmin()
-
-      console.log('result : ', result)
       if (!result) {
         alert('접근 불가!')
         navigate('/')

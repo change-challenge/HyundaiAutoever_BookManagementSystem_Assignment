@@ -1,7 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.MemberType;
 import lombok.extern.slf4j.Slf4j;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.MemberType;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 

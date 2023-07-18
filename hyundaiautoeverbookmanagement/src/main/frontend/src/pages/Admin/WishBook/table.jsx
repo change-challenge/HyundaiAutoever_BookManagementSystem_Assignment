@@ -48,38 +48,57 @@ export default function CustomizedTables({ wishBooks }) {
 
   const handleUpdateButtonClick = async wishbookId => {
     const confirm = window.confirm('희망 도서를 반려하시겠습니까?')
-    const response = await axios.patch('/api/admin/wish/reject', {
-      wishId: wishbookId,
-    })
-    window.location.reload()
+    const response = await axios
+      .patch('/api/admin/wish/reject', {
+        wishId: wishbookId,
+      })
+      .then(() => {
+        window.location.reload()
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: '희망도서 반려!',
+        })
+      })
+      .catch(error => {
+        if (error.response.status === 500) {
+          alert('당신은 Admin이 아닙니다.')
+        }
+      })
   }
 
   const handleAddButtonClick = async wishbook => {
     const confirm = window.confirm('희망 도서를 추가하시겠습니까?')
-    const response = await axios.post('/api/admin/wish/approve', {
-      id: wishbook.id,
-      status: wishbook.status,
-      email: null,
-      book: {
-        title: wishbook.book.title,
-        author: wishbook.book.author,
-        publisher: wishbook.book.publisher,
-        category: wishbook.book.category,
-        info: wishbook.book.info,
-        rent_count: 0,
-        isbn: wishbook.book.isbn,
-        cover: wishbook.book.cover,
-        pubDate: wishbook.book.pubDate,
-      },
-    })
-    console.log(response)
-
-    window.location.reload()
-    setSnackbar({
-      open: true,
-      severity: 'success',
-      message: '도서 추가 성공!',
-    })
+    const response = await axios
+      .post('/api/admin/wish/approve', {
+        id: wishbook.id,
+        status: wishbook.status,
+        email: null,
+        book: {
+          title: wishbook.book.title,
+          author: wishbook.book.author,
+          publisher: wishbook.book.publisher,
+          category: wishbook.book.category,
+          info: wishbook.book.info,
+          rent_count: 0,
+          isbn: wishbook.book.isbn,
+          cover: wishbook.book.cover,
+          pubDate: wishbook.book.pubDate,
+        },
+      })
+      .then(() => {
+        window.location.reload()
+        setSnackbar({
+          open: true,
+          severity: 'success',
+          message: '희망도서 추기!',
+        })
+      })
+      .catch(error => {
+        if (error.response.status === 500) {
+          alert('당신은 Admin이 아닙니다.')
+        }
+      })
   }
 
   return (

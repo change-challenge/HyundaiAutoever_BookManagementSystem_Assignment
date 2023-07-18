@@ -66,7 +66,7 @@ export default function CustomizedTables({ rents }) {
           if (error.response.status === 400) {
             console.error('Client error: ', error.response.data)
           } else {
-            console.error('Server error: ', error.response.data)
+            alert('당신은 Admin이 아닙니다.')
           }
         } else if (error.request) {
           console.error('No response: ', error.request)

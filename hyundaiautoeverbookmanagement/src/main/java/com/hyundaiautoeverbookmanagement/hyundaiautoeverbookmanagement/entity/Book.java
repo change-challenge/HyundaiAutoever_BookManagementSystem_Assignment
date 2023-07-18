@@ -32,7 +32,7 @@ public class Book {
 
     @Column(name = "CATEGORY")
     @Convert(converter = CategoryTypeConverter.class)
-    private CategoryType category;
+    private CategoryType category = CategoryType.CALENDAR_ETC;;
 
     @Column(name = "RENT_COUNT")
     private int rentCount;

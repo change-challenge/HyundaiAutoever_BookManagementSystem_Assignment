@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -16,6 +16,7 @@ import Typography from '@mui/material/Typography'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import axios from 'axios'
+import { SnackbarContext } from '../../../context/SnackbarContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,6 +53,7 @@ export default function CustomizedTables({ books }) {
   const [open, setOpen] = useState(false)
   const [bookId, setBookId] = useState(0)
   const [bookCount, setBookCount] = useState(0)
+  const { setSnackbar } = useContext(SnackbarContext)
 
   const handleOpen = () => {
     setOpen(true)
@@ -71,8 +73,21 @@ export default function CustomizedTables({ books }) {
     )
 
     if (confirm) {
-      axios.post('/api/admin/book/delete', { bookId })
-      window.location.reload()
+      axios
+        .post('/api/admin/book/delete', { bookId })
+        .then(() => {
+          window.location.reload()
+          setSnackbar({
+            open: true,
+            severity: 'error',
+            message: '도서 삭제 성공!',
+          })
+        })
+        .catch(error => {
+          if (error.response.status === 500) {
+            alert('당신은 Admin이 아닙니다.')
+          }
+        })
     }
   }
 
@@ -173,9 +188,22 @@ export default function CustomizedTables({ books }) {
                 height: 40,
               }}
               onClick={() => {
-                axios.patch('/api/admin/book/update', { bookId, bookCount })
+                axios
+                  .patch('/api/admin/book/update', { bookId, bookCount })
+                  .then(() => {
+                    window.location.reload()
+                    setSnackbar({
+                      open: true,
+                      severity: 'success',
+                      message: '도서 수정 성공!',
+                    })
+                  })
+                  .catch(error => {
+                    if (error.response.status === 500) {
+                      alert('당신은 Admin이 아닙니다.')
+                    }
+                  })
                 handleClose()
-                window.location.reload()
               }}
             >
               확인

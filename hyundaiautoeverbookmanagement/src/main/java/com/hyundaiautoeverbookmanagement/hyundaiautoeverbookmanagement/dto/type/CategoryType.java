@@ -42,6 +42,9 @@ public enum CategoryType {
     }
 
     public static CategoryType ToEnglish(String description) {
+        if (description == null) {
+            return CategoryType.CALENDAR_ETC;
+        }
         for (CategoryType category : CategoryType.values()) {
             if (category.getDescription().equals(description)) {
                 return category;
