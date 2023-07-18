@@ -70,12 +70,15 @@ public class WishService {
     @Transactional
     public String approveWish(WishRequestDTO wishDTO) {
 
+
+        log.info("approveWish!!!  : {}", wishDTO);
         // 1. 신청자가 Admin인 지 확인
         checkAdminAuthority();
 
         // 2. bookDTO를 Entity로 변경
         Book book = wishDTO.getBook().toEntity();
 
+        log.info("wishDTO.getId() : {}", wishDTO.getId());
         // 3. wishId로 Wish 찾기
         Wish wish = wishRepository.findById(wishDTO.getId())
                 .orElseThrow(() -> new RuntimeException("해당 wish가 존재하지 않습니다."));
