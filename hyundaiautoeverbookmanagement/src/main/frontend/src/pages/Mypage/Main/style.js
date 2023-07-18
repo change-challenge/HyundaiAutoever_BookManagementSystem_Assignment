@@ -18,8 +18,6 @@ const MypageTitleWrapper = styled.div`
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  /*align-items: center;
-	justify-content: space-between;*/
 `
 
 const MypageGreetingWrapper = styled.div`
@@ -28,8 +26,7 @@ const MypageGreetingWrapper = styled.div`
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  /*align-items: center;
-	justify-content: space-between;*/
+  justify-content: space-between;
 `
 
 const MypageTabsWrapper = styled.div`
@@ -38,8 +35,6 @@ const MypageTabsWrapper = styled.div`
   margin-left: auto;
   margin-right: auto;
   display: flex;
-  /*align-items: center;
-  justify-content: space-between;*/
 `
 
 export {
