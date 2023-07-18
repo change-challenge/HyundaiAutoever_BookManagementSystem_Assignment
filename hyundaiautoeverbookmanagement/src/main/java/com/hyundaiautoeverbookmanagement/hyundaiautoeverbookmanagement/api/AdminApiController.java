@@ -2,6 +2,7 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.api;
 
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.*;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class AdminApiController {
 
     // GET 관련 메소드
     @GetMapping("/member")
-    public ResponseEntity<List<MemberAdminResponseDTO>> getMembers() {
-        List<MemberAdminResponseDTO> users = memberService.getAllMembers();
+    public ResponseEntity<List<AdminMemberDTO>> getMembers() {
+        List<AdminMemberDTO> users = memberService.getAllMembers();
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 

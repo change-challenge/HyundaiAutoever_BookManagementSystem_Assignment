@@ -1,6 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.BookStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.checkAdminAuthority;
 
 @Service
 @RequiredArgsConstructor
@@ -74,9 +74,7 @@ public class RentService {
 
     public String adminReturnBook(RentRequestDTO form) {
         // 1. 신청자가 admin인 지 확인
-        if (getCurrentMemberType() != MemberType.ADMIN) {
-            return "당신은 Admin이 아닙니다.";
-        }
+        checkAdminAuthority();
 
         // 2. 유저인 지 체크
         Member member =  memberRepository.findByEmail(form.getEmail())

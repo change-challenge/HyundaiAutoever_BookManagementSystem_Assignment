@@ -2,8 +2,9 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.BookStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishRequestDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.WishStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
@@ -14,13 +15,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.checkAdminAuthority;
-import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
-
 
 @Service
 @RequiredArgsConstructor
@@ -64,7 +62,7 @@ public class WishService {
                 .orElseThrow(() -> new RuntimeException("해당 wish가 존재하지 않습니다."));
 
         // 3. wish Status 변경
-        wish.setWishType(WishType.REJECTED);
+        wish.setWishStatus(WishStatus.REJECTED);
         wishRepository.save(wish);
         return "Success";
     }
@@ -73,9 +71,7 @@ public class WishService {
     public String approveWish(WishRequestDTO wishDTO) {
 
         // 1. 신청자가 Admin인 지 확인
-        if (getCurrentMemberType() != MemberType.ADMIN) {
-            return "당신은 Admin이 아닙니다.";
-        }
+        checkAdminAuthority();
 
         // 2. bookDTO를 Entity로 변경
         Book book = wishDTO.getBook().toEntity();
@@ -85,7 +81,7 @@ public class WishService {
                 .orElseThrow(() -> new RuntimeException("해당 wish가 존재하지 않습니다."));
 
         // 4. wish Status 변경
-        wish.setWishType(WishType.APPROVED);
+        wish.setWishStatus(WishStatus.APPROVED);
         wishRepository.save(wish);
 
         // 5. 중복된 책 확인 후 Book 추가
@@ -112,7 +108,7 @@ public class WishService {
         WishRequestDTO wishRequestDTO = new WishRequestDTO();
         wishRequestDTO.setId(wish.getId());
         wishRequestDTO.setEmail(wish.getMemberEmail());
-        wishRequestDTO.setStatus(wish.getWishType().toString());
+        wishRequestDTO.setStatus(wish.getWishStatus().toString());
         wishRequestDTO.setWishDate(wish.getWishDate());
         wishRequestDTO.setBook(convertToBookDTO(wish));
         return wishRequestDTO;

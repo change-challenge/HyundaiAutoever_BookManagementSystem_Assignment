@@ -1,9 +1,9 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberAdminResponseDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.AdminMemberDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
@@ -17,7 +17,8 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
-import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
+
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.checkAdminAuthority;
 
 @Service
 @Slf4j
@@ -27,22 +28,22 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RentRepository rentRepository;
 
-    public List<MemberAdminResponseDTO> getAllMembers() {
+    public List<AdminMemberDTO> getAllMembers() {
         List<Member> members = memberRepository.findAll();
-        List<MemberAdminResponseDTO> memberAdminResponseDTOS = new ArrayList<>();
+        List<AdminMemberDTO> adminMemberDTOS = new ArrayList<>();
 
         for (Member member: members) {
-            MemberAdminResponseDTO memberAdminResponseDTO = new MemberAdminResponseDTO();
-            memberAdminResponseDTO.setId(member.getId());
-            memberAdminResponseDTO.setEmail(member.getEmail());
-            memberAdminResponseDTO.setName(member.getName());
-            memberAdminResponseDTO.setMemberType(member.getMemberType());
-            memberAdminResponseDTO.setRegistDate(member.getRegistDate());
-            memberAdminResponseDTO.setRentCount(rentRepository.countByMemberIdAndReturnedDateIsNull(member.getId()));
-            memberAdminResponseDTO.setLateDay(calculateLateDays(member.getId()));
-            memberAdminResponseDTOS.add(memberAdminResponseDTO);
+            AdminMemberDTO adminMemberDTO = new AdminMemberDTO();
+            adminMemberDTO.setId(member.getId());
+            adminMemberDTO.setEmail(member.getEmail());
+            adminMemberDTO.setName(member.getName());
+            adminMemberDTO.setMemberType(member.getMemberType());
+            adminMemberDTO.setRegistDate(member.getRegistDate());
+            adminMemberDTO.setRentCount(rentRepository.countByMemberIdAndReturnedDateIsNull(member.getId()));
+            adminMemberDTO.setLateDay(calculateLateDays(member.getId()));
+            adminMemberDTOS.add(adminMemberDTO);
         }
-        return memberAdminResponseDTOS;
+        return adminMemberDTOS;
     }
 
     public MemberResponseDTO findMemberInfoById(Long memberId) {
@@ -54,9 +55,7 @@ public class MemberService {
     @Transactional
     public String changeMemberType(String email, String myEmail) {
         // 1. 신청자가 admin인 지 확인
-        if (getCurrentMemberType() != MemberType.ADMIN) {
-            throw new RuntimeException("당신은 Admin이 아닙니다.");
-        }
+        checkAdminAuthority();
 
         // 2. 본인을 바꾸려고 하는 지 확인
         if (email.equals(myEmail)) {

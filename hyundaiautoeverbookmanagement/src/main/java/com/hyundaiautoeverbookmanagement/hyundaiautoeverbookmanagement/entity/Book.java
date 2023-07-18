@@ -1,5 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.CategoryType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.CategoryTypeConverter;
 import jakarta.persistence.*;
 import lombok.*;
 

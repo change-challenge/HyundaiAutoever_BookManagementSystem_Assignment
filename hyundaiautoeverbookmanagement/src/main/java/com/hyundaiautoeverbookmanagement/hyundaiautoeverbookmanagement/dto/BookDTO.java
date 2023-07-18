@@ -1,7 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.CategoryType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.CategoryType;
 import lombok.*;
 
 import java.time.LocalDate;

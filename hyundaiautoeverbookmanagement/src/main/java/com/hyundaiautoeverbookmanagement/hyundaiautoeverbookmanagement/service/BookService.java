@@ -1,8 +1,8 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.BookStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.CopyDetailDTO;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.checkAdminAuthority;
 
 @Slf4j
 @Service
@@ -57,10 +57,13 @@ public class BookService {
         List<CopyDetailDTO> bookDetails = new ArrayList<>();
 
         for (Copy copy : copies) {
-            // 사본의 상태가 UNAVAILABLE인 경우에만 처리
+            // Copy의 상태가 UNAVAILABLE인 경우에만 처리
             CopyDetailDTO dto = new CopyDetailDTO();
             dto.setCopyId(copy.getId());
             if (copy.getBookStatus().equals(BookStatus.UNAVAILABLE)) {
+                // Copy에 따라 Rent는 여러개일 수 있다.
+                // 그러기에 가장 최근꺼를 가져와야한다.
+                // 다만, 같은 책을 한 사람이 여러번 빌릴 수 없기에 '대출중'인 것이 있다면 가장 최근 Rent이다.
                 Rent rent = rentRepository.findFirstByCopyIdAndReturnedDateIsNullOrderByEndDateDesc(copy.getId());
                 if (rent != null) {
                     dto.setEndDate(Optional.ofNullable(rent.getEndDate()));
@@ -79,9 +82,7 @@ public class BookService {
         int bookCount = Integer.parseInt(bookCountStr);
 
         // 1. 신청자가 admin인 지 확인
-        if (getCurrentMemberType() != MemberType.ADMIN) {
-            return "당신은 Admin이 아닙니다.";
-        }
+        checkAdminAuthority();
 
         // 2. bookId로 Book을 찾는다.
         Book book = bookRepository.findById(bookId)
@@ -113,9 +114,7 @@ public class BookService {
         Long bookId = Long.parseLong(bookIdStr);
 
         // 1. 신청자가 admin인 지 확인
-        if (getCurrentMemberType() != MemberType.ADMIN) {
-            return "당신은 Admin이 아닙니다.";
-        }
+        checkAdminAuthority();
 
         // 2. bookId로 Book을 찾는다.
         Book book = bookRepository.findById(bookId)

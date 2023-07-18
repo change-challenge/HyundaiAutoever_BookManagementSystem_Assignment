@@ -1,4 +1,4 @@
-package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
+package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type;
 
 public enum CategoryType {
     HOME_COOKING_BEAUTY("가정/요리/뷰티"),

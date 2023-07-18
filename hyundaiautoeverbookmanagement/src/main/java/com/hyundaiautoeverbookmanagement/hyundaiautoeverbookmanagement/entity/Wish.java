@@ -1,5 +1,8 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity;
 
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.CategoryType;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.CategoryTypeConverter;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.WishStatus;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -26,7 +29,7 @@ public class Wish {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "STATUS", nullable = false)
-    private WishType wishType = WishType.PENDING;
+    private WishStatus wishStatus = WishStatus.PENDING;
 
     @Column(name = "TITLE", nullable = false)
     private String title;
@@ -42,7 +45,7 @@ public class Wish {
 
     @Column(name = "CATEGORY")
     @Convert(converter = CategoryTypeConverter.class)
-    private CategoryType category;
+    private CategoryType category = CategoryType.CALENDAR_ETC;
 
     @Column(name = "INFO", length = 300)
     private String info;
