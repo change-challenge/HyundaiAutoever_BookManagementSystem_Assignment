@@ -1,8 +1,16 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Logo from '../../assets/logo.svg'
 import * as S from './style'
 import { Text, SearchBar } from '../index'
+import {
+  useIsLoginState,
+  useIsLoginDispatch,
+  useTokenDispatch,
+} from '../../context/IsLoginContext'
+import { useUserDispatch } from '../../context/UserContext'
+import { SnackbarContext } from '../../context/SnackbarContext'
+import axios from 'axios'
 
 const basicNavMenu = [
   {
@@ -19,6 +27,13 @@ function HeaderWithSearchBarLogIn() {
   const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState('')
   const [isSearchRequested, setIsSearchRequested] = useState(false)
+  const { setSnackbar } = useContext(SnackbarContext)
+
+  const isLogin = useIsLoginState()
+  const setUserInfo = useUserDispatch()
+  const setIsLogin = useIsLoginDispatch()
+  const setToken = useTokenDispatch() // 추가: 토큰 디스패치 함수
+
   useEffect(() => {
     if (isSearchRequested && searchValue) {
       sessionStorage.setItem('lastSearch', searchValue) // Save the search value
@@ -26,6 +41,24 @@ function HeaderWithSearchBarLogIn() {
       setIsSearchRequested(false)
     }
   }, [searchValue, isSearchRequested, navigate])
+
+  const handleLogout = async () => {
+    try {
+      await axios.post('/api/auth/logout')
+      setIsLogin(false)
+      setUserInfo(null)
+      setToken(null)
+      localStorage.removeItem('token')
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: '로그아웃 성공!',
+      })
+      navigate('/')
+    } catch (error) {
+      console.error('로그아웃 실패:', error)
+    }
+  }
 
   const handleSearchValueChange = value => {
     setSearchValue(value)
@@ -64,35 +97,51 @@ function HeaderWithSearchBarLogIn() {
         </S.SearchContainer>
         <S.NavWrapper>
           <S.LinkButtonWrapper>
-            {basicNavMenu.map(menu => {
-              return (
-                <li key={menu.linkTo}>
-                  <Link
-                    style={{
-                      marginRight: '2rem',
-                      padding: '0 10px',
-                      lineHeight: '1em',
-                      height: '1em',
-                    }}
-                    to={menu.linkTo}
-                  >
-                    <span
-                      style={{
-                        display: 'inline-block',
-                      }}
-                    >
-                      <Text
-                        text={menu.text}
-                        color={({ theme }) => theme.colors.main}
-                        fontSize={({ theme }) => theme.fontSize.sz16}
-                        fontFamily={'Roboto'}
-                        cursor={'pointer'}
-                      />
-                    </span>
-                  </Link>
-                </li>
-              )
-            })}
+            <li>
+              <Link
+                style={{
+                  marginRight: '2rem',
+                  padding: '0 10px',
+                  lineHeight: '1em',
+                  height: '1em',
+                }}
+                to="/mypage"
+              >
+                <span
+                  style={{
+                    display: 'inline-block',
+                  }}
+                >
+                  <Text
+                    text="마이페이지"
+                    color={({ theme }) => theme.colors.main}
+                    fontSize={({ theme }) => theme.fontSize.sz16}
+                    fontFamily={'Roboto'}
+                    cursor={'pointer'}
+                  />
+                </span>
+              </Link>
+            </li>
+            <li>
+              <span
+                style={{
+                  padding: '0 10px',
+                  lineHeight: '1em',
+                  height: '1em',
+                  display: 'inline-block',
+                }}
+                onClick={handleLogout}
+                role="button"
+              >
+                <Text
+                  text="로그아웃"
+                  color={({ theme }) => theme.colors.main}
+                  fontSize={({ theme }) => theme.fontSize.sz16}
+                  fontFamily={'Roboto'}
+                  cursor={'pointer'}
+                />
+              </span>
+            </li>
           </S.LinkButtonWrapper>
         </S.NavWrapper>
       </S.Layout>

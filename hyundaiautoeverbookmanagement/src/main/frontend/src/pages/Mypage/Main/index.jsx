@@ -24,9 +24,6 @@ const Mypage = () => {
       }
       const result = await checkAdmin()
       console.log('result : ', result)
-      if (result !== null) {
-        setIsAdmin(true)
-      }
     }
     getUserInfo()
   }, [])
@@ -47,7 +44,7 @@ const Mypage = () => {
       if (response.status !== 200) {
         throw new Error('Not an admin')
       }
-      return response
+      setIsAdmin(true)
     } catch (error) {
       console.error('Error:', error)
       return null
