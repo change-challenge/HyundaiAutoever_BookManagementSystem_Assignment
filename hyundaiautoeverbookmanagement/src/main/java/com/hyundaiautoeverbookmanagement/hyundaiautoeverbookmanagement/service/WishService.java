@@ -10,90 +10,36 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repositor
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
+import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.checkAdminAuthority;
 import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
 
 @Service
 @RequiredArgsConstructor
+@Component
 @Slf4j
 public class WishService {
 
     private final WishRepository wishRepository;
     private final BookRepository bookRepository;
     private final CopyRepository copyRepository;
-    private final BookService bookService;
 
     public List<WishRequestDTO> getAllWishs() {
         List<Wish> wishBooks = wishRepository.findAll();
-        List<WishRequestDTO> wishRequestDTOS = new ArrayList<>();
-
-        for (Wish wish: wishBooks) {
-            WishRequestDTO wishRequestDTO = new WishRequestDTO();
-            BookDTO bookDTO = new BookDTO();
-            wishRequestDTO.setId(wish.getId());
-            wishRequestDTO.setEmail(wish.getMemberEmail());
-            wishRequestDTO.setStatus(wish.getWishType().toString());
-            wishRequestDTO.setWishDate(wish.getWishDate());
-            bookDTO.setId(null);
-            bookDTO.setTitle(wish.getTitle());
-            bookDTO.setAuthor(wish.getAuthor());
-            bookDTO.setPublisher(wish.getPublisher());
-            bookDTO.setIsbn(wish.getISBN());
-            bookDTO.setBookCount(0);
-            bookDTO.setCover(wish.getCover());
-            bookDTO.setBookStatus(false);
-            try {
-                bookDTO.setCategory(wish.getCategory().getDescription());
-            } catch (IllegalArgumentException e) {
-                log.info("wish Category 문제");
-            }
-            bookDTO.setPubDate(wish.getPubDate());
-            bookDTO.setInfo(wish.getInfo());
-            bookDTO.setRentCount(0);
-            wishRequestDTO.setBook(bookDTO);
-            wishRequestDTOS.add(wishRequestDTO);
-        }
-        return wishRequestDTOS;
+        return convertToWishRequestDTOs(wishBooks);
     }
 
-    public List<WishRequestDTO> getWish(String email) {
+    public List<WishRequestDTO> getWishByEmail(String email) {
         List<Wish> wishBooks = wishRepository.findByMemberEmail(email);
-        List<WishRequestDTO> wishRequestDTOS = new ArrayList<>();
-
-        for (Wish wish: wishBooks) {
-            WishRequestDTO wishRequestDTO = new WishRequestDTO();
-            BookDTO bookDTO = new BookDTO();
-            wishRequestDTO.setId(wish.getId());
-            wishRequestDTO.setEmail(wish.getMemberEmail());
-            wishRequestDTO.setStatus(wish.getWishType().toString());
-            wishRequestDTO.setWishDate(wish.getWishDate());
-            bookDTO.setId(null);
-            bookDTO.setTitle(wish.getTitle());
-            bookDTO.setAuthor(wish.getAuthor());
-            bookDTO.setPublisher(wish.getPublisher());
-            bookDTO.setIsbn(wish.getISBN());
-            bookDTO.setBookCount(0);
-            bookDTO.setCover(wish.getCover());
-            bookDTO.setBookStatus(false);
-            try {
-                bookDTO.setCategory(wish.getCategory().getDescription());
-            } catch (IllegalArgumentException e) {
-                log.info("wish Category 문제");
-            }
-            bookDTO.setPubDate(wish.getPubDate());
-            bookDTO.setInfo(wish.getInfo());
-            bookDTO.setRentCount(0);
-            wishRequestDTO.setBook(bookDTO);
-            wishRequestDTOS.add(wishRequestDTO);
-        }
-        return wishRequestDTOS;
+        return convertToWishRequestDTOs(wishBooks);
     }
 
     public String saveWish(WishRequestDTO form) {
@@ -101,19 +47,17 @@ public class WishService {
         if (bookRepository.existsByIsbn(form.getBook().getIsbn())) {
             throw new RuntimeException("이미 존재하는 책입니다.");
         }
-
         Wish wish = form.toEntity();
         Wish saved = wishRepository.save(wish);
         return "Success";
     }
 
+    @Transactional
     public String rejectedWish(String wishIdStr) {
         Long wishId = Long.parseLong(wishIdStr);
 
         // 1. 신청자가 admin인 지 확인
-        if (getCurrentMemberType() != MemberType.ADMIN) {
-            return "당신은 Admin이 아닙니다.";
-        }
+        checkAdminAuthority();
 
         // 2. wishId로 Wish 찾기
         Wish wish = wishRepository.findById(wishId)
@@ -122,16 +66,17 @@ public class WishService {
         // 3. wish Status 변경
         wish.setWishType(WishType.REJECTED);
         wishRepository.save(wish);
-
         return "Success";
     }
 
     @Transactional
-    public String createWishBook(WishRequestDTO wishDTO) {
-        // 1. 신청자가 admin인 지 확인
+    public String approveWish(WishRequestDTO wishDTO) {
+
+        // 1. 신청자가 Admin인 지 확인
         if (getCurrentMemberType() != MemberType.ADMIN) {
             return "당신은 Admin이 아닙니다.";
         }
+
         // 2. bookDTO를 Entity로 변경
         Book book = wishDTO.getBook().toEntity();
 
@@ -147,7 +92,6 @@ public class WishService {
         if (bookRepository.existsByIsbn(wishDTO.getBook().getIsbn())) {
             throw new RuntimeException("이미 존재하는 책입니다.");
         }
-
         bookRepository.save(book);
 
         // 6. Copy 추가
@@ -156,5 +100,42 @@ public class WishService {
         copy.setBookStatus(BookStatus.AVAILABLE);
         copyRepository.save(copy);
         return "Success";
+    }
+
+    private List<WishRequestDTO> convertToWishRequestDTOs(List<Wish> wishBooks) {
+        return wishBooks.stream()
+                .map(this::convertToWishRequestDTO)
+                .collect(Collectors.toList());
+    }
+
+    private WishRequestDTO convertToWishRequestDTO(Wish wish) {
+        WishRequestDTO wishRequestDTO = new WishRequestDTO();
+        wishRequestDTO.setId(wish.getId());
+        wishRequestDTO.setEmail(wish.getMemberEmail());
+        wishRequestDTO.setStatus(wish.getWishType().toString());
+        wishRequestDTO.setWishDate(wish.getWishDate());
+        wishRequestDTO.setBook(convertToBookDTO(wish));
+        return wishRequestDTO;
+    }
+
+    private BookDTO convertToBookDTO(Wish wish) {
+        BookDTO bookDTO = new BookDTO();
+        bookDTO.setId(null);
+        bookDTO.setTitle(wish.getTitle());
+        bookDTO.setAuthor(wish.getAuthor());
+        bookDTO.setPublisher(wish.getPublisher());
+        bookDTO.setIsbn(wish.getISBN());
+        bookDTO.setBookCount(0);
+        bookDTO.setCover(wish.getCover());
+        bookDTO.setBookStatus(false);
+        try {
+            bookDTO.setCategory(wish.getCategory().getDescription());
+        } catch (IllegalArgumentException e) {
+            log.info("wish Category 문제");
+        }
+        bookDTO.setPubDate(wish.getPubDate());
+        bookDTO.setInfo(wish.getInfo());
+        bookDTO.setRentCount(0);
+        return bookDTO;
     }
 }

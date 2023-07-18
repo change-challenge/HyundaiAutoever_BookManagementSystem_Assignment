@@ -48,7 +48,7 @@ export default function CustomizedTables({ wishBooks }) {
 
   const handleUpdateButtonClick = async wishbookId => {
     const confirm = window.confirm('희망 도서를 반려하시겠습니까?')
-    const response = await axios.post('/api/admin/wish/reject', {
+    const response = await axios.patch('/api/admin/wish/reject', {
       wishId: wishbookId,
     })
     window.location.reload()
@@ -56,7 +56,7 @@ export default function CustomizedTables({ wishBooks }) {
 
   const handleAddButtonClick = async wishbook => {
     const confirm = window.confirm('희망 도서를 추가하시겠습니까?')
-    const response = await axios.post('/api/admin/wish/add', {
+    const response = await axios.post('/api/admin/wish/approve', {
       id: wishbook.id,
       status: wishbook.status,
       email: null,

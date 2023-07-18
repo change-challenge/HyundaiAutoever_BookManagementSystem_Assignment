@@ -44,33 +44,6 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    private BookDTO mapToBookDTO(Book book) {
-        BookDTO bookDto = new BookDTO();
-
-        bookDto.setId(book.getId());
-        bookDto.setTitle(book.getTitle());
-        bookDto.setAuthor(book.getAuthor());
-        bookDto.setPublisher(book.getPublisher());
-        try {
-            bookDto.setCategory(book.getCategory().getDescription());
-        } catch (IllegalArgumentException e) {
-            log.info("book Category 문제");
-        }
-        bookDto.setIsbn(book.getIsbn());
-        bookDto.setInfo(book.getInfo());
-        bookDto.setCover(book.getCover());
-        bookDto.setPubDate(book.getPubDate());
-
-        int bookCount = copyRepository.countByBook(book);
-        bookDto.setBookCount(bookCount);
-
-        List<Copy> copies = copyRepository.findByBook(book);
-        bookDto.setBookStatus(copies.stream()
-                .anyMatch(copy -> copy.getBookStatus() == BookStatus.AVAILABLE));
-
-        return bookDto;
-    }
-
     public BookDTO getBookDetail(Long id) {
         Book book = bookRepository.findById(id).orElse(null);
         return mapToBookDTO(book);
@@ -101,7 +74,7 @@ public class BookService {
     }
 
     @Transactional
-    public String updateBook(String bookIdStr, String bookCountStr) {
+    public String updateBookCount(String bookIdStr, String bookCountStr) {
         Long bookId = Long.parseLong(bookIdStr);
         int bookCount = Integer.parseInt(bookCountStr);
 
@@ -121,7 +94,7 @@ public class BookService {
             for (int i = 0; i < bookCount - currentCount; i++) {
                 Copy newCopy = new Copy();
                 newCopy.setBook(book);
-                newCopy.setBookStatus(BookStatus.AVAILABLE);  // Or other default status
+                newCopy.setBookStatus(BookStatus.AVAILABLE);
                 copyRepository.save(newCopy);
             }
         }
@@ -171,5 +144,32 @@ public class BookService {
             rentRepository.delete(rents.get(j));
         }
         copyRepository.delete(copies.get(i));
+    }
+
+    private BookDTO mapToBookDTO(Book book) {
+        BookDTO bookDto = new BookDTO();
+
+        bookDto.setId(book.getId());
+        bookDto.setTitle(book.getTitle());
+        bookDto.setAuthor(book.getAuthor());
+        bookDto.setPublisher(book.getPublisher());
+        try {
+            bookDto.setCategory(book.getCategory().getDescription());
+        } catch (IllegalArgumentException e) {
+            log.info("book Category 문제");
+        }
+        bookDto.setIsbn(book.getIsbn());
+        bookDto.setInfo(book.getInfo());
+        bookDto.setCover(book.getCover());
+        bookDto.setPubDate(book.getPubDate());
+
+        int bookCount = copyRepository.countByBook(book);
+        bookDto.setBookCount(bookCount);
+
+        List<Copy> copies = copyRepository.findByBook(book);
+        bookDto.setBookStatus(copies.stream()
+                .anyMatch(copy -> copy.getBookStatus() == BookStatus.AVAILABLE));
+
+        return bookDto;
     }
 }

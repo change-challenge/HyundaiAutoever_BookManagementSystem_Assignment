@@ -27,22 +27,6 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final RentRepository rentRepository;
 
-    private int calculateLateDays(Long memberId) {
-        // 해당 유저의 모든 대출 정보 가져오기
-        List<Rent> rents = rentRepository.findByMemberIdAndReturnedDateIsNull(memberId);
-
-        int totalDays = 0;
-        LocalDate currentDate = LocalDate.now();
-
-        for(Rent rent : rents) {
-            long diff = ChronoUnit.DAYS.between(rent.getStartDate(), currentDate);
-            if(diff > 7) {
-                totalDays += (diff - 7);
-            }
-        }
-        return totalDays;
-    }
-
     public List<MemberAdminResponseDTO> getAllMembers() {
         List<Member> members = memberRepository.findAll();
         List<MemberAdminResponseDTO> memberAdminResponseDTOS = new ArrayList<>();
@@ -67,24 +51,16 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("로그인 유저 정보가 없습니다."));
     }
 
-    public MemberResponseDTO findMemberInfoByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .map(MemberResponseDTO::of)
-                .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
-    }
-
     @Transactional
     public String changeMemberType(String email, String myEmail) {
         // 1. 신청자가 admin인 지 확인
         if (getCurrentMemberType() != MemberType.ADMIN) {
-            return "당신은 Admin이 아닙니다.";
+            throw new RuntimeException("당신은 Admin이 아닙니다.");
         }
 
-        log.info("email : {} ", email);
-        log.info("myEmail : {} ", myEmail);
         // 2. 본인을 바꾸려고 하는 지 확인
         if (email.equals(myEmail)) {
-            return "당신을 바꿀 수 없습니다.";
+            throw new RuntimeException("본인 스스로를 바꿀 수 없습니다.");
         }
 
         // 3. email로 member Data 가져오기
@@ -92,8 +68,23 @@ public class MemberService {
                 .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
 
         member.setMemberType(member.getMemberType() == MemberType.MEMBER ? MemberType.ADMIN : MemberType.MEMBER);
-        log.info("왜 안변함 : {}", member.getMemberType());
         memberRepository.save(member);
         return "Success";
+    }
+
+    private int calculateLateDays(Long memberId) {
+        // 해당 유저의 모든 대출 정보 가져오기
+        List<Rent> rents = rentRepository.findByMemberIdAndReturnedDateIsNull(memberId);
+
+        int totalDays = 0;
+        LocalDate currentDate = LocalDate.now();
+
+        for(Rent rent : rents) {
+            long diff = ChronoUnit.DAYS.between(rent.getStartDate(), currentDate);
+            if(diff > 7) {
+                totalDays += (diff - 7);
+            }
+        }
+        return totalDays;
     }
 }

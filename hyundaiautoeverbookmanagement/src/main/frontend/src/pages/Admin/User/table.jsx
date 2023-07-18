@@ -49,7 +49,7 @@ export default function CustomizedTables({ users }) {
   const ChangeMemberType = async email => {
     console.log('email : ', email)
     const response = await axios
-      .post(`/api/admin/member/type`, {
+      .patch(`/api/admin/member/type`, {
         email: email,
         myEmail: myInfo.email,
       })

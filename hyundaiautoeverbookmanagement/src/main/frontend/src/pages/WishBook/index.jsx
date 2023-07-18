@@ -60,7 +60,7 @@ export default function WishBook() {
     const confirm = window.confirm('희망도서를 신청하시겠습니까?')
     if (confirm) {
       axios
-        .post('/api/wishbook/create', wishBook)
+        .post('/api/wish/create', wishBook)
         .then(response => {
           alert('성공적으로 희망도서신청을 하였습니다.')
           navigate('/')

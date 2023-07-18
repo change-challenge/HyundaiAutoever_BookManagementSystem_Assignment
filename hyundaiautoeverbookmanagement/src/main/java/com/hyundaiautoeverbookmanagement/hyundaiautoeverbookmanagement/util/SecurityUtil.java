@@ -35,4 +35,11 @@ public class SecurityUtil {
         }
         return MemberType.valueOf(authority);
     }
+
+    public static void checkAdminAuthority() {
+        if (getCurrentMemberType() != MemberType.ADMIN) {
+            throw new RuntimeException("당신은 Admin이 아닙니다.");
+        }
+    }
+
 }

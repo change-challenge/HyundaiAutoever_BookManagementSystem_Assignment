@@ -173,7 +173,7 @@ export default function CustomizedTables({ books }) {
                 height: 40,
               }}
               onClick={() => {
-                axios.post('/api/admin/book/update', { bookId, bookCount })
+                axios.patch('/api/admin/book/update', { bookId, bookCount })
                 handleClose()
                 window.location.reload()
               }}

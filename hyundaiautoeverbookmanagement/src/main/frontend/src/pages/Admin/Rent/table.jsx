@@ -43,7 +43,7 @@ export default function CustomizedTables({ rents }) {
 
   const makeReturn = async (copyId, memberEmail) => {
     const response = await axios
-      .post(`/api/admin/return/${copyId}`, {
+      .patch(`/api/admin/return/${copyId}`, {
         copyId: copyId,
         email: memberEmail,
       })
