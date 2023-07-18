@@ -34,7 +34,6 @@ const MypageRentHistory = ({ user }) => {
     })
 
     setRents(sortedRents)
-    console.log('response.data : ', response.data)
   }
 
   useEffect(() => {

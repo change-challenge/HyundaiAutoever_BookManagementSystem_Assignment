@@ -5,7 +5,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { useTokenDispatch, IsLoginContext } from '../../context/IsLoginContext'
 import { fetchUserInfo } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
-import axios from 'axios' // axios import 추가
+import axios from 'axios'
 
 function Login() {
   const setToken = useTokenDispatch()

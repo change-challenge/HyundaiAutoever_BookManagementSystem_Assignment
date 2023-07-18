@@ -66,7 +66,11 @@ export default function WishBook() {
           navigate('/')
         })
         .catch(error => {
-          alert('잠시 뒤에 다시 신청해주세요.')
+          if (error.response.status === 500) {
+            alert('이미 존재하는 도서입니다.')
+          } else {
+            alert('잠시 뒤에 다시 신청해주세요.')
+          }
           console.error(error) // 오류 처리
         })
     }

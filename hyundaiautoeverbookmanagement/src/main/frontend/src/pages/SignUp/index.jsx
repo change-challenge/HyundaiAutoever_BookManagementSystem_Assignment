@@ -70,7 +70,6 @@ function SignUp() {
     // 회원가입 버튼 클릭 시 호출되는 함수
     if (emailValid && pwValid && pwSameValid && nameValid) {
       // 필수 입력 사항이 모두 입력되었을 때 API 호출
-      // fetch 또는 axios를 사용하여 백엔드 API로 데이터 전송
       const currentDate = new Date()
       const isoDate = currentDate.toISOString()
       const data = {

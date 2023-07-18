@@ -11,9 +11,11 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repositor
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberType;
 
@@ -124,6 +126,7 @@ public class WishService {
         return "Success";
     }
 
+    @Transactional
     public String createWishBook(WishRequestDTO wishDTO) {
         // 1. 신청자가 admin인 지 확인
         if (getCurrentMemberType() != MemberType.ADMIN) {
@@ -140,7 +143,11 @@ public class WishService {
         wish.setWishType(WishType.APPROVED);
         wishRepository.save(wish);
 
-        // 5. Book 추가
+        // 5. 중복된 책 확인 후 Book 추가
+        if (bookRepository.existsByIsbn(wishDTO.getBook().getIsbn())) {
+            throw new RuntimeException("이미 존재하는 책입니다.");
+        }
+
         bookRepository.save(book);
 
         // 6. Copy 추가

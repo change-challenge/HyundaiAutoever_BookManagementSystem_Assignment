@@ -12,17 +12,6 @@ import { useUserDispatch } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
 import axios from 'axios'
 
-const basicNavMenu = [
-  {
-    linkTo: '/mypage',
-    text: '마이페이지',
-  },
-  {
-    linkTo: '/',
-    text: '로그아웃',
-  },
-]
-
 function HeaderWithSearchBarLogIn() {
   const navigate = useNavigate()
   const [searchValue, setSearchValue] = useState('')
@@ -36,7 +25,7 @@ function HeaderWithSearchBarLogIn() {
 
   useEffect(() => {
     if (isSearchRequested && searchValue) {
-      sessionStorage.setItem('lastSearch', searchValue) // Save the search value
+      sessionStorage.setItem('lastSearch', searchValue)
       navigate(`/search?query=${searchValue}`)
       setIsSearchRequested(false)
     }

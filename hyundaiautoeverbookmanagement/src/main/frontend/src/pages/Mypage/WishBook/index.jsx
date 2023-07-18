@@ -20,7 +20,6 @@ const MypageWishBook = ({ user }) => {
       },
     })
     setWishBooks(response.data)
-    console.log('response.data : ', response.data)
   }
 
   useEffect(() => {

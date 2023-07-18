@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useContext } from 'react'
 import { styled } from '@mui/material/styles'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
@@ -9,7 +9,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
-import { useState } from 'react'
+import { SnackbarContext } from '../../../context/SnackbarContext'
 import axios from 'axios'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -33,6 +33,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ wishBooks }) {
+  const { setSnackbar } = useContext(SnackbarContext)
+
   const sortWishBooks = (a, b) => {
     // 먼저 status에 따라 정렬
     if (a.status === 'PENDING' && b.status !== 'PENDING') {
@@ -70,8 +72,14 @@ export default function CustomizedTables({ wishBooks }) {
         pubDate: wishbook.book.pubDate,
       },
     })
-
     console.log(response)
+
+    window.location.reload()
+    setSnackbar({
+      open: true,
+      severity: 'success',
+      message: '도서 추가 성공!',
+    })
   }
 
   return (

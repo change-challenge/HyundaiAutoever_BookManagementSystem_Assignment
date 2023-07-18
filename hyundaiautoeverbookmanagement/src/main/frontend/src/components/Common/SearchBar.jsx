@@ -13,9 +13,7 @@ const SearchContainer = styled.div`
 `
 
 const SearchWrapper = styled.div`
-  /*min-width: 10px;*/
   align-items: center;
-  /*overflow: hidden;*/
   display: flex;
 `
 
@@ -87,7 +85,6 @@ const SearchBar = ({ onSearchValueChange, placeholder, width, height }) => {
     if (regExp.test(value)) {
       setSearchValue(value)
     } else {
-      // 입력값이 허용되지 않는 문자를 포함하는 경우, 해당 문자를 제거합니다.
       const newValue = value.replace(/[^ㄱ-ㅎ가-힣a-zA-Z0-9\s]/g, '')
       setSearchValue(newValue)
     }

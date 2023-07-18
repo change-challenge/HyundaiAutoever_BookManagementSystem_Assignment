@@ -53,7 +53,7 @@ export function UserProvider({ children }) {
   )
 
   if (loading) {
-    return <div>Loading...</div> // or return null, or a loading spinner, etc.
+    return <div>Loading...</div>
   }
 
   return <UserContext.Provider value={value}>{children}</UserContext.Provider>

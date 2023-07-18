@@ -10,9 +10,8 @@ import { SnackbarProvider } from './context/SnackbarContext'
 import { SnackbarComponent } from './components/index'
 import axios from 'axios'
 import App from './App'
-import Footer from './components/Footer' // Footer 컴포넌트를 import 해주세요
+import Footer from './components/Footer'
 
-// Axios 인터셉터 설정
 // 새로고침 시 localStorage에 저장된 토큰을 사용하여 로그인 상태를 확인
 const token = localStorage.getItem('token')
 if (token) {

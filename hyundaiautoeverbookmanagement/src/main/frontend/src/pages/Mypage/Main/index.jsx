@@ -1,6 +1,5 @@
 import BasicTabs from './Tabs'
 import * as S from './style'
-
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import { Text } from '../../../components/index'
