@@ -2,8 +2,6 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.mockito.MockitoAnnotations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
@@ -36,8 +34,10 @@ class WishServiceTest {
     WishRepository wishRepository;
     @Mock
     BookRepository bookRepository;
+
     @Mock
     CopyRepository copyRepository;
+
     @InjectMocks
     WishService wishService;
 
@@ -181,7 +181,7 @@ class WishServiceTest {
         // MEMBER로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
-        doReturn(List.of(new SimpleGrantedAuthority("MEMBER"))).when(authentication).getAuthorities();
+        doReturn(List.of(new SimpleGrantedAuthority("??????????????????"))).when(authentication).getAuthorities();
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
