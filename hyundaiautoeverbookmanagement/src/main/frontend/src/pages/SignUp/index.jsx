@@ -70,13 +70,10 @@ function SignUp() {
     // 회원가입 버튼 클릭 시 호출되는 함수
     if (emailValid && pwValid && pwSameValid && nameValid) {
       // 필수 입력 사항이 모두 입력되었을 때 API 호출
-      const currentDate = new Date()
-      const isoDate = currentDate.toISOString()
       const data = {
         email: email,
         name: name,
         password: pw,
-        registDate: isoDate,
       }
 
       const confirm = window.confirm('회원가입을 하시겠습니까?')

@@ -3,6 +3,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -32,7 +33,7 @@ public class Member {
     private MemberType memberType;
 
     @Column(name = "REGIST_DATE", nullable = false)
-    private Date registDate;
+    private LocalDate registDate;
 
     @Column(name = "RENT_COUNT", nullable = false)
     private int RentCount;
