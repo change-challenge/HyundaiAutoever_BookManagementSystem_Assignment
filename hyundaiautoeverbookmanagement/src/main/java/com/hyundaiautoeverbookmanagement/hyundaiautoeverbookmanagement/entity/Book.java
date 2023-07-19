@@ -12,7 +12,6 @@ import java.time.LocalDate;
 @Table(name="BOOK", uniqueConstraints={@UniqueConstraint(columnNames={"id"})})
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 @Getter
 @Setter
 public class Book {

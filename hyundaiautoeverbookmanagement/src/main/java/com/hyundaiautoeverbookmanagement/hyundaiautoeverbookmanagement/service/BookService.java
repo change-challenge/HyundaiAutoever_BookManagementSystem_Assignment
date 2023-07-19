@@ -32,7 +32,7 @@ public class BookService {
         List<Book> books = bookRepository.findByTitleContaining(title);
 
         return books.stream()
-                .map(this::mapToBookDTO)
+                .map(this::ToBookDTO)
                 .collect(Collectors.toList());
     }
 
@@ -40,15 +40,17 @@ public class BookService {
         List<Book> books = bookRepository.findAll();
 
         return books.stream()
-                .map(this::mapToBookDTO)
+                .map(this::ToBookDTO)
                 .collect(Collectors.toList());
     }
 
     public BookDTO getBookDetail(Long id) {
-        Book book = bookRepository.findById(id).orElse(null);
-        return mapToBookDTO(book);
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("해당 ID에 대한 Book이 존재하지 않습니다."));
+        return ToBookDTO(book);
     }
 
+    // BookDetail 중 소장 정보에 사용
     public List<CopyDetailDTO> getCopyDetails(Long bookId) {
         // 책에 해당하는 모든 사본 찾기
         List<Copy> copies = copyRepository.findByBookId(bookId);
@@ -133,7 +135,7 @@ public class BookService {
         return "Success";
     }
 
-    private void deleteRentRelatedCopyAndCopy(List<Copy> copies, int i) {
+    public void deleteRentRelatedCopyAndCopy(List<Copy> copies, int i) {
         List<Rent> rents = rentRepository.findByCopyId(copies.get(i).getId());
         int currentRentCount = rents.size();
         for (int j = 0; j < currentRentCount; j++) {
@@ -145,7 +147,7 @@ public class BookService {
         copyRepository.delete(copies.get(i));
     }
 
-    private BookDTO mapToBookDTO(Book book) {
+    private BookDTO ToBookDTO(Book book) {
         BookDTO bookDto = new BookDTO();
 
         bookDto.setId(book.getId());

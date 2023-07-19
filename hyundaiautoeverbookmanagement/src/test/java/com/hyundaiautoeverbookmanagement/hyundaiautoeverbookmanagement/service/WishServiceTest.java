@@ -181,7 +181,7 @@ class WishServiceTest {
         // MEMBER로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
-        doReturn(List.of(new SimpleGrantedAuthority("??????????????????"))).when(authentication).getAuthorities();
+        doReturn(List.of(new SimpleGrantedAuthority("MEMBER"))).when(authentication).getAuthorities();
         SecurityContext securityContext = mock(SecurityContext.class);
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
