@@ -136,7 +136,7 @@ public class RentService {
         if(rent.getEndDate().isBefore(today)) {
             throw new RuntimeException("연체 중이기에 연장할 수 없습니다.");
         }
-        if(rent.getEndDate().equals(today) || rent.getEndDate().equals(today.minusDays(1))) {
+        if(rent.getEndDate().equals(today) || rent.getEndDate().equals(today.plusDays(1))) {
             rent.setIsExtendable(false);
             rent.setEndDate(rent.getEndDate().plusDays(7));
         } else {
