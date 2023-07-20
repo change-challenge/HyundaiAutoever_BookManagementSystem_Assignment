@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem'
 import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import { useAlert } from '../../../context/AlertContext'
+import { useConfirm } from '../../../context/ConfirmContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -52,6 +53,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function CustomizedTables({ books }) {
   const showAlert = useAlert()
+  const showConfirm = useConfirm()
   const [open, setOpen] = useState(false)
   const [bookId, setBookId] = useState(0)
   const [bookCount, setBookCount] = useState(0)
@@ -69,28 +71,28 @@ export default function CustomizedTables({ books }) {
     setBookId(id)
   }
 
-  const HandleDeleteClick = bookId => {
-    const confirm = window.confirm(
-      '도서를 삭제하시겠습니까? 삭제 후 복구가 불가능합니다.'
-    )
+  const sumbitDeleteBook = async bookId => {
+    apiClient
+      .post('/api/admin/book/delete', { bookId })
+      .then(() => {
+        window.location.reload()
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: '도서 삭제 성공!',
+        })
+      })
+      .catch(error => {
+        if (error.response.status === 500) {
+          showAlert('당신은 Admin이 아닙니다.')
+        }
+      })
+  }
 
-    if (confirm) {
-      apiClient
-        .post('/api/admin/book/delete', { bookId })
-        .then(() => {
-          window.location.reload()
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: '도서 삭제 성공!',
-          })
-        })
-        .catch(error => {
-          if (error.response.status === 500) {
-            showAlert('당신은 Admin이 아닙니다.')
-          }
-        })
-    }
+  const HandleDeleteClick = bookId => {
+    showConfirm('도서를 삭제하시겠습니까? 삭제 후 복구가 불가능합니다.', () =>
+      sumbitDeleteBook(bookId)
+    )
   }
 
   return (

@@ -17,11 +17,18 @@ export const ConfirmProvider = ({ children }) => {
     onConfirm: null,
   })
 
-  const showConfirm = (message, onConfirm) => {
+  function showConfirm(message, onConfirm, onCancel) {
     setConfirmSettings({
       open: true,
       message,
-      onConfirm,
+      onConfirm: () => {
+        onConfirm && onConfirm()
+        handleCancel()
+      },
+      onCancel: () => {
+        onCancel && onCancel()
+        handleCancel()
+      },
     })
   }
 
@@ -33,7 +40,15 @@ export const ConfirmProvider = ({ children }) => {
   }
 
   const handleCancel = () => {
-    setConfirmSettings({ open: false, message: '', onConfirm: null })
+    if (confirmSettings.onCancel) {
+      confirmSettings.onCancel()
+    }
+    setConfirmSettings({
+      open: false,
+      message: '',
+      onConfirm: null,
+      onCancel: null,
+    })
   }
 
   return (

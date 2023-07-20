@@ -8,9 +8,11 @@ import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import Pagination from '@mui/material/Pagination'
 import { useAlert } from '../../../context/AlertContext'
+import { useConfirm } from '../../../context/ConfirmContext'
 
 const MypageRent = ({ user }) => {
   const showAlert = useAlert()
+  const showConfirm = useConfirm()
   const { setSnackbar } = useContext(SnackbarContext)
   const [rents, setRents] = useState([])
   const [page, setPage] = useState(1)
@@ -35,10 +37,7 @@ const MypageRent = ({ user }) => {
     }
     console.log('copyId : ', copyId)
 
-    const confirm = window.confirm('도서를 반납하시겠습니까?')
-    if (confirm) {
-      makeReturn(copyId)
-    }
+    showConfirm('도서를 반납하시겠습니까?', () => makeReturn(copyId))
   }
 
   const makeReturn = async copyId => {
@@ -82,10 +81,7 @@ const MypageRent = ({ user }) => {
       return
     }
 
-    const confirm = window.confirm('도서를 연장하시겠습니까?')
-    if (confirm) {
-      makeExtend(copyId)
-    }
+    showConfirm('도서를 연장하시겠습니까?', () => makeExtend(copyId))
   }
 
   const makeExtend = async copyId => {

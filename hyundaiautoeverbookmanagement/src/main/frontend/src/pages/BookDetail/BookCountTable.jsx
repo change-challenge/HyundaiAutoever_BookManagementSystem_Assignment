@@ -7,6 +7,7 @@ import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../context/SnackbarContext'
 import { useNavigate } from 'react-router-dom'
 import { useAlert } from '../../context/AlertContext'
+import { useConfirm } from '../../context/ConfirmContext'
 
 const TableWrapper = styled.div`
   border: 1px solid #ccc;
@@ -48,6 +49,7 @@ const TableCell = styled.td`
 
 const BookCountTable = ({ bookId }) => {
   const showAlert = useAlert()
+  const showConfirm = useConfirm()
   const navigate = useNavigate()
   const [copyDetail, setCopyDetail] = useState([])
   const [user, setUser] = useState(null)
@@ -59,11 +61,7 @@ const BookCountTable = ({ bookId }) => {
       return
     }
     console.log('copyId : ', copyId)
-
-    const confirm = window.confirm('도서를 대여하시겠습니까?')
-    if (confirm) {
-      makeRent(copyId)
-    }
+    showConfirm('도서를 대여하시겠습니까?', () => makeRent(copyId))
   }
 
   useEffect(() => {
@@ -75,13 +73,15 @@ const BookCountTable = ({ bookId }) => {
     console.log(user)
   }, [])
 
+  const moveToMypage = () => {
+    navigate('/mypage')
+  }
   const makeRent = async copyId => {
     try {
       const response = await apiClient.post(`/api/rent/${copyId}`, {
         copyId: copyId,
         email: user.email,
       })
-      console.log('makeRent: ', response.data)
       setSnackbar({
         open: true,
         severity: 'success',
@@ -89,12 +89,9 @@ const BookCountTable = ({ bookId }) => {
       })
 
       setTimeout(() => {
-        const confirm = window.confirm('내 서재로 이동하시겠습니까?')
-        if (confirm) {
-          navigate('/mypage')
-        } else {
+        showConfirm('내 서재로 이동하시겠습니까?', moveToMypage, () =>
           window.location.reload()
-        }
+        )
       }, 300)
     } catch (error) {
       if (error.response) {

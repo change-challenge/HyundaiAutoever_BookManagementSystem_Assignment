@@ -7,8 +7,10 @@ import { fetchUserInfo } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
 import apiClient from '../../axios'
 import { useAlert } from '../../context/AlertContext'
+import { useConfirm } from '../../context/ConfirmContext'
 
 function SignUp() {
+  const showConfirm = useConfirm()
   const showAlert = useAlert()
   const { setSnackbar } = useContext(SnackbarContext)
   const [email, setEmail] = useState('')
@@ -89,6 +91,25 @@ function SignUp() {
     setNameValid(isValid)
   }
 
+  const submitSignup = data => {
+    apiClient
+      .post('/api/auth/signup', data)
+      .then(response => {
+        if (response.status === 200) {
+          navigate('/login')
+          setSnackbar({
+            open: true,
+            severity: 'success',
+            message: '회원가입 성공!',
+          })
+        } else {
+          showAlert('가입불가')
+        }
+      })
+      .catch(error => {
+        showAlert('아이디가 중복되었습니다.')
+      })
+  }
   const onClickConfirmButton = () => {
     if (emailValid && pwValid && pwSameValid && nameValid) {
       const data = {
@@ -96,27 +117,7 @@ function SignUp() {
         name: name,
         password: pw,
       }
-
-      const confirm = window.confirm('회원가입을 하시겠습니까?')
-      if (confirm) {
-        apiClient
-          .post('/api/auth/signup', data)
-          .then(response => {
-            if (response.status === 200) {
-              navigate('/login')
-              setSnackbar({
-                open: true,
-                severity: 'success',
-                message: '회원가입 성공!',
-              })
-            } else {
-              showAlert('가입불가')
-            }
-          })
-          .catch(error => {
-            showAlert('아이디가 중복되었습니다.')
-          })
-      }
+      showConfirm('회원가입을 하시겠습니까?', () => submitSignup(data))
     }
   }
 

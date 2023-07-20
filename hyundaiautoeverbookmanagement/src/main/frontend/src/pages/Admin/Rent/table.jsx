@@ -10,6 +10,8 @@ import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import apiClient from '../../../axios'
+import { useAlert } from '../../../context/AlertContext'
+import { useConfirm } from '../../../context/ConfirmContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -31,13 +33,14 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ rents }) {
+  const showAlert = useAlert()
+  const showConfirm = useConfirm()
   const { setSnackbar } = useContext(SnackbarContext)
 
   const handleReturnClick = (copyId, memberEmail) => {
-    const confirm = window.confirm('도서를 반납하시겠습니까?')
-    if (confirm) {
+    showConfirm('도서를 반납하시겠습니까?', () =>
       makeReturn(copyId, memberEmail)
-    }
+    )
   }
 
   const makeReturn = async (copyId, memberEmail) => {
@@ -65,7 +68,7 @@ export default function CustomizedTables({ rents }) {
           if (error.response.status === 400) {
             console.error('Client error: ', error.response.data)
           } else {
-            alert('당신은 Admin이 아닙니다.')
+            showAlert('당신은 Admin이 아닙니다.')
           }
         } else if (error.request) {
           console.error('No response: ', error.request)
