@@ -22,7 +22,7 @@ public class Wish {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "MEMBER_EMAIL", insertable = true, updatable = true, referencedColumnName = "email")
+    @JoinColumn(name = "MEMBER_ID", insertable = true, updatable = true)
     private Member member;
 
     @Column(name = "WISH_DATE", nullable = false)
