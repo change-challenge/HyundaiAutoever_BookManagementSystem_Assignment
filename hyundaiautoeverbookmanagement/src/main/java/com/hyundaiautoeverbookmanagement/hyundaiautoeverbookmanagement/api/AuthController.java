@@ -9,10 +9,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service.A
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.util.SecurityUtil.getCurrentMemberId;
 
@@ -42,5 +39,10 @@ public class AuthController {
     public ResponseEntity<?> logout() {
         authService.logout(getCurrentMemberId());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/exist")
+    public ResponseEntity<?> existEmail(@RequestParam String email) {
+        return (authService.existEmail(email) ? ResponseEntity.badRequest().build() : ResponseEntity.ok().build());
     }
 }

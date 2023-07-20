@@ -2,7 +2,7 @@ import React from 'react'
 import { Text } from '../../../components/index'
 import * as S from './style'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import Pagination from '@mui/material/Pagination'
 
 const MypageWishBook = ({ user }) => {
@@ -14,7 +14,7 @@ const MypageWishBook = ({ user }) => {
   }
 
   const fetchwishBook = async () => {
-    const response = await axios.get(`/api/wish/read`, {
+    const response = await apiClient.get(`/api/wish/read`, {
       params: {
         email: user.email,
       },

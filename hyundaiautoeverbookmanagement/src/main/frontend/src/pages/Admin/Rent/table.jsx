@@ -9,8 +9,7 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../../context/SnackbarContext'
-
-import axios from 'axios'
+import apiClient from '../../../axios'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,7 +41,7 @@ export default function CustomizedTables({ rents }) {
   }
 
   const makeReturn = async (copyId, memberEmail) => {
-    const response = await axios
+    const response = await apiClient
       .patch(`/api/admin/return/${copyId}`, {
         copyId: copyId,
         email: memberEmail,

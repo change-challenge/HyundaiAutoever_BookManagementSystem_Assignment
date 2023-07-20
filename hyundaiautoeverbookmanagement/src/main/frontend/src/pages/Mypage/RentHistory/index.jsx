@@ -2,7 +2,7 @@ import React from 'react'
 import { Text } from '../../../components/index'
 import * as S from './style'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import Pagination from '@mui/material/Pagination'
 
 const MypageRentHistory = ({ user }) => {
@@ -14,7 +14,7 @@ const MypageRentHistory = ({ user }) => {
   }
 
   const fetchRents = async () => {
-    const response = await axios.get(`/api/rent/history`, {
+    const response = await apiClient.get(`/api/rent/history`, {
       params: {
         email: user.email,
       },

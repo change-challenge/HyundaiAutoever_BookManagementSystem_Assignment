@@ -4,7 +4,7 @@ import { Text } from '../../components/index'
 import CustomSeparator from './Breadcrumbs'
 import BookCountTable from './BookCountTable'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import apiClient from '../../axios'
 
 const BookDetail = () => {
   let { bookId } = useParams()
@@ -13,7 +13,7 @@ const BookDetail = () => {
 
   useEffect(() => {
     const fetchBooks = async () => {
-      const response = await axios.get(`/api/book/search/${bookId}`)
+      const response = await apiClient.get(`/api/book/search/${bookId}`)
       setBook(response.data)
       console.log(book)
     }

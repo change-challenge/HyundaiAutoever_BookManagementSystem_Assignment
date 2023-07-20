@@ -3,11 +3,11 @@ import * as S from './style'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { SideBar } from '../../../components/index'
 import { fetchUserInfo } from '../../../context/UserContext'
-import axios from 'axios'
+import apiClient from '../../../axios'
 
 const checkAdmin = async () => {
   try {
-    const response = await axios.get('/api/admin/allow')
+    const response = await apiClient.get('/api/admin/allow')
 
     console.log('response : ', response)
     if (response.status !== 200) {

@@ -5,7 +5,7 @@ import { Text } from '../../components/index'
 import { useLocation } from 'react-router-dom'
 import BookList from './BookList'
 import Pagination from '@mui/material/Pagination'
-import axios from 'axios'
+import apiClient from '../../axios'
 
 const filters = [
   { id: 1, name: '정확도순' },
@@ -27,7 +27,7 @@ const BookSearch = () => {
 
   useEffect(() => {
     const fetchBooks = async () => {
-      const response = await axios.get(`/api/book/search?title=${query}`)
+      const response = await apiClient.get(`/api/book/search?title=${query}`)
       setBooks(response.data)
       setFilteredBooks(response.data)
       setFilteredBooks(sortBooks(response.data))

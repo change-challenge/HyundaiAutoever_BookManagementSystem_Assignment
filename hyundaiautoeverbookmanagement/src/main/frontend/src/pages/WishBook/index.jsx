@@ -3,7 +3,7 @@ import { Text, LabelInput, Title } from '../../components/index'
 import * as S from './style'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import axios from 'axios'
+import apiClient from '../../axios'
 import { fetchUserInfo } from '../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import SearchResultModal from './SearchResultModal'
@@ -95,7 +95,7 @@ export default function WishBook() {
     }
     const confirm = window.confirm('희망도서를 신청하시겠습니까?')
     if (confirm) {
-      axios
+      apiClient
         .post('/api/wish/create', wishBook)
         .then(response => {
           alert('성공적으로 희망도서신청을 하였습니다.')
@@ -114,7 +114,7 @@ export default function WishBook() {
 
   const callAladinAPI = async wishBookName => {
     try {
-      const response = await axios.get('/aladin-api/ItemSearch.aspx', {
+      const response = await apiClient.get('/aladin-api/ItemSearch.aspx', {
         params: {
           TTBKey: process.env.REACT_APP_TTB_KEY,
           Query: wishBookName,

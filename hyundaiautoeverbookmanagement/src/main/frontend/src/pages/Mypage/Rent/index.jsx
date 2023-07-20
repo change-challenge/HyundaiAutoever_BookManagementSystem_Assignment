@@ -4,7 +4,7 @@ import Button from '@mui/material/Button'
 import { Text } from '../../../components/index'
 import * as S from './style'
 import { useEffect, useState, useContext } from 'react'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import Pagination from '@mui/material/Pagination'
 
@@ -18,7 +18,7 @@ const MypageRent = ({ user }) => {
   }
 
   const fetchRents = async () => {
-    const response = await axios.get(`/api/rent/current`, {
+    const response = await apiClient.get(`/api/rent/current`, {
       params: {
         email: user.email,
       },
@@ -40,7 +40,7 @@ const MypageRent = ({ user }) => {
   }
 
   const makeReturn = async copyId => {
-    const response = await axios
+    const response = await apiClient
       .post(`/api/return/${copyId}`, {
         copyId: copyId,
         email: user.email,
@@ -87,7 +87,7 @@ const MypageRent = ({ user }) => {
   }
 
   const makeExtend = async copyId => {
-    const response = await axios
+    const response = await apiClient
       .post(`/api/extend/${copyId}`, {
         copyId: copyId,
         email: user.email,

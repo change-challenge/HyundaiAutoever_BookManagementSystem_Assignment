@@ -10,7 +10,7 @@ import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../../context/SnackbarContext'
-import axios from 'axios'
+import apiClient from '../../../axios'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -48,7 +48,7 @@ export default function CustomizedTables({ wishBooks }) {
 
   const handleUpdateButtonClick = async wishbookId => {
     const confirm = window.confirm('희망 도서를 반려하시겠습니까?')
-    const response = await axios
+    const response = await apiClient
       .patch('/api/admin/wish/reject', {
         wishId: wishbookId,
       })
@@ -69,7 +69,7 @@ export default function CustomizedTables({ wishBooks }) {
 
   const handleAddButtonClick = async wishbook => {
     const confirm = window.confirm('희망 도서를 추가하시겠습니까?')
-    const response = await axios
+    const response = await apiClient
       .post('/api/admin/wish/approve', {
         id: wishbook.id,
         status: wishbook.status,

@@ -8,7 +8,7 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import { useEffect, useState, useContext } from 'react'
 import { fetchUserInfo } from '../../../context/UserContext'
@@ -48,7 +48,7 @@ export default function CustomizedTables({ users }) {
   console.log('myInfo : ', myInfo)
   const ChangeMemberType = async email => {
     console.log('email : ', email)
-    const response = await axios
+    const response = await apiClient
       .patch(`/api/admin/member/type`, {
         email: email,
         myEmail: myInfo.email,

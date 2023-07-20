@@ -5,7 +5,7 @@ import React, { useState, useContext, useEffect } from 'react'
 import { useTokenDispatch, IsLoginContext } from '../../context/IsLoginContext'
 import { fetchUserInfo } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
-import axios from 'axios'
+import apiClient from '../../axios'
 
 function Login() {
   const setToken = useTokenDispatch()
@@ -51,14 +51,16 @@ function Login() {
 
   const onClickConfirmButton = async () => {
     try {
-      const response = await axios.post('/api/auth/login', {
+      const response = await apiClient.post('/api/auth/login', {
         email,
         password: pw,
       })
       console.log('onClickConfirmButton : ', response.data)
       const accessToken = response.data.accessToken
       localStorage.setItem('token', accessToken) // 추가: localStorage에 토큰 저장
-      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}` // 추가: 헤더에 Access Token 설정
+      apiClient.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${accessToken}` // 추가: 헤더에 Access Token 설정
       setToken(accessToken)
       setIsLogin(true)
       setSnackbar({

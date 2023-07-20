@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { useEffect, useState, useContext } from 'react'
 import { fetchUserInfo } from '../../context/UserContext'
-import axios from 'axios'
+import apiClient from '../../axios'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../context/SnackbarContext'
 
@@ -72,7 +72,7 @@ const BookCountTable = ({ bookId }) => {
   }, [])
 
   const makeRent = async copyId => {
-    const response = await axios
+    const response = await apiClient
       .post(`/api/rent/${copyId}`, {
         copyId: copyId,
         email: user.email,
@@ -115,7 +115,7 @@ const BookCountTable = ({ bookId }) => {
   }
 
   const fetchCopys = async () => {
-    const response = await axios.get(`/api/bookdetail/${bookId}`)
+    const response = await apiClient.get(`/api/bookdetail/${bookId}`)
     setCopyDetail(response.data)
     console.log(response.data)
   }

@@ -8,9 +8,9 @@ import {
   useIsLoginDispatch,
   useTokenDispatch,
 } from '../../context/IsLoginContext'
-import axios from 'axios'
 import { useUserDispatch } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
+import apiClient from '../../axios'
 
 const basicNavMenu = [
   {
@@ -34,7 +34,7 @@ function Header() {
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/auth/logout')
+      await apiClient.post('/api/auth/logout')
       setIsLogin(false)
       setUserInfo(null)
       setToken(null)

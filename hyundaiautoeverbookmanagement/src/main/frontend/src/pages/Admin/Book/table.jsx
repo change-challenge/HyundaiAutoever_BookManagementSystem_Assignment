@@ -15,7 +15,7 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -73,7 +73,7 @@ export default function CustomizedTables({ books }) {
     )
 
     if (confirm) {
-      axios
+      apiClient
         .post('/api/admin/book/delete', { bookId })
         .then(() => {
           window.location.reload()
@@ -188,7 +188,7 @@ export default function CustomizedTables({ books }) {
                 height: 40,
               }}
               onClick={() => {
-                axios
+                apiClient
                   .patch('/api/admin/book/update', { bookId, bookCount })
                   .then(() => {
                     window.location.reload()
