@@ -5,6 +5,8 @@ import { fetchUserInfo } from '../../context/UserContext'
 import apiClient from '../../axios'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../context/SnackbarContext'
+import { useNavigate } from 'react-router-dom'
+import { useAlert } from '../../context/AlertContext'
 
 const TableWrapper = styled.div`
   border: 1px solid #ccc;
@@ -45,13 +47,15 @@ const TableCell = styled.td`
 `
 
 const BookCountTable = ({ bookId }) => {
+  const showAlert = useAlert()
+  const navigate = useNavigate()
   const [copyDetail, setCopyDetail] = useState([])
   const [user, setUser] = useState(null)
   const { setSnackbar } = useContext(SnackbarContext)
 
   const handleRentClick = copyId => {
     if (!user) {
-      alert('로그인이 필요한 기능입니다!')
+      showAlert('로그인이 필요한 기능입니다!')
       return
     }
     console.log('copyId : ', copyId)
@@ -72,46 +76,52 @@ const BookCountTable = ({ bookId }) => {
   }, [])
 
   const makeRent = async copyId => {
-    const response = await apiClient
-      .post(`/api/rent/${copyId}`, {
+    try {
+      const response = await apiClient.post(`/api/rent/${copyId}`, {
         copyId: copyId,
         email: user.email,
       })
-      .then(response => {
-        console.log('makeRent: ', response.data)
-        window.location.reload()
-        setSnackbar({
-          open: true,
-          severity: 'success',
-          message: '도서 대여 성공!',
-        })
+      console.log('makeRent: ', response.data)
+      setSnackbar({
+        open: true,
+        severity: 'success',
+        message: '도서 대여 성공!',
       })
-      .catch(error => {
-        if (error.response) {
-          if (error.response.status === 400) {
-            if (error.response.data == '세권초과') {
-              setSnackbar({
-                open: true,
-                severity: 'error',
-                message: '도서는 3권까지 빌릴 수 있습니다.',
-              })
-            }
-            if (error.response.data == '빌린도서') {
-              setSnackbar({
-                open: true,
-                severity: 'error',
-                message: '이미 대여한 도서입니다.',
-              })
-            }
-          } else {
-            console.error('Server error: ', error.response.data)
-          }
-        } else if (error.request) {
-          console.error('No response: ', error.request)
+
+      setTimeout(() => {
+        const confirm = window.confirm('내 서재로 이동하시겠습니까?')
+        if (confirm) {
+          navigate('/mypage')
         } else {
-          console.error('Error: ', error.message)
+          window.location.reload()
         }
-      })
+      }, 300)
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          if (error.response.data == '세권초과') {
+            setSnackbar({
+              open: true,
+              severity: 'error',
+              message: '도서는 3권까지 빌릴 수 있습니다.',
+            })
+          }
+          if (error.response.data == '빌린도서') {
+            setSnackbar({
+              open: true,
+              severity: 'error',
+              message: '이미 대여한 도서입니다.',
+            })
+          }
+        } else {
+          console.error('Server error: ', error.response.data)
+        }
+      } else if (error.request) {
+        console.error('No response: ', error.request)
+      } else {
+        console.error('Error: ', error.message)
+      }
+    }
   }
 
   const fetchCopys = async () => {

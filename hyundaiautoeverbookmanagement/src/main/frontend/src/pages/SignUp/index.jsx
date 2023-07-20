@@ -6,8 +6,10 @@ import { useEffect } from 'react'
 import { fetchUserInfo } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
 import apiClient from '../../axios'
+import { useAlert } from '../../context/AlertContext'
 
 function SignUp() {
+  const showAlert = useAlert()
   const { setSnackbar } = useContext(SnackbarContext)
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
@@ -28,7 +30,7 @@ function SignUp() {
     const getUserInfo = async () => {
       const userInfo = await fetchUserInfo()
       if (userInfo) {
-        alert('이미 로그인을 하셨습니다.')
+        showAlert('이미 로그인을 하셨습니다.')
         navigate('/')
       }
     }
@@ -108,11 +110,11 @@ function SignUp() {
                 message: '회원가입 성공!',
               })
             } else {
-              alert('가입불가')
+              showAlert('가입불가')
             }
           })
           .catch(error => {
-            alert('아이디가 중복되었습니다.')
+            showAlert('아이디가 중복되었습니다.')
           })
       }
     }

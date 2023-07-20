@@ -7,8 +7,10 @@ import { fetchUserInfo } from '../../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import apiClient from '../../../axios'
+import { useAlert } from '../../../context/AlertContext'
 
 const Mypage = () => {
+  const showAlert = useAlert()
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -18,7 +20,7 @@ const Mypage = () => {
       const userInfo = await fetchUserInfo()
       setUser(userInfo)
       if (!userInfo) {
-        alert('로그인이 필요한 기능입니다.')
+        showAlert('로그인이 필요한 기능입니다.')
         navigate('/')
       }
       const result = await checkAdmin()

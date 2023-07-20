@@ -7,8 +7,10 @@ import { useEffect, useState, useContext } from 'react'
 import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import Pagination from '@mui/material/Pagination'
+import { useAlert } from '../../../context/AlertContext'
 
 const MypageRent = ({ user }) => {
+  const showAlert = useAlert()
   const { setSnackbar } = useContext(SnackbarContext)
   const [rents, setRents] = useState([])
   const [page, setPage] = useState(1)
@@ -28,7 +30,7 @@ const MypageRent = ({ user }) => {
 
   const handleReturnClick = copyId => {
     if (!user) {
-      alert('로그인이 필요한 기능입니다!')
+      showAlert('로그인이 필요한 기능입니다!')
       return
     }
     console.log('copyId : ', copyId)
@@ -76,7 +78,7 @@ const MypageRent = ({ user }) => {
 
   const handleExtendClick = copyId => {
     if (!user) {
-      alert('로그인이 필요한 기능입니다!')
+      showAlert('로그인이 필요한 기능입니다!')
       return
     }
 

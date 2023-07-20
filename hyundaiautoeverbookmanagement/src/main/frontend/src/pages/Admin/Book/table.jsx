@@ -17,6 +17,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
+import { useAlert } from '../../../context/AlertContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,6 +51,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ books }) {
+  const showAlert = useAlert()
   const [open, setOpen] = useState(false)
   const [bookId, setBookId] = useState(0)
   const [bookCount, setBookCount] = useState(0)
@@ -85,7 +87,7 @@ export default function CustomizedTables({ books }) {
         })
         .catch(error => {
           if (error.response.status === 500) {
-            alert('당신은 Admin이 아닙니다.')
+            showAlert('당신은 Admin이 아닙니다.')
           }
         })
     }
@@ -200,7 +202,7 @@ export default function CustomizedTables({ books }) {
                   })
                   .catch(error => {
                     if (error.response.status === 500) {
-                      alert('당신은 Admin이 아닙니다.')
+                      showAlert('당신은 Admin이 아닙니다.')
                     }
                   })
                 handleClose()

@@ -11,6 +11,7 @@ import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import apiClient from '../../../axios'
+import { useAlert } from '../../../context/AlertContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -33,6 +34,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ wishBooks }) {
+  const showAlert = useAlert()
   const { setSnackbar } = useContext(SnackbarContext)
 
   const sortWishBooks = (a, b) => {
@@ -62,7 +64,7 @@ export default function CustomizedTables({ wishBooks }) {
       })
       .catch(error => {
         if (error.response.status === 500) {
-          alert('당신은 Admin이 아닙니다.')
+          showAlert('당신은 Admin이 아닙니다.')
         }
       })
   }
@@ -96,7 +98,7 @@ export default function CustomizedTables({ wishBooks }) {
       })
       .catch(error => {
         if (error.response.status === 500) {
-          alert('당신은 Admin이 아닙니다.')
+          showAlert('당신은 Admin이 아닙니다.')
         }
       })
   }

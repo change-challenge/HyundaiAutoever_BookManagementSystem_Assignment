@@ -88,7 +88,7 @@ const BookDetail = () => {
               <S.BookDetailContentInfoWrapper>
                 <S.BookDetailContentQuestionWrapper>
                   <Text
-                    text="출간월일"
+                    text="발행월일"
                     color={({ theme }) => theme.colors.main}
                     fontWeight={'bold'}
                     fontSize={({ theme }) => theme.fontSize.sz18}

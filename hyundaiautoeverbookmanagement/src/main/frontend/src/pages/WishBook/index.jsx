@@ -7,8 +7,40 @@ import apiClient from '../../axios'
 import { fetchUserInfo } from '../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import SearchResultModal from './SearchResultModal'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogTitle from '@mui/material/DialogTitle'
+import { useAlert } from '../../context/AlertContext'
 
+function ConfirmationDialog(props) {
+  const { title, onClose, open } = props
+
+  const handleClose = () => {
+    onClose(false) // onClose에 false 값을 보냄
+  }
+
+  const handleConfirm = () => {
+    onClose(true) // onClose에 true 값을 보냄
+  }
+
+  return (
+    <Dialog onClose={handleClose} open={open}>
+      <DialogTitle>{title}</DialogTitle>
+      <DialogActions>
+        <Button onClick={handleClose} color="primary">
+          아니오
+        </Button>
+        <Button onClick={handleConfirm} color="primary" autoFocus>
+          예
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+}
+
+// 컴포넌트 시작!
 export default function WishBook() {
+  const showAlert = useAlert()
   const navigate = useNavigate()
   const [wishBookName, setWishBookName] = useState('')
   const [wishBookAuthor, setWishBookAuthor] = useState('')
@@ -19,6 +51,7 @@ export default function WishBook() {
   const [bookSearchResults, setBookSearchResults] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [wishBook, setWishBook] = useState({})
+  const [isDialogOpen, setDialogOpen] = useState(false)
 
   const createWish = (book, user) => {
     const categories = [
@@ -80,7 +113,7 @@ export default function WishBook() {
       const userInfo = await fetchUserInfo()
       setUser(userInfo)
       if (!userInfo) {
-        alert('로그인이 필요한 기능입니다.')
+        showAlert('로그인이 필요한 기능입니다.')
         navigate('/')
       }
       console.log('user : ', user)
@@ -90,22 +123,27 @@ export default function WishBook() {
 
   const onClickWishBook = () => {
     if (!wishBookName || !wishBookAuthor || !wishBookPublisher) {
-      alert('희망도서명, 저자, 발행자는 필수 항목입니다.')
+      showAlert('희망도서명, 저자, 발행자는 필수 항목입니다.')
       return
     }
-    const confirm = window.confirm('희망도서를 신청하시겠습니까?')
+    setDialogOpen(true) // Dialog 열기
+  }
+
+  const handleDialogClose = confirm => {
+    setDialogOpen(false) // Dialog 닫기
+
     if (confirm) {
       apiClient
         .post('/api/wish/create', wishBook)
         .then(response => {
-          alert('성공적으로 희망도서신청을 하였습니다.')
+          showAlert('성공적으로 희망도서신청을 하였습니다.')
           navigate('/')
         })
         .catch(error => {
           if (error.response.status === 500) {
-            alert('이미 존재하는 도서입니다.')
+            showAlert('이미 존재하는 도서입니다.')
           } else {
-            alert('잠시 뒤에 다시 신청해주세요.')
+            showAlert('잠시 뒤에 다시 신청해주세요.')
           }
           console.error(error) // 오류 처리
         })
@@ -134,7 +172,6 @@ export default function WishBook() {
       }
 
       console.log('dataObject : ', dataObject)
-      // 배열로 변환된 data.item을 이용
       const books = dataObject.item.map(book => {
         const categoryParts = book.categoryName.split('>')
         const category =
@@ -177,7 +214,7 @@ export default function WishBook() {
   }
   const handleSearch = async () => {
     if (!wishBookName) {
-      alert('희망 도서명을 입력해주세요.')
+      showAlert('희망 도서명을 입력해주세요.')
       return
     }
     const books = await callAladinAPI(wishBookName)
@@ -279,6 +316,11 @@ export default function WishBook() {
           <Button size="large" variant="contained" onClick={onClickWishBook}>
             확인
           </Button>
+          <ConfirmationDialog
+            title="희망도서를 신청하시겠습니까?"
+            open={isDialogOpen}
+            onClose={handleDialogClose}
+          />
         </S.ButtonWrapper>
         <div style={{ marginTop: '50px', marginBottom: '50px' }}></div>
       </S.InnerContainer>

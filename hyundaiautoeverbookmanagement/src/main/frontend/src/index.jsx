@@ -7,6 +7,8 @@ import theme from './styles/theme'
 import { IsLoginProvider } from './context/IsLoginContext'
 import { UserProvider } from './context/UserContext'
 import { SnackbarProvider } from './context/SnackbarContext'
+import { AlertProvider } from './context/AlertContext'
+import { ConfirmProvider } from './context/ConfirmContext'
 import { SnackbarComponent } from './components/index'
 import apiClient from './axios'
 import App from './App'
@@ -23,16 +25,20 @@ root.render(
   <React.StrictMode>
     <IsLoginProvider>
       <UserProvider>
-        <GlobalStyle />
-        <ThemeProvider theme={theme}>
-          <SnackbarProvider>
-            <Router>
-              <App />
-              <Footer />
-              <SnackbarComponent />
-            </Router>
-          </SnackbarProvider>
-        </ThemeProvider>
+        <ConfirmProvider>
+          <AlertProvider>
+            <GlobalStyle />
+            <ThemeProvider theme={theme}>
+              <SnackbarProvider>
+                <Router>
+                  <App />
+                  <Footer />
+                  <SnackbarComponent />
+                </Router>
+              </SnackbarProvider>
+            </ThemeProvider>
+          </AlertProvider>
+        </ConfirmProvider>
       </UserProvider>
     </IsLoginProvider>
   </React.StrictMode>
