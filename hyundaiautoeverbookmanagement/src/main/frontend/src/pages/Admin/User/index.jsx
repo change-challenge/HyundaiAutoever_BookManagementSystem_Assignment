@@ -3,7 +3,7 @@ import { Text } from '../../../components/index'
 import { default as Table } from './table'
 import { useEffect, useState } from 'react'
 import Pagination from '@mui/material/Pagination'
-import axios from 'axios'
+import apiClient from '../../../axios'
 
 const AdminUser = ({ user }) => {
   console.log('AdminUser user : ', user)
@@ -16,7 +16,7 @@ const AdminUser = ({ user }) => {
     setLoading(true)
     setError(null)
     try {
-      const response = await axios.get(`/api/admin/member`)
+      const response = await apiClient.get(`/api/admin/member`)
       setUsers(response.data)
       setLoading(false)
     } catch (error) {

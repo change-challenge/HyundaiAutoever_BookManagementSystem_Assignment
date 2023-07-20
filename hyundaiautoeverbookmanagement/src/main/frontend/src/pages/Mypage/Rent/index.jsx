@@ -4,11 +4,15 @@ import Button from '@mui/material/Button'
 import { Text } from '../../../components/index'
 import * as S from './style'
 import { useEffect, useState, useContext } from 'react'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import Pagination from '@mui/material/Pagination'
+import { useAlert } from '../../../context/AlertContext'
+import { useConfirm } from '../../../context/ConfirmContext'
 
 const MypageRent = ({ user }) => {
+  const showAlert = useAlert()
+  const showConfirm = useConfirm()
   const { setSnackbar } = useContext(SnackbarContext)
   const [rents, setRents] = useState([])
   const [page, setPage] = useState(1)
@@ -18,7 +22,7 @@ const MypageRent = ({ user }) => {
   }
 
   const fetchRents = async () => {
-    const response = await axios.get(`/api/rent/current`, {
+    const response = await apiClient.get(`/api/rent/current`, {
       params: {
         email: user.email,
       },
@@ -28,19 +32,16 @@ const MypageRent = ({ user }) => {
 
   const handleReturnClick = copyId => {
     if (!user) {
-      alert('로그인이 필요한 기능입니다!')
+      showAlert('로그인이 필요한 기능입니다!')
       return
     }
     console.log('copyId : ', copyId)
 
-    const confirm = window.confirm('도서를 반납하시겠습니까?')
-    if (confirm) {
-      makeReturn(copyId)
-    }
+    showConfirm('도서를 반납하시겠습니까?', () => makeReturn(copyId))
   }
 
   const makeReturn = async copyId => {
-    const response = await axios
+    const response = await apiClient
       .post(`/api/return/${copyId}`, {
         copyId: copyId,
         email: user.email,
@@ -76,18 +77,15 @@ const MypageRent = ({ user }) => {
 
   const handleExtendClick = copyId => {
     if (!user) {
-      alert('로그인이 필요한 기능입니다!')
+      showAlert('로그인이 필요한 기능입니다!')
       return
     }
 
-    const confirm = window.confirm('도서를 연장하시겠습니까?')
-    if (confirm) {
-      makeExtend(copyId)
-    }
+    showConfirm('도서를 연장하시겠습니까?', () => makeExtend(copyId))
   }
 
   const makeExtend = async copyId => {
-    const response = await axios
+    const response = await apiClient
       .post(`/api/extend/${copyId}`, {
         copyId: copyId,
         email: user.email,

@@ -15,8 +15,10 @@ import Box from '@mui/material/Box'
 import Typography from '@mui/material/Typography'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
+import { useAlert } from '../../../context/AlertContext'
+import { useConfirm } from '../../../context/ConfirmContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -50,6 +52,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ books }) {
+  const showAlert = useAlert()
+  const showConfirm = useConfirm()
   const [open, setOpen] = useState(false)
   const [bookId, setBookId] = useState(0)
   const [bookCount, setBookCount] = useState(0)
@@ -67,28 +71,28 @@ export default function CustomizedTables({ books }) {
     setBookId(id)
   }
 
-  const HandleDeleteClick = bookId => {
-    const confirm = window.confirm(
-      '도서를 삭제하시겠습니까? 삭제 후 복구가 불가능합니다.'
-    )
+  const sumbitDeleteBook = async bookId => {
+    apiClient
+      .post('/api/admin/book/delete', { bookId })
+      .then(() => {
+        window.location.reload()
+        setSnackbar({
+          open: true,
+          severity: 'error',
+          message: '도서 삭제 성공!',
+        })
+      })
+      .catch(error => {
+        if (error.response.status === 500) {
+          showAlert('당신은 Admin이 아닙니다.')
+        }
+      })
+  }
 
-    if (confirm) {
-      axios
-        .post('/api/admin/book/delete', { bookId })
-        .then(() => {
-          window.location.reload()
-          setSnackbar({
-            open: true,
-            severity: 'error',
-            message: '도서 삭제 성공!',
-          })
-        })
-        .catch(error => {
-          if (error.response.status === 500) {
-            alert('당신은 Admin이 아닙니다.')
-          }
-        })
-    }
+  const HandleDeleteClick = bookId => {
+    showConfirm('도서를 삭제하시겠습니까? 삭제 후 복구가 불가능합니다.', () =>
+      sumbitDeleteBook(bookId)
+    )
   }
 
   return (
@@ -98,11 +102,11 @@ export default function CustomizedTables({ books }) {
           <TableHead>
             <TableRow>
               <StyledTableCell>번호</StyledTableCell>
-              <StyledTableCell>책제목</StyledTableCell>
+              <StyledTableCell>도서명</StyledTableCell>
               <StyledTableCell>저자</StyledTableCell>
-              <StyledTableCell>발행일자</StyledTableCell>
               <StyledTableCell>출판사</StyledTableCell>
               <StyledTableCell>ISBN</StyledTableCell>
+              <StyledTableCell>발행일자</StyledTableCell>
               <StyledTableCell>수량</StyledTableCell>
               <StyledTableCell></StyledTableCell>
             </TableRow>
@@ -120,12 +124,11 @@ export default function CustomizedTables({ books }) {
                 </StyledTableCell>
 
                 <StyledTableCell>{book.author}</StyledTableCell>
+                <StyledTableCell>{book.publisher}</StyledTableCell>
+                <StyledTableCell>{book.isbn}</StyledTableCell>
                 <StyledTableCell>
                   {new Date(book.pubDate).toLocaleDateString()}
                 </StyledTableCell>
-
-                <StyledTableCell>{book.publisher}</StyledTableCell>
-                <StyledTableCell>{book.isbn}</StyledTableCell>
                 <StyledTableCell>{book.bookCount}</StyledTableCell>
                 <StyledTableCell>
                   <Stack spacing={2}>
@@ -188,7 +191,7 @@ export default function CustomizedTables({ books }) {
                 height: 40,
               }}
               onClick={() => {
-                axios
+                apiClient
                   .patch('/api/admin/book/update', { bookId, bookCount })
                   .then(() => {
                     window.location.reload()
@@ -200,7 +203,7 @@ export default function CustomizedTables({ books }) {
                   })
                   .catch(error => {
                     if (error.response.status === 500) {
-                      alert('당신은 Admin이 아닙니다.')
+                      showAlert('당신은 Admin이 아닙니다.')
                     }
                   })
                 handleClose()

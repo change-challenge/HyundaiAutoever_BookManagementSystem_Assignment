@@ -9,8 +9,9 @@ import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../../context/SnackbarContext'
-
-import axios from 'axios'
+import apiClient from '../../../axios'
+import { useAlert } from '../../../context/AlertContext'
+import { useConfirm } from '../../../context/ConfirmContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -32,17 +33,18 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ rents }) {
+  const showAlert = useAlert()
+  const showConfirm = useConfirm()
   const { setSnackbar } = useContext(SnackbarContext)
 
   const handleReturnClick = (copyId, memberEmail) => {
-    const confirm = window.confirm('도서를 반납하시겠습니까?')
-    if (confirm) {
+    showConfirm('도서를 반납하시겠습니까?', () =>
       makeReturn(copyId, memberEmail)
-    }
+    )
   }
 
   const makeReturn = async (copyId, memberEmail) => {
-    const response = await axios
+    const response = await apiClient
       .patch(`/api/admin/return/${copyId}`, {
         copyId: copyId,
         email: memberEmail,
@@ -66,7 +68,7 @@ export default function CustomizedTables({ rents }) {
           if (error.response.status === 400) {
             console.error('Client error: ', error.response.data)
           } else {
-            alert('당신은 Admin이 아닙니다.')
+            showAlert('당신은 Admin이 아닙니다.')
           }
         } else if (error.request) {
           console.error('No response: ', error.request)
@@ -81,7 +83,7 @@ export default function CustomizedTables({ rents }) {
         <TableHead>
           <TableRow>
             <StyledTableCell>번호</StyledTableCell>
-            <StyledTableCell>책제목</StyledTableCell>
+            <StyledTableCell>도서명</StyledTableCell>
             <StyledTableCell>이메일</StyledTableCell>
             <StyledTableCell>대출일자</StyledTableCell>
             <StyledTableCell>반납일자</StyledTableCell>

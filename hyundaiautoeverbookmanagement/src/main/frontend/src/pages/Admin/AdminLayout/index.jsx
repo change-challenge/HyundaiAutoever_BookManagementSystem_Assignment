@@ -3,11 +3,12 @@ import * as S from './style'
 import { Outlet, useNavigate } from 'react-router-dom'
 import { SideBar } from '../../../components/index'
 import { fetchUserInfo } from '../../../context/UserContext'
-import axios from 'axios'
+import apiClient from '../../../axios'
+import { useAlert } from '../../../context/AlertContext'
 
 const checkAdmin = async () => {
   try {
-    const response = await axios.get('/api/admin/allow')
+    const response = await apiClient.get('/api/admin/allow')
 
     console.log('response : ', response)
     if (response.status !== 200) {
@@ -21,6 +22,7 @@ const checkAdmin = async () => {
 }
 
 const AdminLayout = () => {
+  const showAlert = useAlert()
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
@@ -39,7 +41,7 @@ const AdminLayout = () => {
     const fetchAdmin = async () => {
       const result = await checkAdmin()
       if (!result) {
-        alert('접근 불가!')
+        showAlert('접근 불가!')
         navigate('/')
       }
       setLoading(false)

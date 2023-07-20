@@ -8,6 +8,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.WishRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +30,7 @@ public class WishService {
     private final WishRepository wishRepository;
     private final BookRepository bookRepository;
     private final CopyRepository copyRepository;
+    private final MemberRepository memberRepository;
 
     public List<WishRequestDTO> getAllWishs() {
         List<Wish> wishBooks = wishRepository.findAll();
@@ -45,7 +47,10 @@ public class WishService {
         if (bookRepository.existsByIsbn(form.getBook().getIsbn())) {
             throw new RuntimeException("이미 존재하는 책입니다.");
         }
-        Wish wish = form.toEntity();
+        Member member = memberRepository.findByEmail(form.getEmail())
+                .orElseThrow(() -> new RuntimeException("해당 유저는 존재하지 않습니다."));
+        Wish wish = form.toEntity(member);
+        wish.setMember(member);
         Wish saved = wishRepository.save(wish);
         return "Success";
     }
@@ -110,7 +115,7 @@ public class WishService {
     private WishRequestDTO convertToWishRequestDTO(Wish wish) {
         WishRequestDTO wishRequestDTO = new WishRequestDTO();
         wishRequestDTO.setId(wish.getId());
-        wishRequestDTO.setEmail(wish.getMemberEmail());
+        wishRequestDTO.setEmail(wish.getMember().getEmail());
         wishRequestDTO.setStatus(wish.getWishStatus().toString());
         wishRequestDTO.setWishDate(wish.getWishDate());
         wishRequestDTO.setBook(convertToBookDTO(wish));

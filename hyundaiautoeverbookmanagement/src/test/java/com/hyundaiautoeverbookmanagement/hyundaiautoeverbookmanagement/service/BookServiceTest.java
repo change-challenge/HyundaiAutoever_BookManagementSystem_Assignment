@@ -34,7 +34,7 @@ import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
 @ExtendWith(MockitoExtension.class)
-@DisplayName("BookhService에 대한 테스트")
+@DisplayName("BookService에 대한 테스트")
 class BookServiceTest {
 
     @Mock

@@ -30,6 +30,14 @@ const ContentWrap = styled.div`
   margin-top: 26px;
 `
 
+const EmailWrap = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: space-between;
+`
+
 const InputWrap = styled.div`
   display: flex;
   border-radius: 8px;
@@ -102,6 +110,18 @@ const ToLoginButton = styled.button`
   }
 `
 
+const CheckEmailButton = styled.button`
+  height: 100%;
+  margin-top: 10px;
+  margin-left: 8px;
+  background-color: ${({ theme }) => theme.colors.main};
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+`
+
 export {
   Container,
   InnerContainer,
@@ -112,4 +132,6 @@ export {
   ErrorMessageWrap,
   SignUpButton,
   ToLoginButton,
+  CheckEmailButton,
+  EmailWrap,
 }

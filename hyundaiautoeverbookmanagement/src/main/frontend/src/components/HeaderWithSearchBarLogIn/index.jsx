@@ -10,7 +10,7 @@ import {
 } from '../../context/IsLoginContext'
 import { useUserDispatch } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
-import axios from 'axios'
+import apiClient from '../../axios'
 
 function HeaderWithSearchBarLogIn() {
   const navigate = useNavigate()
@@ -33,7 +33,7 @@ function HeaderWithSearchBarLogIn() {
 
   const handleLogout = async () => {
     try {
-      await axios.post('/api/auth/logout')
+      await apiClient.post('/api/auth/logout')
       setIsLogin(false)
       setUserInfo(null)
       setToken(null)

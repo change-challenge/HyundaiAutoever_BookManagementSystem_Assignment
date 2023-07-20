@@ -10,7 +10,9 @@ import Paper from '@mui/material/Paper'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../../context/SnackbarContext'
-import axios from 'axios'
+import apiClient from '../../../axios'
+import { useAlert } from '../../../context/AlertContext'
+import { useConfirm } from '../../../context/ConfirmContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -33,6 +35,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ wishBooks }) {
+  const showConfirm = useConfirm()
+  const showAlert = useAlert()
   const { setSnackbar } = useContext(SnackbarContext)
 
   const sortWishBooks = (a, b) => {
@@ -46,31 +50,32 @@ export default function CustomizedTables({ wishBooks }) {
     return new Date(b.wishDate) - new Date(a.wishDate)
   }
 
-  const handleUpdateButtonClick = async wishbookId => {
-    const confirm = window.confirm('희망 도서를 반려하시겠습니까?')
-    const response = await axios
-      .patch('/api/admin/wish/reject', {
+  const submitReject = async wishbookId => {
+    try {
+      await apiClient.patch('/api/admin/wish/reject', {
         wishId: wishbookId,
       })
-      .then(() => {
-        window.location.reload()
-        setSnackbar({
-          open: true,
-          severity: 'error',
-          message: '희망도서 반려!',
-        })
+
+      window.location.reload()
+      setSnackbar({
+        open: true,
+        severity: 'error',
+        message: '희망도서 반려!',
       })
-      .catch(error => {
-        if (error.response.status === 500) {
-          alert('당신은 Admin이 아닙니다.')
-        }
-      })
+    } catch (error) {
+      if (error.response && error.response.status === 500) {
+        showAlert('당신은 Admin이 아닙니다.')
+      }
+    }
   }
 
-  const handleAddButtonClick = async wishbook => {
-    const confirm = window.confirm('희망 도서를 추가하시겠습니까?')
-    const response = await axios
-      .post('/api/admin/wish/approve', {
+  const handleUpdateButtonClick = async wishbookId => {
+    showConfirm('희망 도서를 반려하시겠습니까?', () => submitReject(wishbookId))
+  }
+
+  const submitAdd = async wishbook => {
+    try {
+      await apiClient.post('/api/admin/wish/approve', {
         id: wishbook.id,
         status: wishbook.status,
         email: null,
@@ -86,19 +91,21 @@ export default function CustomizedTables({ wishBooks }) {
           pubDate: wishbook.book.pubDate,
         },
       })
-      .then(() => {
-        window.location.reload()
-        setSnackbar({
-          open: true,
-          severity: 'success',
-          message: '희망도서 추기!',
-        })
+      window.location.reload()
+      setSnackbar({
+        open: true,
+        severity: 'success',
+        message: '희망도서 추기!',
       })
-      .catch(error => {
-        if (error.response.status === 500) {
-          alert('당신은 Admin이 아닙니다.')
-        }
-      })
+    } catch (error) {
+      if (error.response.status === 500) {
+        showAlert('당신은 Admin이 아닙니다.')
+      }
+    }
+  }
+
+  const handleAddButtonClick = async wishbook => {
+    showConfirm('희망 도서를 추가하시겠습니까?', () => submitAdd(wishbook))
   }
 
   return (
@@ -108,12 +115,12 @@ export default function CustomizedTables({ wishBooks }) {
           <TableRow>
             <StyledTableCell>번호</StyledTableCell>
             <StyledTableCell>신청자</StyledTableCell>
-            <StyledTableCell>신청일자</StyledTableCell>
-            <StyledTableCell>책제목</StyledTableCell>
+            <StyledTableCell>도서명</StyledTableCell>
             <StyledTableCell>저자</StyledTableCell>
             <StyledTableCell>발행일자</StyledTableCell>
             <StyledTableCell>출핀사</StyledTableCell>
             <StyledTableCell>ISBN</StyledTableCell>
+            <StyledTableCell>신청일자</StyledTableCell>
             <StyledTableCell>버튼</StyledTableCell>
           </TableRow>
         </TableHead>
@@ -124,12 +131,12 @@ export default function CustomizedTables({ wishBooks }) {
                 {wishbook.id}
               </StyledTableCell>
               <StyledTableCell>{wishbook.email}</StyledTableCell>
-              <StyledTableCell>{wishbook.wishDate}</StyledTableCell>
               <StyledTableCell>{wishbook.book.title}</StyledTableCell>
               <StyledTableCell>{wishbook.book.author}</StyledTableCell>
               <StyledTableCell>{wishbook.book.pubDate}</StyledTableCell>
               <StyledTableCell>{wishbook.book.publisher}</StyledTableCell>
               <StyledTableCell>{wishbook.book.isbn}</StyledTableCell>
+              <StyledTableCell>{wishbook.wishDate}</StyledTableCell>
               <StyledTableCell>
                 <Stack spacing={2}>
                   <Button

@@ -2,9 +2,12 @@ import React from 'react'
 import styled from 'styled-components'
 import { useEffect, useState, useContext } from 'react'
 import { fetchUserInfo } from '../../context/UserContext'
-import axios from 'axios'
+import apiClient from '../../axios'
 import Button from '@mui/material/Button'
 import { SnackbarContext } from '../../context/SnackbarContext'
+import { useNavigate } from 'react-router-dom'
+import { useAlert } from '../../context/AlertContext'
+import { useConfirm } from '../../context/ConfirmContext'
 
 const TableWrapper = styled.div`
   border: 1px solid #ccc;
@@ -45,21 +48,20 @@ const TableCell = styled.td`
 `
 
 const BookCountTable = ({ bookId }) => {
+  const showAlert = useAlert()
+  const showConfirm = useConfirm()
+  const navigate = useNavigate()
   const [copyDetail, setCopyDetail] = useState([])
   const [user, setUser] = useState(null)
   const { setSnackbar } = useContext(SnackbarContext)
 
   const handleRentClick = copyId => {
     if (!user) {
-      alert('로그인이 필요한 기능입니다!')
+      showAlert('로그인이 필요한 기능입니다!')
       return
     }
     console.log('copyId : ', copyId)
-
-    const confirm = window.confirm('도서를 대여하시겠습니까?')
-    if (confirm) {
-      makeRent(copyId)
-    }
+    showConfirm('도서를 대출하시겠습니까?', () => makeRent(copyId))
   }
 
   useEffect(() => {
@@ -71,51 +73,56 @@ const BookCountTable = ({ bookId }) => {
     console.log(user)
   }, [])
 
+  const moveToMypage = () => {
+    navigate('/mypage')
+  }
   const makeRent = async copyId => {
-    const response = await axios
-      .post(`/api/rent/${copyId}`, {
+    try {
+      const response = await apiClient.post(`/api/rent/${copyId}`, {
         copyId: copyId,
         email: user.email,
       })
-      .then(response => {
-        console.log('makeRent: ', response.data)
-        window.location.reload()
-        setSnackbar({
-          open: true,
-          severity: 'success',
-          message: '도서 대여 성공!',
-        })
+      setSnackbar({
+        open: true,
+        severity: 'success',
+        message: '도서 대출 성공!',
       })
-      .catch(error => {
-        if (error.response) {
-          if (error.response.status === 400) {
-            if (error.response.data == '세권초과') {
-              setSnackbar({
-                open: true,
-                severity: 'error',
-                message: '도서는 3권까지 빌릴 수 있습니다.',
-              })
-            }
-            if (error.response.data == '빌린도서') {
-              setSnackbar({
-                open: true,
-                severity: 'error',
-                message: '이미 대여한 도서입니다.',
-              })
-            }
-          } else {
-            console.error('Server error: ', error.response.data)
+
+      setTimeout(() => {
+        showConfirm('내 서재로 이동하시겠습니까?', moveToMypage, () =>
+          window.location.reload()
+        )
+      }, 300)
+    } catch (error) {
+      if (error.response) {
+        if (error.response.status === 400) {
+          if (error.response.data == '세권초과') {
+            setSnackbar({
+              open: true,
+              severity: 'error',
+              message: '도서는 3권까지 빌릴 수 있습니다.',
+            })
           }
-        } else if (error.request) {
-          console.error('No response: ', error.request)
+          if (error.response.data == '빌린도서') {
+            setSnackbar({
+              open: true,
+              severity: 'error',
+              message: '이미 대출한 도서입니다.',
+            })
+          }
         } else {
-          console.error('Error: ', error.message)
+          console.error('Server error: ', error.response.data)
         }
-      })
+      } else if (error.request) {
+        console.error('No response: ', error.request)
+      } else {
+        console.error('Error: ', error.message)
+      }
+    }
   }
 
   const fetchCopys = async () => {
-    const response = await axios.get(`/api/bookdetail/${bookId}`)
+    const response = await apiClient.get(`/api/bookdetail/${bookId}`)
     setCopyDetail(response.data)
     console.log(response.data)
   }
@@ -132,7 +139,7 @@ const BookCountTable = ({ bookId }) => {
             <TableHeader>번호</TableHeader>
             <TableHeader>대출상태</TableHeader>
             <TableHeader>반납 예정일</TableHeader>
-            <TableHeader>도서 대여</TableHeader>
+            <TableHeader>도서 대출</TableHeader>
           </tr>
         </thead>
         <TableBody>
@@ -160,11 +167,11 @@ const BookCountTable = ({ bookId }) => {
                     variant="contained"
                     onClick={() => handleRentClick(item.copyId)}
                   >
-                    대여하기
+                    대출하기
                   </Button>
                 ) : (
                   <Button variant="contained" disabled>
-                    대여하기
+                    대출하기
                   </Button>
                 )}
               </TableCell>

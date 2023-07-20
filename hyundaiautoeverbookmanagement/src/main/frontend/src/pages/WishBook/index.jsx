@@ -3,12 +3,17 @@ import { Text, LabelInput, Title } from '../../components/index'
 import * as S from './style'
 import Button from '@mui/material/Button'
 import Stack from '@mui/material/Stack'
-import axios from 'axios'
+import apiClient from '../../axios'
 import { fetchUserInfo } from '../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import SearchResultModal from './SearchResultModal'
+import { useAlert } from '../../context/AlertContext'
+import { useConfirm } from '../../context/ConfirmContext'
 
+// 컴포넌트 시작!
 export default function WishBook() {
+  const showConfirm = useConfirm()
+  const showAlert = useAlert()
   const navigate = useNavigate()
   const [wishBookName, setWishBookName] = useState('')
   const [wishBookAuthor, setWishBookAuthor] = useState('')
@@ -80,7 +85,7 @@ export default function WishBook() {
       const userInfo = await fetchUserInfo()
       setUser(userInfo)
       if (!userInfo) {
-        alert('로그인이 필요한 기능입니다.')
+        showAlert('로그인이 필요한 기능입니다.')
         navigate('/')
       }
       console.log('user : ', user)
@@ -90,31 +95,32 @@ export default function WishBook() {
 
   const onClickWishBook = () => {
     if (!wishBookName || !wishBookAuthor || !wishBookPublisher) {
-      alert('희망도서명, 저자, 발행자는 필수 항목입니다.')
+      showAlert('희망도서명, 저자, 발행자는 필수 항목입니다.')
       return
     }
-    const confirm = window.confirm('희망도서를 신청하시겠습니까?')
-    if (confirm) {
-      axios
-        .post('/api/wish/create', wishBook)
-        .then(response => {
-          alert('성공적으로 희망도서신청을 하였습니다.')
-          navigate('/')
-        })
-        .catch(error => {
-          if (error.response.status === 500) {
-            alert('이미 존재하는 도서입니다.')
-          } else {
-            alert('잠시 뒤에 다시 신청해주세요.')
-          }
-          console.error(error) // 오류 처리
-        })
-    }
+    showConfirm('희망도서를 신청하시겠습니까?', submitWishBook)
+  }
+
+  const submitWishBook = () => {
+    apiClient
+      .post('/api/wish/create', wishBook)
+      .then(response => {
+        showAlert('성공적으로 희망도서신청을 하였습니다.')
+        navigate('/')
+      })
+      .catch(error => {
+        if (error.response.status === 500) {
+          showAlert('이미 존재하는 도서입니다.')
+        } else {
+          showAlert('잠시 뒤에 다시 신청해주세요.')
+        }
+        console.error(error) // 오류 처리
+      })
   }
 
   const callAladinAPI = async wishBookName => {
     try {
-      const response = await axios.get('/aladin-api/ItemSearch.aspx', {
+      const response = await apiClient.get('/aladin-api/ItemSearch.aspx', {
         params: {
           TTBKey: process.env.REACT_APP_TTB_KEY,
           Query: wishBookName,
@@ -134,7 +140,6 @@ export default function WishBook() {
       }
 
       console.log('dataObject : ', dataObject)
-      // 배열로 변환된 data.item을 이용
       const books = dataObject.item.map(book => {
         const categoryParts = book.categoryName.split('>')
         const category =
@@ -177,7 +182,7 @@ export default function WishBook() {
   }
   const handleSearch = async () => {
     if (!wishBookName) {
-      alert('희망 도서명을 입력해주세요.')
+      showAlert('희망 도서명을 입력해주세요.')
       return
     }
     const books = await callAladinAPI(wishBookName)

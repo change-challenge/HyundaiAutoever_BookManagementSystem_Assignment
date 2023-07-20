@@ -2,6 +2,7 @@ package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.CategoryType;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.WishStatus;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Wish;
 import lombok.*;
 
@@ -20,7 +21,7 @@ public class WishRequestDTO {
     private String email;
     private BookDTO book;
 
-    public Wish toEntity() {
-        return new Wish(null, email, LocalDate.now(), WishStatus.PENDING, book.getTitle(), book.getAuthor(), book.getPublisher(), book.getIsbn(), CategoryType.ToEnglish(book.getCategory()), book.getInfo(), book.getCover(), book.getPubDate(), book.getRentCount());
+    public Wish toEntity(Member member) {
+        return new Wish(null, member, LocalDate.now(), WishStatus.PENDING, book.getTitle(), book.getAuthor(), book.getPublisher(), book.getIsbn(), CategoryType.ToEnglish(book.getCategory()), book.getInfo(), book.getCover(), book.getPubDate(), book.getRentCount());
     }
 }

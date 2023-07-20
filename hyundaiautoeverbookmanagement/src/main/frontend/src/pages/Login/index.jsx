@@ -5,9 +5,11 @@ import React, { useState, useContext, useEffect } from 'react'
 import { useTokenDispatch, IsLoginContext } from '../../context/IsLoginContext'
 import { fetchUserInfo } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
-import axios from 'axios'
+import apiClient from '../../axios'
+import { useAlert } from '../../context/AlertContext'
 
 function Login() {
+  const showAlert = useAlert()
   const setToken = useTokenDispatch()
   const { setSnackbar } = useContext(SnackbarContext)
   const { setIsLogin } = useContext(IsLoginContext)
@@ -22,7 +24,7 @@ function Login() {
     const getUserInfo = async () => {
       const userInfo = await fetchUserInfo()
       if (userInfo) {
-        alert('이미 로그인을 하셨습니다.')
+        showAlert('이미 로그인을 하셨습니다.')
         navigate('/')
       }
     }
@@ -51,14 +53,16 @@ function Login() {
 
   const onClickConfirmButton = async () => {
     try {
-      const response = await axios.post('/api/auth/login', {
+      const response = await apiClient.post('/api/auth/login', {
         email,
         password: pw,
       })
       console.log('onClickConfirmButton : ', response.data)
       const accessToken = response.data.accessToken
       localStorage.setItem('token', accessToken) // 추가: localStorage에 토큰 저장
-      axios.defaults.headers.common['Authorization'] = `Bearer ${accessToken}` // 추가: 헤더에 Access Token 설정
+      apiClient.defaults.headers.common[
+        'Authorization'
+      ] = `Bearer ${accessToken}` // 추가: 헤더에 Access Token 설정
       setToken(accessToken)
       setIsLogin(true)
       setSnackbar({
@@ -72,7 +76,7 @@ function Login() {
     } catch (error) {
       setPw('')
       setPwValid(false)
-      alert('로그인 정보가 올바르지 않거나 가입된 회원이 아닙니다.')
+      showAlert('로그인 정보가 올바르지 않거나 가입된 회원이 아닙니다.')
     }
   }
 

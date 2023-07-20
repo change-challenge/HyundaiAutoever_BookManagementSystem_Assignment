@@ -6,9 +6,11 @@ import { Text } from '../../../components/index'
 import { fetchUserInfo } from '../../../context/UserContext'
 import { useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
-import axios from 'axios'
+import apiClient from '../../../axios'
+import { useAlert } from '../../../context/AlertContext'
 
 const Mypage = () => {
+  const showAlert = useAlert()
   const navigate = useNavigate()
   const [user, setUser] = useState(null)
   const [isAdmin, setIsAdmin] = useState(false)
@@ -18,7 +20,7 @@ const Mypage = () => {
       const userInfo = await fetchUserInfo()
       setUser(userInfo)
       if (!userInfo) {
-        alert('로그인이 필요한 기능입니다.')
+        showAlert('로그인이 필요한 기능입니다.')
         navigate('/')
       }
       const result = await checkAdmin()
@@ -37,7 +39,7 @@ const Mypage = () => {
 
   const checkAdmin = async () => {
     try {
-      const response = await axios.get('/api/admin/allow')
+      const response = await apiClient.get('/api/admin/allow')
 
       console.log('response : ', response)
       if (response.status !== 200) {

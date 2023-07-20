@@ -3,14 +3,14 @@ import { Text } from '../../../components/index'
 import { default as Table } from './table'
 import { useEffect, useState } from 'react'
 import Pagination from '@mui/material/Pagination'
-import axios from 'axios'
+import apiClient from '../../../axios'
 
 const AdminBook = () => {
   const [books, setBooks] = useState([])
   const [page, setPage] = useState(1)
 
   const fetchBooks = async () => {
-    const response = await axios.get(`/api/admin/book`)
+    const response = await apiClient.get(`/api/admin/book`)
     setBooks(response.data)
   }
 

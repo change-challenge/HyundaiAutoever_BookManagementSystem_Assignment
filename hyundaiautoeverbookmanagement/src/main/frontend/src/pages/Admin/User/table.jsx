@@ -8,10 +8,12 @@ import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
 import Button from '@mui/material/Button'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import { SnackbarContext } from '../../../context/SnackbarContext'
 import { useEffect, useState, useContext } from 'react'
 import { fetchUserInfo } from '../../../context/UserContext'
+import { useAlert } from '../../../context/AlertContext'
+import { useConfirm } from '../../../context/ConfirmContext'
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -33,6 +35,8 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }))
 
 export default function CustomizedTables({ users }) {
+  const showAlert = useAlert()
+  const showConfirm = useConfirm()
   const { setSnackbar } = useContext(SnackbarContext)
   const [myInfo, setMyInfo] = useState(null)
 
@@ -48,7 +52,7 @@ export default function CustomizedTables({ users }) {
   console.log('myInfo : ', myInfo)
   const ChangeMemberType = async email => {
     console.log('email : ', email)
-    const response = await axios
+    const response = await apiClient
       .patch(`/api/admin/member/type`, {
         email: email,
         myEmail: myInfo.email,
@@ -62,17 +66,13 @@ export default function CustomizedTables({ users }) {
         })
       })
       .catch(error => {
-        alert('당신은 Admin이 아닙니다.')
+        showAlert('당신은 Admin이 아닙니다.')
         console.log(error)
       })
   }
 
   const HandleClick = email => {
-    const confirm = window.confirm('유저 권한을 바꾸시겠습니까?')
-
-    if (confirm) {
-      ChangeMemberType(email)
-    }
+    showConfirm('유저 권한을 바꾸시겠습니까?', () => ChangeMemberType(email))
   }
   return (
     <TableContainer component={Paper}>

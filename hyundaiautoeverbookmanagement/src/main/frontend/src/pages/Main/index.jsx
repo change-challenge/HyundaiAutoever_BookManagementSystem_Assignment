@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { SearchBar } from '../../components/index'
 import { useNavigate } from 'react-router-dom'
 import * as S from './style'
-import axios from 'axios'
+import apiClient from '../../axios'
 
 export default function Main() {
   const navigate = useNavigate()
@@ -25,10 +25,10 @@ export default function Main() {
   const token = localStorage.getItem('token')
 
   if (token) {
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`
     console.log(
       'Token set in headers:',
-      axios.defaults.headers.common['Authorization']
+      apiClient.defaults.headers.common['Authorization']
     )
   }
   return (

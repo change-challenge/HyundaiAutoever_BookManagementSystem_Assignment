@@ -3,14 +3,14 @@ import { Text } from '../../../components/index'
 import { default as Table } from './table'
 import { useEffect, useState } from 'react'
 import Pagination from '@mui/material/Pagination'
-import axios from 'axios'
+import apiClient from '../../../axios'
 
 const AdminWishBook = () => {
   const [wishBook, setWishBook] = useState([])
   const [page, setPage] = useState(1)
 
   const fetchwishBook = async () => {
-    const response = await axios.get(`/api/admin/wish`)
+    const response = await apiClient.get(`/api/admin/wish`)
     setWishBook(response.data)
   }
 

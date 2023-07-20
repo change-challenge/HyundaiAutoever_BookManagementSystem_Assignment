@@ -5,20 +5,26 @@ import React, { useState, useContext } from 'react'
 import { useEffect } from 'react'
 import { fetchUserInfo } from '../../context/UserContext'
 import { SnackbarContext } from '../../context/SnackbarContext'
+import apiClient from '../../axios'
+import { useAlert } from '../../context/AlertContext'
+import { useConfirm } from '../../context/ConfirmContext'
 
 function SignUp() {
+  const showConfirm = useConfirm()
+  const showAlert = useAlert()
   const { setSnackbar } = useContext(SnackbarContext)
   const [email, setEmail] = useState('')
   const [pw, setPw] = useState('')
   const [pwSame, setPwSame] = useState('')
   const [name, setName] = useState('')
 
-  const [emailValid, setEmailValid] = useState(false)
+  const [emailValid, setEmailValid] = useState(null)
+
   const [nameValid, setNameValid] = useState(false)
   const [pwValid, setPwValid] = useState(false)
   const [pwSameValid, setPwSameValid] = useState(false)
-
   const [notAllow, setNotAllow] = useState(true)
+  const [emailExists, setEmailExists] = useState(false)
 
   const navigate = useNavigate()
 
@@ -26,7 +32,7 @@ function SignUp() {
     const getUserInfo = async () => {
       const userInfo = await fetchUserInfo()
       if (userInfo) {
-        alert('이미 로그인을 하셨습니다.')
+        showAlert('이미 로그인을 하셨습니다.')
         navigate('/')
       }
     }
@@ -34,11 +40,30 @@ function SignUp() {
   }, [])
 
   const handleEmail = e => {
-    setEmail(e.target.value)
+    const currentEmail = e.target.value
+    setEmail(currentEmail)
     const regex =
       /^(([^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*)|(".+"))@(([^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,})$/i
-    if (regex.test(email)) {
+
+    if (!currentEmail) {
+      setEmailValid(null)
+      setEmailExists(false)
+      return
+    }
+
+    if (regex.test(currentEmail)) {
       setEmailValid(true)
+
+      apiClient
+        .get(`/api/auth/exist?email=${currentEmail}`)
+        .then(response => {
+          if (response.status === 200) {
+            setEmailExists(false)
+          }
+        })
+        .catch(() => {
+          setEmailExists(true)
+        })
     } else {
       setEmailValid(false)
     }
@@ -66,46 +91,33 @@ function SignUp() {
     setNameValid(isValid)
   }
 
+  const submitSignup = data => {
+    apiClient
+      .post('/api/auth/signup', data)
+      .then(response => {
+        if (response.status === 200) {
+          navigate('/login')
+          setSnackbar({
+            open: true,
+            severity: 'success',
+            message: '회원가입 성공!',
+          })
+        } else {
+          showAlert('가입불가')
+        }
+      })
+      .catch(error => {
+        showAlert('아이디가 중복되었습니다.')
+      })
+  }
   const onClickConfirmButton = () => {
-    // 회원가입 버튼 클릭 시 호출되는 함수
     if (emailValid && pwValid && pwSameValid && nameValid) {
-      // 필수 입력 사항이 모두 입력되었을 때 API 호출
-      const currentDate = new Date()
-      const isoDate = currentDate.toISOString()
       const data = {
         email: email,
         name: name,
         password: pw,
-        registDate: isoDate,
       }
-
-      const confirm = window.confirm('회원가입을 하시겠습니까?')
-      if (confirm) {
-        fetch('/api/auth/signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        })
-          .then(response => {
-            if (response.ok) {
-              // 회원가입 성공 처리
-              navigate('/login')
-              setSnackbar({
-                open: true,
-                severity: 'success',
-                message: '회원가입 성공!',
-              })
-            } else {
-              alert('가입불가')
-            }
-          })
-          .catch(error => {
-            // 네트워크 에러 처리
-            console.error('Error:', error)
-          })
-      }
+      showConfirm('회원가입을 하시겠습니까?', () => submitSignup(data))
     }
   }
 
@@ -121,6 +133,33 @@ function SignUp() {
     setNotAllow(true)
   }, [emailValid, pwValid, pwSameValid, nameValid])
 
+  const renderEmailValidationMessage = () => {
+    // 이메일 중복 체크를 했는데, 중복된 경우
+    if (emailExists) {
+      return (
+        <S.ErrorMessageWrap>
+          <div>이메일이 중복되었습니다.</div>
+        </S.ErrorMessageWrap>
+      )
+    }
+
+    if (emailValid === false) {
+      return (
+        <S.ErrorMessageWrap>
+          <div>올바른 이메일을 입력해주세요.</div>
+        </S.ErrorMessageWrap>
+      )
+    }
+
+    if (emailValid === true && !emailExists) {
+      return (
+        <S.OkMessageWrap>
+          <div>사용 가능한 이메일입니다.</div>
+        </S.OkMessageWrap>
+      )
+    }
+  }
+
   return (
     <>
       <S.Container>
@@ -134,17 +173,7 @@ function SignUp() {
               onChange={handleEmail}
               width="100%"
             />
-            {emailValid
-              ? email.length > 0 && (
-                  <S.OkMessageWrap>
-                    <div>사용 가능한 이메일입니다.</div>
-                  </S.OkMessageWrap>
-                )
-              : email.length > 0 && (
-                  <S.ErrorMessageWrap>
-                    <div>올바른 이메일을 입력해주세요.</div>
-                  </S.ErrorMessageWrap>
-                )}
+            {renderEmailValidationMessage()}
             <LabelInput
               type="text"
               placeholder="이름"

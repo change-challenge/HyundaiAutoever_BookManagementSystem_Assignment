@@ -54,7 +54,7 @@ public class MemberService {
 
     @Transactional
     public String changeMemberType(String email, String myEmail) {
-        // 1. 신청자가 admin인 지 확인
+        // 1. 신청자가 admin 인 지 확인
         checkAdminAuthority();
 
         // 2. 본인을 바꾸려고 하는 지 확인
@@ -62,7 +62,7 @@ public class MemberService {
             throw new RuntimeException("본인 스스로를 바꿀 수 없습니다.");
         }
 
-        // 3. email로 member Data 가져오기
+        // 3. email 로 member Data 가져오기
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("유저 정보가 없습니다."));
 

@@ -2,7 +2,7 @@ import React from 'react'
 import { Text } from '../../../components/index'
 import * as S from './style'
 import { useEffect, useState } from 'react'
-import axios from 'axios'
+import apiClient from '../../../axios'
 import Pagination from '@mui/material/Pagination'
 
 const MypageWishBook = ({ user }) => {
@@ -14,17 +14,43 @@ const MypageWishBook = ({ user }) => {
   }
 
   const fetchwishBook = async () => {
-    const response = await axios.get(`/api/wish/read`, {
+    const response = await apiClient.get(`/api/wish/read`, {
       params: {
         email: user.email,
       },
     })
-    setWishBooks(response.data)
+    const sortedWishBooks = response.data.sort((a, b) => {
+      const priorityA = getStatusPriority(a.status)
+      const priorityB = getStatusPriority(b.status)
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB
+      }
+
+      const dateA = new Date(a.wishDate)
+      const dateB = new Date(b.wishDate)
+      return dateB - dateA
+    })
+
+    setWishBooks(sortedWishBooks)
   }
 
   useEffect(() => {
     fetchwishBook()
   }, [])
+
+  function getStatusPriority(status) {
+    switch (status) {
+      case 'PENDING':
+        return 1
+      case 'APPROVED':
+        return 2
+      case 'REJECTED':
+        return 3
+      default:
+        return 4
+    }
+  }
 
   function getStatusText(status) {
     switch (status) {

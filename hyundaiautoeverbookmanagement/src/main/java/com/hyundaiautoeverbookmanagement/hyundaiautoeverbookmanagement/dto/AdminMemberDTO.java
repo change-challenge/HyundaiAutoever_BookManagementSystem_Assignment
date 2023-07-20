@@ -4,6 +4,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 
@@ -19,7 +20,7 @@ public class AdminMemberDTO {
     private String name;
     private int rentCount;
     private int lateDay;
-    private Date registDate;
+    private LocalDate registDate;
     private MemberType memberType;
 
     public Member toEntity() {
