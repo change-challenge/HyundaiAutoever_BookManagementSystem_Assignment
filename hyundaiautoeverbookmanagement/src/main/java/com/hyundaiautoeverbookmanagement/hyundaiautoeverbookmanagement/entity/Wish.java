@@ -21,8 +21,9 @@ public class Wish {
     @GeneratedValue(strategy = GenerationType.AUTO) // 1, 2, 3, .... 자동 생성 어노테이션!
     private Long id;
 
-    @JoinColumn(name = "EMAIL", nullable = false)
-    private String memberEmail;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "MEMBER_EMAIL", insertable = true, updatable = true, referencedColumnName = "email")
+    private Member member;
 
     @Column(name = "WISH_DATE", nullable = false)
     private LocalDate wishDate;

@@ -83,7 +83,7 @@ export default function CustomizedTables({ rents }) {
         <TableHead>
           <TableRow>
             <StyledTableCell>번호</StyledTableCell>
-            <StyledTableCell>책제목</StyledTableCell>
+            <StyledTableCell>도서명</StyledTableCell>
             <StyledTableCell>이메일</StyledTableCell>
             <StyledTableCell>대출일자</StyledTableCell>
             <StyledTableCell>반납일자</StyledTableCell>

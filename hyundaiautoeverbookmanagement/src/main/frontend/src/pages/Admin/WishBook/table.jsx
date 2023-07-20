@@ -115,12 +115,12 @@ export default function CustomizedTables({ wishBooks }) {
           <TableRow>
             <StyledTableCell>번호</StyledTableCell>
             <StyledTableCell>신청자</StyledTableCell>
-            <StyledTableCell>신청일자</StyledTableCell>
-            <StyledTableCell>책제목</StyledTableCell>
+            <StyledTableCell>도서명</StyledTableCell>
             <StyledTableCell>저자</StyledTableCell>
             <StyledTableCell>발행일자</StyledTableCell>
             <StyledTableCell>출핀사</StyledTableCell>
             <StyledTableCell>ISBN</StyledTableCell>
+            <StyledTableCell>신청일자</StyledTableCell>
             <StyledTableCell>버튼</StyledTableCell>
           </TableRow>
         </TableHead>
@@ -131,12 +131,12 @@ export default function CustomizedTables({ wishBooks }) {
                 {wishbook.id}
               </StyledTableCell>
               <StyledTableCell>{wishbook.email}</StyledTableCell>
-              <StyledTableCell>{wishbook.wishDate}</StyledTableCell>
               <StyledTableCell>{wishbook.book.title}</StyledTableCell>
               <StyledTableCell>{wishbook.book.author}</StyledTableCell>
               <StyledTableCell>{wishbook.book.pubDate}</StyledTableCell>
               <StyledTableCell>{wishbook.book.publisher}</StyledTableCell>
               <StyledTableCell>{wishbook.book.isbn}</StyledTableCell>
+              <StyledTableCell>{wishbook.wishDate}</StyledTableCell>
               <StyledTableCell>
                 <Stack spacing={2}>
                   <Button

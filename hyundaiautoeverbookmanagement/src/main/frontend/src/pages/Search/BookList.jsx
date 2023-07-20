@@ -97,7 +97,7 @@ const BookList = ({ book }) => {
         </BookListAuthorPublisher>
         <BookListCreateDate>
           <Text
-            text={`발행월일 ${book.pubDate}`}
+            text={`발행일자 ${book.pubDate}`}
             color={({ theme }) => theme.colors.grey9}
             fontSize={({ theme }) => theme.fontSize.sz14}
           />

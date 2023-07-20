@@ -30,7 +30,7 @@ const MypageRentHistory = ({ user }) => {
       }
 
       // 그 후, startDate를 기준으로 최신 순서대로 정렬
-      return new Date(b.startDate를) - new Date(a.startDate를)
+      return new Date(b.startDate) - new Date(a.startDate)
     })
 
     setRents(sortedRents)

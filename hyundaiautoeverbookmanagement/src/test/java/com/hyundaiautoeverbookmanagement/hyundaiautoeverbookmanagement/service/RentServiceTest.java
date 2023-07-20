@@ -37,7 +37,6 @@ import static org.mockito.Mockito.mock;
 @DisplayName("RentService에 대한 테스트")
 class RentServiceTest {
 
-
     @Mock
     MemberRepository memberRepository;
     @Mock

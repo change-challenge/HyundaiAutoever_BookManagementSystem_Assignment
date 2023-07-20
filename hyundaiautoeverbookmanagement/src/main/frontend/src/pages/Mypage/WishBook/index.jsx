@@ -19,12 +19,38 @@ const MypageWishBook = ({ user }) => {
         email: user.email,
       },
     })
-    setWishBooks(response.data)
+    const sortedWishBooks = response.data.sort((a, b) => {
+      const priorityA = getStatusPriority(a.status)
+      const priorityB = getStatusPriority(b.status)
+
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB
+      }
+
+      const dateA = new Date(a.wishDate)
+      const dateB = new Date(b.wishDate)
+      return dateB - dateA
+    })
+
+    setWishBooks(sortedWishBooks)
   }
 
   useEffect(() => {
     fetchwishBook()
   }, [])
+
+  function getStatusPriority(status) {
+    switch (status) {
+      case 'PENDING':
+        return 1
+      case 'APPROVED':
+        return 2
+      case 'REJECTED':
+        return 3
+      default:
+        return 4
+    }
+  }
 
   function getStatusText(status) {
     switch (status) {

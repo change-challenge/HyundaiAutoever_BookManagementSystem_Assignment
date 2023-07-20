@@ -102,11 +102,11 @@ export default function CustomizedTables({ books }) {
           <TableHead>
             <TableRow>
               <StyledTableCell>번호</StyledTableCell>
-              <StyledTableCell>책제목</StyledTableCell>
+              <StyledTableCell>도서명</StyledTableCell>
               <StyledTableCell>저자</StyledTableCell>
-              <StyledTableCell>발행일자</StyledTableCell>
               <StyledTableCell>출판사</StyledTableCell>
               <StyledTableCell>ISBN</StyledTableCell>
+              <StyledTableCell>발행일자</StyledTableCell>
               <StyledTableCell>수량</StyledTableCell>
               <StyledTableCell></StyledTableCell>
             </TableRow>
@@ -124,12 +124,11 @@ export default function CustomizedTables({ books }) {
                 </StyledTableCell>
 
                 <StyledTableCell>{book.author}</StyledTableCell>
+                <StyledTableCell>{book.publisher}</StyledTableCell>
+                <StyledTableCell>{book.isbn}</StyledTableCell>
                 <StyledTableCell>
                   {new Date(book.pubDate).toLocaleDateString()}
                 </StyledTableCell>
-
-                <StyledTableCell>{book.publisher}</StyledTableCell>
-                <StyledTableCell>{book.isbn}</StyledTableCell>
                 <StyledTableCell>{book.bookCount}</StyledTableCell>
                 <StyledTableCell>
                   <Stack spacing={2}>

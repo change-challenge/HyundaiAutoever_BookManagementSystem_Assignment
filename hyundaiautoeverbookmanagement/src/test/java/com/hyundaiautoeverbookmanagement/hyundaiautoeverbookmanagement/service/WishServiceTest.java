@@ -1,6 +1,8 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,6 +38,9 @@ class WishServiceTest {
     BookRepository bookRepository;
 
     @Mock
+    MemberRepository memberRepository;
+
+    @Mock
     CopyRepository copyRepository;
 
     @InjectMocks
@@ -52,6 +57,11 @@ class WishServiceTest {
     void shouldGetAllWishs() {
         // 예상
         Wish wish = new Wish();
+
+        Member mockMember = new Member();
+        mockMember.setEmail("test@email.com");
+        wish.setMember(mockMember);
+
         when(wishRepository.findAll()).thenReturn(Arrays.asList(wish));
 
         // 실제
@@ -81,9 +91,9 @@ class WishServiceTest {
     void shouldGetWishByEmail() {
         // 예상
         Wish wish1 = new Wish();
-        wish1.setMemberEmail("test@email.com");
+        wish1.setMember(new Member());
         Wish wish2 = new Wish();
-        wish2.setMemberEmail("test@email.com");
+        wish2.setMember(new Member());
 
         when(wishRepository.findByMemberEmail("test@email.com")).thenReturn(Arrays.asList(wish1, wish2));
 
@@ -100,7 +110,7 @@ class WishServiceTest {
     void shouldGetOneWishByEmail() {
         // 예상
         Wish wish = new Wish();
-        wish.setMemberEmail("test@email.com");
+        wish.setMember(new Member());
 
         when(wishRepository.findByMemberEmail("test@email.com")).thenReturn(Arrays.asList(wish));
 
@@ -144,11 +154,15 @@ class WishServiceTest {
     @DisplayName("Book DB에 중복된 ISBN을 가진 책이 없을 때, saveWish 성공 사례")
     void shouldSaveWish() {
         // 예상
+        Member member = new Member();
+        member.setEmail("test@test.com");  // 이 부분을 추가합니다.
         WishRequestDTO form = new WishRequestDTO();
+        form.setEmail(member.getEmail());
         form.setBook(new BookDTO());
         form.getBook().setIsbn("1234567890");
         when(bookRepository.existsByIsbn("1234567890")).thenReturn(false);
-        Wish wish = form.toEntity();
+        when(memberRepository.findByEmail("test@test.com")).thenReturn(Optional.of(member));
+        Wish wish = form.toEntity(member);
         when(wishRepository.save(any(Wish.class))).thenReturn(wish);
 
         // 실제

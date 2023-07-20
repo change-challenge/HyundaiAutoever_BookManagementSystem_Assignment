@@ -61,7 +61,7 @@ const BookCountTable = ({ bookId }) => {
       return
     }
     console.log('copyId : ', copyId)
-    showConfirm('도서를 대여하시겠습니까?', () => makeRent(copyId))
+    showConfirm('도서를 대출하시겠습니까?', () => makeRent(copyId))
   }
 
   useEffect(() => {
@@ -85,7 +85,7 @@ const BookCountTable = ({ bookId }) => {
       setSnackbar({
         open: true,
         severity: 'success',
-        message: '도서 대여 성공!',
+        message: '도서 대출 성공!',
       })
 
       setTimeout(() => {
@@ -107,7 +107,7 @@ const BookCountTable = ({ bookId }) => {
             setSnackbar({
               open: true,
               severity: 'error',
-              message: '이미 대여한 도서입니다.',
+              message: '이미 대출한 도서입니다.',
             })
           }
         } else {
@@ -139,7 +139,7 @@ const BookCountTable = ({ bookId }) => {
             <TableHeader>번호</TableHeader>
             <TableHeader>대출상태</TableHeader>
             <TableHeader>반납 예정일</TableHeader>
-            <TableHeader>도서 대여</TableHeader>
+            <TableHeader>도서 대출</TableHeader>
           </tr>
         </thead>
         <TableBody>
@@ -167,11 +167,11 @@ const BookCountTable = ({ bookId }) => {
                     variant="contained"
                     onClick={() => handleRentClick(item.copyId)}
                   >
-                    대여하기
+                    대출하기
                   </Button>
                 ) : (
                   <Button variant="contained" disabled>
-                    대여하기
+                    대출하기
                   </Button>
                 )}
               </TableCell>

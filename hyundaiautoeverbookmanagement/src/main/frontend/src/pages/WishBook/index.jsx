@@ -24,7 +24,6 @@ export default function WishBook() {
   const [bookSearchResults, setBookSearchResults] = useState([])
   const [openModal, setOpenModal] = useState(false)
   const [wishBook, setWishBook] = useState({})
-  const [isDialogOpen, setDialogOpen] = useState(false)
 
   const createWish = (book, user) => {
     const categories = [
