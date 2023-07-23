@@ -6,6 +6,8 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Bo
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Copy;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.CopyException;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.RentException;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.UserException;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.*;
 import org.junit.jupiter.api.AfterEach;
@@ -19,6 +21,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -35,6 +38,7 @@ import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("RentService에 대한 테스트")
+@Transactional
 class RentServiceTest {
 
     @Mock
@@ -56,32 +60,11 @@ class RentServiceTest {
         SecurityContextHolder.clearContext();
     }
 
-
     @Test
     @DisplayName("모든 Rent를 반환한다.")
     public void ShoudGetAllRents() {
         // Given
-        List<Rent> rents = IntStream.range(0, 3)
-                .mapToObj(index -> {
-                    Rent rent = new Rent();
-                    rent.setId((long) index);
-                    rent.setIsExtendable(false);
-
-                    Member member = new Member();
-                    rent.setMember(member);
-
-                    Copy copy = new Copy();
-                    copy.setId((long) index);
-
-                    Book book = new Book();
-                    book.setId((long) index);
-
-                    copy.setBook(book);
-                    rent.setCopy(copy);
-
-                    return rent;
-                })
-                .collect(Collectors.toList());
+        List<Rent> rents = getRents();
 
         for (int i = 0; i < 3; i++) {
             Book book = new Book();
@@ -118,28 +101,7 @@ class RentServiceTest {
         Member member = new Member();
         member.setId(1L);
 
-        List<Rent> rents = IntStream.range(0, 3)
-                .mapToObj(index -> {
-                    Rent rent = new Rent();
-                    rent.setId((long) index);
-                    rent.setReturnedDate(null);
-                    rent.setIsExtendable(false);
-
-                    Member memberInRent = new Member();
-                    rent.setMember(memberInRent);
-
-                    Copy copy = new Copy();
-                    copy.setId((long) index);
-
-                    Book book = new Book();
-                    book.setId((long) index);
-
-                    copy.setBook(book);
-                    rent.setCopy(copy);
-
-                    return rent;
-                })
-                .collect(Collectors.toList());
+        List<Rent> rents = getRents();
 
         for (int i = 0; i < 3; i++) {
             Book book = new Book();
@@ -184,28 +146,7 @@ class RentServiceTest {
         Member member = new Member();
         member.setId(1L);
 
-        List<Rent> rents = IntStream.range(0, 3)
-                .mapToObj(index -> {
-                    Rent rent = new Rent();
-                    rent.setId((long) index);
-                    rent.setReturnedDate(null);
-                    rent.setIsExtendable(false);
-
-                    Member memberInRent = new Member();
-                    rent.setMember(memberInRent);
-
-                    Copy copy = new Copy();
-                    copy.setId((long) index);
-
-                    Book book = new Book();
-                    book.setId((long) index);
-
-                    copy.setBook(book);
-                    rent.setCopy(copy);
-
-                    return rent;
-                })
-                .collect(Collectors.toList());
+        List<Rent> rents = getRents();
 
         for (int i = 0; i < 3; i++) {
             Book book = new Book();
@@ -223,8 +164,10 @@ class RentServiceTest {
         assertEquals(3, result.size());
     }
 
+
+
     @Test
-    @DisplayName("Rent했던 경험이 전혀 없는 케이스")
+    @DisplayName("rent 시, Rent했던 경험이 전혀 없는 실패 사례")
     public void ShouldNotGetHistoryRents() {
         // Given
         String email = "test@email.com";
@@ -243,7 +186,7 @@ class RentServiceTest {
 
 
     @Test
-    @DisplayName("Rent 시, 유저가 확인 되지 않는 실패 사례")
+    @DisplayName("rent 시, 유저가 확인 되지 않는 실패 사례")
     public void ShouldNotRentIfMemberIdNotValid() {
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
@@ -254,7 +197,7 @@ class RentServiceTest {
     }
 
     @Test
-    @DisplayName("Rent 시, 세 권 이상 빌리려고 할 때 실패 사례")
+    @DisplayName("rent 시, 세 권 이상 빌리려고 할 때 실패 사례")
     public void ShouldNotRentIfRent3Book() {
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
@@ -268,7 +211,7 @@ class RentServiceTest {
     }
 
     @Test
-    @DisplayName("Rent 시, 현재 빌린 도서 빌리려 할 때 실패 사례")
+    @DisplayName("rent 시, 현재 빌린 도서 빌리려 할 때 실패 사례")
     public void ShouldNotRentIfRentSameBook() {
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
@@ -288,7 +231,7 @@ class RentServiceTest {
     }
 
     @Test
-    @DisplayName("Rent이 잘되는 성공 사례")
+    @DisplayName("rent 시, 성공 사례")
     public void ShouldRent() {
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
@@ -371,7 +314,7 @@ class RentServiceTest {
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> rentService.adminReturnBook(form));
+        assertThrows(RentException.class, () -> rentService.adminReturnBook(form));
     }
 
     @Test
@@ -397,7 +340,7 @@ class RentServiceTest {
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.of(rent));
         when(copyRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> rentService.adminReturnBook(form));
+        assertThrows(CopyException.class, () -> rentService.adminReturnBook(form));
     }
 
     @Test
@@ -430,7 +373,7 @@ class RentServiceTest {
 
 
     @Test
-    @DisplayName("return 시, 유저가 확인되지 않아 실패한 경우")
+    @DisplayName("returnBook 시, 유저가 확인되지 않아 실패한 경우")
     public void ShouldNotReturnBookIfMemberIdNotValid() {
         // 예상
         RentRequestDTO form = new RentRequestDTO();
@@ -443,7 +386,7 @@ class RentServiceTest {
     }
 
     @Test
-    @DisplayName("return 시, Rent가 확인되지 않아 실패한 경우")
+    @DisplayName("returnBook 시, Rent가 확인되지 않아 실패한 경우")
     public void ShouldNotReturnBookIfRentNotFound() {
         // 예상
         RentRequestDTO form = new RentRequestDTO();
@@ -455,11 +398,11 @@ class RentServiceTest {
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> rentService.returnBook(form));
+        assertThrows(RentException.class, () -> rentService.returnBook(form));
     }
 
     @Test
-    @DisplayName("return 시, Copy가 확인되지 않아 실패한 경우")
+    @DisplayName("returnBook 시, Copy가 확인되지 않아 실패한 경우")
     public void ShouldNotReturnBookIfCopyNotFound() {
         // 예상
         RentRequestDTO form = new RentRequestDTO();
@@ -473,11 +416,11 @@ class RentServiceTest {
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.of(rent));
         when(copyRepository.findById(any())).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> rentService.returnBook(form));
+        assertThrows(CopyException.class, () -> rentService.returnBook(form));
     }
 
     @Test
-    @DisplayName("return 성공한 경우")
+    @DisplayName("returnBook 시, 성공한 경우")
     public void ShouldReturnBook() {
         // 예상
         RentRequestDTO form = new RentRequestDTO();
@@ -496,16 +439,11 @@ class RentServiceTest {
         assertEquals("Success", result);
     }
 
-
-
-
-
-
     @Test
-    @DisplayName("extendBook 시, 사용자를 찾을 수 없을 경우 실패 사")
+    @DisplayName("extendBook 시, 사용자를 찾을 수 없을 경우 실패 사례")
     public void shouldNotExtendBookIfMemberNotFound() {
         RentRequestDTO form = new RentRequestDTO();
-        form.setEmail("nonexistent@email.com");
+        form.setEmail("test@email.com");
 
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
@@ -515,15 +453,23 @@ class RentServiceTest {
     @Test
     @DisplayName("extendBook 시, Rent 정보를 찾을 수 없을 경우 실패 사례")
     public void shouldNotExtendBookIfRentNotFound() {
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
+        form.setCopyId(1L);
 
         Member member = new Member();
+        member.setEmail("test@email.com");
+        member.setId(1L);
 
-        when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
-        when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(anyLong(), anyLong())).thenReturn(Optional.empty());
+        // when
+        when(memberRepository.findByEmail(form.getEmail())).thenReturn(Optional.of(member));
+        when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(member.getId(), form.getCopyId())).thenReturn(Optional.empty());
 
-        assertThrows(RuntimeException.class, () -> rentService.extendBook(form));
+        // then
+        assertThrows(RentException.class, () -> rentService.extendBook(form));
+        verify(memberRepository).findByEmail(form.getEmail());
+        verify(rentRepository).findByMemberIdAndCopyIdAndReturnedDateIsNull(member.getId(), form.getCopyId());
     }
 
     @Test
@@ -540,7 +486,7 @@ class RentServiceTest {
     }
 
     @Test
-    @DisplayName("extendBook 시, 도서 연체 중일 때 실패 사")
+    @DisplayName("extendBook 시, 도서 연체 중일 때 실패 사례")
     public void shouldExtendBookIfLate() {
         RentRequestDTO form = setupRentRequestDTO();
         Rent rent = new Rent();
@@ -549,11 +495,11 @@ class RentServiceTest {
 
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(anyLong(), anyLong())).thenReturn(Optional.of(rent));
 
-        assertThrows(RuntimeException.class, () -> rentService.extendBook(form));
+        assertThrows(RentException.class, () -> rentService.extendBook(form));
     }
 
     @Test
-    @DisplayName("extendBook 시, 반납일이 오늘이거나 어제가 아닐 경우 실패 사례")
+    @DisplayName("extendBook 시, 반납 일이 오늘이거나 어제가 아닐 경우 실패 사례")
     public void shouldExtendBookIfNotDueOrOneDayBefore() {
         RentRequestDTO form = setupRentRequestDTO();
         Rent rent = new Rent();
@@ -603,5 +549,31 @@ class RentServiceTest {
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
 
         return form;
+    }
+
+    private static List<Rent> getRents() {
+        List<Rent> rents = IntStream.range(0, 3)
+                .mapToObj(index -> {
+                    Rent rent = new Rent();
+                    rent.setId((long) index);
+                    rent.setReturnedDate(null);
+                    rent.setIsExtendable(false);
+
+                    Member memberInRent = new Member();
+                    rent.setMember(memberInRent);
+
+                    Copy copy = new Copy();
+                    copy.setId((long) index);
+
+                    Book book = new Book();
+                    book.setId((long) index);
+
+                    copy.setBook(book);
+                    rent.setCopy(copy);
+
+                    return rent;
+                })
+                .collect(Collectors.toList());
+        return rents;
     }
 }
