@@ -126,12 +126,12 @@ function SignUp() {
   }
 
   useEffect(() => {
-    if (emailValid && pwValid && pwSameValid && nameValid) {
+    if (emailValid && pwValid && pwSameValid && nameValid && !emailExists) {
       setNotAllow(false)
       return
     }
     setNotAllow(true)
-  }, [emailValid, pwValid, pwSameValid, nameValid])
+  }, [emailValid, pwValid, pwSameValid, nameValid, emailExists])
 
   const renderEmailValidationMessage = () => {
     // 이메일 중복 체크를 했는데, 중복된 경우

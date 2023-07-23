@@ -58,15 +58,8 @@ class AuthServiceTest {
     @Mock
     private MemberRequestDTO memberRequestDto;
 
-
-//    @BeforeEach
-//    public void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        when(authenticationManagerBuilder.getObject()).thenReturn(authenticationManager);
-//    }
-
     @Test
-    @DisplayName("signup 시, 이메일이 중복이면 가입 실패 테스트")
+    @DisplayName("signup 시, 이메일이 중복이면 가입 실패 사례")
     public void ShouldNotSignUpIfExistingEmail() {
         MemberRequestDTO memberRequestDto = new MemberRequestDTO();
         memberRequestDto.setEmail("existing@email.com");
@@ -79,7 +72,7 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("signup 시, 성공 테스트")
+    @DisplayName("signup 시, 성공 사례")
     public void ShouldSignUp() {
         MemberRequestDTO memberRequestDto = new MemberRequestDTO();
         memberRequestDto.setEmail("existing@email.com");
@@ -98,9 +91,9 @@ class AuthServiceTest {
 
 
     @Test
-    @DisplayName("login 시, Authentication가 null인 실패 테스트")
+    @DisplayName("login 시, Authentication가 null인 실패 사례")
     public void ShouldNotLoginIfToAuthenticationReturnsNull() {
-        // 예상
+        // given
         when(memberRequestDto.toAuthentication()).thenReturn(null);
 
         // When & Then
@@ -110,9 +103,9 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("login 시, Authentication가 실패할 경우 실패 테스트")
+    @DisplayName("login 시, Authentication가 실패할 경우 실패 사례")
     public void ShouldNotLoginIfToAuthenticationFails() {
-        // 예상
+        // given
         when(memberRequestDto.toAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("someUser", "somePassword"));
         when(authenticationManagerBuilder.getObject()).thenReturn(authenticationManager);
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
@@ -125,9 +118,9 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("login 시, TokenProvider가 null일 경우 실패 테스트")
+    @DisplayName("login 시, TokenProvider가 null일 경우 실패 사례")
     public void ShouldNotLoginIfTokenProviderReturnsNull() {
-        // 예상
+        // given
         when(memberRequestDto.toAuthentication()).thenReturn(new UsernamePasswordAuthenticationToken("someUser", "somePassword"));
         when(authenticationManagerBuilder.getObject()).thenReturn(authenticationManager);
         when(tokenProvider.generateTokenDto(any())).thenReturn(null);
@@ -139,9 +132,9 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("로그인이 성공적으로 되는 성공 케이스")
+    @DisplayName("login 시, 로그인이 성공적으로 되는 성공 사례")
     public void ShouldLogin() {
-        // 예상
+        // given
         Authentication mockAuthentication = mock(Authentication.class);
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken("someUser", "somePassword");
 
@@ -158,9 +151,9 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("로그아웃이 성공적으로 되는 경우")
+    @DisplayName("logout 시, 로그아웃이 성공 사례")
     public void shouldLogout() {
-        // 예상
+        // given
         Long memberId = 1L;
         RefreshToken mockRefreshToken = mock(RefreshToken.class);
 
@@ -174,9 +167,9 @@ class AuthServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 사용자로 로그아웃을 시도하는 경우 예외 발생")
+    @DisplayName("logout 시, 존재하지 않는 사용자로 로그아웃을 시도하는 실패 사례")
     public void shouldNotLogOutIfNonExistentUser() {
-        // 예상
+        // given
         Long memberId = 1L;
 
         when(refreshTokenRepository.findByKey(memberId.toString())).thenReturn(Optional.empty());
@@ -186,6 +179,4 @@ class AuthServiceTest {
             authService.logout(memberId);
         });
     }
-
-
 }

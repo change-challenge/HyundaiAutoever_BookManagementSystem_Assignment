@@ -28,6 +28,7 @@ public class AdminApiController {
 
 
     // GET 관련 메소드
+    // admim
     @GetMapping("/member")
     public ResponseEntity<List<AdminMemberDTO>> getMembers() {
         List<AdminMemberDTO> users = memberService.getAllMembers();
@@ -35,8 +36,8 @@ public class AdminApiController {
     }
 
     @GetMapping("/book")
-    public ResponseEntity<List<BookDTO>> getBooks() {
-        List<BookDTO> books = bookService.getAllBooks();
+    public ResponseEntity<List<BookRequestDTO>> getBooks() {
+        List<BookRequestDTO> books = bookService.getAllBooks();
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 

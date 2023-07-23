@@ -1,6 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.CopyDetailDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.BookStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
@@ -59,107 +59,134 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Book DB에 있는 Title 검색한 테스트")
+    @DisplayName("searchBooks 시, Book DB에 있는 Title 검색한 성공 사례")
     public void ShouldSearchBooksWhenGivenTitleMatches() {
+        // given
         List<Book> expectedBooks = Arrays.asList(new Book(), new Book());
         when(bookRepository.findByTitleContaining("sampleTitle")).thenReturn(expectedBooks);
 
-        List<BookDTO> result = bookService.searchBooks("sampleTitle");
+        // when
+        List<BookRequestDTO> result = bookService.searchBooks("sampleTitle");
 
+        // then
         assertEquals(expectedBooks.size(), result.size());
     }
 
     @Test
-    @DisplayName("Book DB에 없는 Title 검색한 테스트")
+    @DisplayName("SearchBooks 시, Book DB에 없는 Title 검색한 실패 사례")
     public void ShouldReturnEmptyListWhenGivenTitleDoesNotMatch() {
+        // given
         when(bookRepository.findByTitleContaining("wrongTitle")).thenReturn(Collections.emptyList());
 
-        List<BookDTO> result = bookService.searchBooks("wrongTitle");
+        // when
+        List<BookRequestDTO> result = bookService.searchBooks("wrongTitle");
 
+        // then
         assertTrue(result.isEmpty());
     }
 
     @Test
-    @DisplayName("모든 Book 가져오는 테스트")
+    @DisplayName("getAllBooks 시, 모든 Book 가져오는 성공 사례")
     public void ShouldReturnAllBooks() {
+        // given
         List<Book> expectedBooks = Arrays.asList(new Book(), new Book(), new Book());
         when(bookRepository.findAll()).thenReturn(expectedBooks);
 
-        List<BookDTO> result = bookService.getAllBooks();
+        // when
+        List<BookRequestDTO> result = bookService.getAllBooks();
 
+        // then
         assertEquals(expectedBooks.size(), result.size());
     }
 
     @Test
-    @DisplayName("Book 하나를 가져오는 테스트")
+    @DisplayName("getAllBooks 시, Book 하나를 가져오는 성공 사례")
     public void ShouldReturnOneBook() {
+        // given
         List<Book> expectedBooks = Arrays.asList(new Book());
         when(bookRepository.findAll()).thenReturn(expectedBooks);
 
-        List<BookDTO> result = bookService.getAllBooks();
+        // when
+        List<BookRequestDTO> result = bookService.getAllBooks();
 
+        // then
         assertEquals(expectedBooks.size(), result.size());
     }
 
     @Test
-    @DisplayName("Book가 없을 때 가져오는 테스트")
+    @DisplayName("getAllBooks 시, Book이 없는 실패 사례")
     public void ShouldNotReturnAllBooks() {;
+        // given
         when(bookRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<BookDTO> result = bookService.getAllBooks();
+        // when
+        List<BookRequestDTO> result = bookService.getAllBooks();
 
+        // then
         assertEquals(0, result.size());
     }
 
     @Test
-    @DisplayName("id가 Valid하면 BookDetail을 가져오는 테스트")
+    @DisplayName("getBookDetail 시, id가 Valid하면 BookDetail을 가져오는 성공 사례")
     public void ShouldReturnBookDetail() {
+        // given
         Book expectedBook = new Book();
         when(bookRepository.findById(1L)).thenReturn(Optional.of(expectedBook));
 
-        BookDTO result = bookService.getBookDetail(1L);
+        // when
+        BookRequestDTO result = bookService.getBookDetail(1L);
 
+        // then
         assertNotNull(result);
     }
 
     @Test
-    @DisplayName("id가 Valid하지않아 BookDetail을 가져오지 않는 테스트")
+    @DisplayName("getBookDetail 시, id가 Valid 하지않아 BookDetail을 가져오지 않는 실패 사례")
     public void ShouldNotReturnBookDetail() {
+        // given & when
         when(bookRepository.findById(99L)).thenReturn(Optional.empty());
 
+        // then
         assertThrows(RuntimeException.class, () -> bookService.getBookDetail(99L));
     }
 
     @Test
-    @DisplayName("bookId가 정확하지 않아 Copy를 가져오지 못하는 케이스 - getCopyDetails")
+    @DisplayName("getCopyDetails 시, bookId가 정확하지 않아 Copy를 가져오지 못하는 실패 사례")
     public void ShouldNotReturnCopyDetailsIfBookIdIsNotValid() {
-
+        // given
         when(copyRepository.findByBookId(anyLong())).thenReturn(Collections.emptyList());
 
+        // when
         List<CopyDetailDTO> result = bookService.getCopyDetails(anyLong());
 
+        // then
         assertEquals(0, result.size());
     }
 
 
     @Test
-    @DisplayName("모든 Copy가 대출 중이 아닌 상태에서 CopyDetail 가져오는 테스트 - getCopyDetails")
+    @DisplayName("getCopyDetails 시, 모든 Copy가 대출 중이 아닌 상태에서 CopyDetail 가져오는 성공 사례")
     public void ShouldReturnCopyDetailsWhenAllBookStatusIsAvailable() {
+        // given
         List<Copy> copies = Arrays.asList(new Copy(), new Copy(), new Copy());
         copies.stream().map(copy -> {
             copy.setBookStatus(BookStatus.AVAILABLE);
             return copy;
         }).collect(Collectors.toList());
+
+        // when
         when(copyRepository.findByBookId(1L)).thenReturn(copies);
         List<CopyDetailDTO> result = bookService.getCopyDetails(1L);
 
+        // then
         assertEquals(3, result.size());
         assertNull(result.get(0).getEndDate());
     }
 
     @Test
-    @DisplayName("모든 Copy가 대출 중인 상태에서 CopyDetail 가져오는 테스트 - getCopyDetails")
+    @DisplayName("getCopyDetails 시, 모든 Copy가 대출 중인 상태에서 CopyDetail 가져오는 성공 사례")
     public void ShouldReturnCopyDetailsWhenAllBookStatusIsUnavailable() {
+        // given
         List<Copy> copies = IntStream.range(0, 3)
                 .mapToObj(index -> {
                     Copy copy = new Copy();
@@ -168,21 +195,23 @@ class BookServiceTest {
                     return copy;
                 })
                 .collect(Collectors.toList());
+
+        // when
         when(copyRepository.findByBookId(1L)).thenReturn(copies);
         Rent rent = new Rent();
         rent.setEndDate(LocalDate.now());
         when(rentRepository.findFirstByCopyIdAndReturnedDateIsNullOrderByEndDateDesc(anyLong())).thenReturn(rent);
-
         List<CopyDetailDTO> result = bookService.getCopyDetails(1L);
 
+        // then
         assertEquals(3, result.size());
         assertNotNull(result.get(0).getEndDate());
     }
 
     @Test
-    @DisplayName("Admin이 아니기 때문에 UpdateBookCount 실패 사례 - 초기")
+    @DisplayName("updateBookCount 시, Admin이 아니기 때문에 UpdateBookCount 실패 사례")
     void shouldNotUpdateBookCountIfNotAdmin() {
-        // 예상
+        // given
         // MEMBER로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
@@ -191,14 +220,14 @@ class BookServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // 실제 및 결과
+        // when & then
         assertThrows(RuntimeException.class, () -> bookService.updateBookCount("1", "5"));
     }
 
     @Test
-    @DisplayName("BookId가 Valid하지 않기 때문에 UpdateBookCount 실패 사례")
+    @DisplayName("updateBookCount 시, BookId가 Valid하지 않는 실패 사례")
     void shouldNotUpdateBookCountIfBookIdNotValid() {
-        // 예상
+        // given
         // ADMIN으로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
@@ -214,9 +243,9 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("현재 Copy 수보다 더 많은 bookCount를 지정했을 때, 올바른 수의 Copy가 생성되는 케이스")
+    @DisplayName("updateBookCount 시, 현재 Copy 수보다 더 많은 bookCount를 지정했을 때, 올바른 수의 Copy가 생성되는 성공 사례")
     public void shouldUpdateBookCountWhenBookCountMoreThanCopy() {
-        // 예상
+        // given
         // ADMIN으로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
@@ -225,22 +254,21 @@ class BookServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // 예상
         Book book = new Book();
         when(bookRepository.findById(anyLong())).thenReturn(Optional.of(book));
         when(copyRepository.findByBook(book)).thenReturn(Collections.emptyList());
 
-        // When
+        // when
         bookService.updateBookCount("1", "5");
 
-        // Then
+        // then
         verify(copyRepository, times(5)).save(any());
     }
 
     @Test
-    @DisplayName("현재 Copy 수보다 더 적은 bookCount를 지정했을 때, 올바른 수의 Copy가 삭제되는 케이스")
+    @DisplayName("updateBookCount 시, 현재 Copy 수보다 더 적은 bookCount를 지정했을 때, 올바른 수의 Copy가 삭제되는 성공 사례")
     public void shouldUpdateBookCountWhenCopyMoreThanBookCount() {
-        // 예상
+        // given
         // ADMIN으로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
@@ -249,7 +277,6 @@ class BookServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // 예상
         Book mockBook = new Book();
         Copy mockCopy1 = new Copy();
         mockCopy1.setId(1L);
@@ -278,9 +305,9 @@ class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Admin이 아니기 때문에 deleteBook 실패 사례")
+    @DisplayName("deleteBook 시, Admin이 아니기 때문에 deleteBook 실패 사례")
     void shouldNotDeleteBookIfNotAdmin() {
-        // 예상
+        // given
         // MEMBER로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
@@ -289,14 +316,14 @@ class BookServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // 실제 및 결과
+        // when & then
         assertThrows(RuntimeException.class, () -> bookService.deleteBook("1"));
     }
 
     @Test
-    @DisplayName("BookId가 Valid하지 않기 때문에 deleteBook 실패 사례")
+    @DisplayName("deleteBook 시, BookId가 Valid하지 않기 때문에 deleteBook 실패 사례")
     void shouldNotDeleteBookIfNotAdminBookIdNotValid() {
-        // 예상
+        // given
         // ADMIN로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
@@ -305,16 +332,17 @@ class BookServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
+        // when
         when(bookRepository.findById(anyLong())).thenReturn(Optional.empty());
 
-        // 실제 및 결과
+        // then
         assertThrows(RuntimeException.class, () -> bookService.deleteBook("1"));
     }
 
     @Test
-    @DisplayName("Book 삭제가 성공하는 케이스")
+    @DisplayName("deleteBook 시, Book 삭제가 성공 사례")
     public void shouldDeleteBook() {
-        // 예상
+        // given
         // ADMIN으로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
@@ -323,7 +351,7 @@ class BookServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // 예상
+        // given
         Book mockBook = new Book();
         Copy mockCopy1 = new Copy();
         mockCopy1.setId(1L);

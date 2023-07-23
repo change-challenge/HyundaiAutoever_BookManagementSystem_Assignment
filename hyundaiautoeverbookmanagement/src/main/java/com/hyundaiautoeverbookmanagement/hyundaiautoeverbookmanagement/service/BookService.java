@@ -1,9 +1,10 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.BookStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.CopyDetailDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.BookException;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
@@ -28,7 +29,9 @@ public class BookService {
     private final RentRepository rentRepository;
     private final MemberRepository memberRepository;
 
-    public List<BookDTO> searchBooks(String title) {
+
+    // 도서명으로 BOOK 검색
+    public List<BookRequestDTO> searchBooks(String title) {
         List<Book> books = bookRepository.findByTitleContaining(title);
 
         return books.stream()
@@ -36,28 +39,22 @@ public class BookService {
                 .collect(Collectors.toList());
     }
 
-    public List<BookDTO> getAllBooks() {
-        List<Book> books = bookRepository.findAll();
 
-        return books.stream()
-                .map(this::ToBookDTO)
-                .collect(Collectors.toList());
-    }
-
-    public BookDTO getBookDetail(Long id) {
+    // BOOK ID를 통해 BOOK DETAIL 정보 가져오기
+    public BookRequestDTO getBookDetail(Long id) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("해당 ID에 대한 Book이 존재하지 않습니다."));
+                .orElseThrow(() -> new BookException("getBookDetail : 해당 ID에 대한 Book이 존재하지 않습니다."));
         return ToBookDTO(book);
     }
 
-    // BookDetail 중 소장 정보에 사용
+    // BOOK ID를 통해 COPY 정보 가쟈오기 (CopyDetailDTO)
     public List<CopyDetailDTO> getCopyDetails(Long bookId) {
-        // 책에 해당하는 모든 사본 찾기
+
+        // 1. BOOK ID에 해당하는 모든 COPY 가져오기
         List<Copy> copies = copyRepository.findByBookId(bookId);
 
-        // 결과를 저장할 리스트 생성
+        // 2. CopyDetailDTO에 해당 정보 채우기
         List<CopyDetailDTO> bookDetails = new ArrayList<>();
-
         for (Copy copy : copies) {
             // Copy의 상태가 UNAVAILABLE인 경우에만 처리
             CopyDetailDTO dto = new CopyDetailDTO();
@@ -78,19 +75,33 @@ public class BookService {
         return bookDetails;
     }
 
+    // -----------------------------
+    // |        Admin 권한관련        |
+    // -----------------------------
+
+    // ADMIN의 모든 BOOK GET SERVICE
+    public List<BookRequestDTO> getAllBooks() {
+        List<Book> books = bookRepository.findAll();
+
+        return books.stream()
+                .map(this::ToBookDTO)
+                .collect(Collectors.toList());
+    }
+
+    // ADMIN의 도서 수량 변경 Service
     @Transactional
     public String updateBookCount(String bookIdStr, String bookCountStr) {
         Long bookId = Long.parseLong(bookIdStr);
         int bookCount = Integer.parseInt(bookCountStr);
 
-        // 1. 신청자가 admin인 지 확인
+        // 1. 신청자가 ADMIN인 지 확인
         checkAdminAuthority();
 
-        // 2. bookId로 Book을 찾는다.
+        // 2. BOOK ID로 BOOK을 찾는다.
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Invalid bookId"));
+                .orElseThrow(() -> new BookException("updateBookCount : 해당 ID의 도서가 존재하지 않습니다."));
 
-        // 3. Copy의 갯수를 새어서 bookCount와 비교하여 bookCount가 더 많으면 그 만큼 Copy를 만들어야한다.
+        // 3. Copy의 갯수를 새어서 BOOK COUNT와 비교하여 BOOK COUNT가 더 많으면 그 만큼 Copy를 만들어야한다.
         List<Copy> copies = copyRepository.findByBook(book);
         int currentCount = copies.size();
         if (currentCount < bookCount) {
@@ -101,7 +112,7 @@ public class BookService {
                 copyRepository.save(newCopy);
             }
         }
-        // 3-1. 반대로 bookCount가 더 적으면 copyId 큰 순으로 지워야한다.
+        // 3-1. 반대로 BOOK COUNT가 더 적으면 COPY ID 큰 순으로 지워야한다. (최신순)
         else if (currentCount > bookCount) {
             copies.sort(Comparator.comparing(Copy::getId).reversed());
             for (int i = 0; i < currentCount - bookCount; i++) {
@@ -111,18 +122,19 @@ public class BookService {
         return "Success";
     }
 
+    // ADMIN의 도서 삭제 Service
     @Transactional
     public String deleteBook(String bookIdStr) {
         Long bookId = Long.parseLong(bookIdStr);
 
-        // 1. 신청자가 admin인 지 확인
+        // 1. 신청자가 ADMIN인 지 확인
         checkAdminAuthority();
 
-        // 2. bookId로 Book을 찾는다.
+        // 2. BOOK ID로 BOOK을 찾는다.
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Invalid bookId"));
+                .orElseThrow(() -> new BookException("deleteBook : 해당 ID의 도서가 존재하지 않습니다."));
 
-        // 3. bookId를 가지고 있는 모든 Copy를 삭제한다.
+        // 3. BOOK ID를 가지고 있는 모든 Copy를 삭제한다.
         List<Copy> copies = copyRepository.findByBook(book);
         int currentCount = copies.size();
         if (currentCount != 0) {
@@ -130,11 +142,16 @@ public class BookService {
                 deleteRentRelatedCopyAndCopy(copies, i);
             }
         }
-        // 4. 마지막으로 bookId로 book도 삭제한다.
+        // 4. 마지막으로 BOOK ID에 해당하는 BOOK도 삭제한다.
         bookRepository.delete(book);
         return "Success";
     }
 
+    // -----------------------------
+    // |        내장 함수 관련         |
+    // -----------------------------
+
+    // COPY에 해당하는 RENT가 존재 시, 모두 삭제
     public void deleteRentRelatedCopyAndCopy(List<Copy> copies, int i) {
         List<Rent> rents = rentRepository.findByCopyId(copies.get(i).getId());
         int currentRentCount = rents.size();
@@ -147,30 +164,31 @@ public class BookService {
         copyRepository.delete(copies.get(i));
     }
 
-    private BookDTO ToBookDTO(Book book) {
-        BookDTO bookDto = new BookDTO();
+    // BOOK(ENTITY) -> BOOKDTO(DTO)
+    private BookRequestDTO ToBookDTO(Book book) {
+        BookRequestDTO bookRequestDto = new BookRequestDTO();
 
-        bookDto.setId(book.getId());
-        bookDto.setTitle(book.getTitle());
-        bookDto.setAuthor(book.getAuthor());
-        bookDto.setPublisher(book.getPublisher());
+        bookRequestDto.setId(book.getId());
+        bookRequestDto.setTitle(book.getTitle());
+        bookRequestDto.setAuthor(book.getAuthor());
+        bookRequestDto.setPublisher(book.getPublisher());
         try {
-            bookDto.setCategory(book.getCategory().getDescription());
+            bookRequestDto.setCategory(book.getCategory().getDescription());
         } catch (IllegalArgumentException e) {
             log.info("book Category 문제");
         }
-        bookDto.setIsbn(book.getIsbn());
-        bookDto.setInfo(book.getInfo());
-        bookDto.setCover(book.getCover());
-        bookDto.setPubDate(book.getPubDate());
+        bookRequestDto.setIsbn(book.getIsbn());
+        bookRequestDto.setInfo(book.getInfo());
+        bookRequestDto.setCover(book.getCover());
+        bookRequestDto.setPubDate(book.getPubDate());
 
         int bookCount = copyRepository.countByBook(book);
-        bookDto.setBookCount(bookCount);
+        bookRequestDto.setBookCount(bookCount);
 
         List<Copy> copies = copyRepository.findByBook(book);
-        bookDto.setBookStatus(copies.stream()
+        bookRequestDto.setBookStatus(copies.stream()
                 .anyMatch(copy -> copy.getBookStatus() == BookStatus.AVAILABLE));
 
-        return bookDto;
+        return bookRequestDto;
     }
 }

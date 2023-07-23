@@ -49,9 +49,9 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("모든 회원 정보를 가져올 ")
+    @DisplayName("getAllMembers 시, 모든 회원 정보를 가져오는 성공 사례")
     public void shouldGetAllMembers() {
-        // 예상
+        // given
         List<Member> members = new ArrayList<>();
 
         for (long i = 1; i <= 6; i++) {
@@ -62,74 +62,74 @@ class MemberServiceTest {
         when(memberRepository.findAll()).thenReturn(members);
         when(rentRepository.countByMemberIdAndReturnedDateIsNull(anyLong())).thenReturn(0);
 
-        // 실제
+        // when
         List<AdminMemberDTO> result = memberService.getAllMembers();
 
-        // 결과
+        // then
         assertEquals(members.size(), result.size());
         verify(memberRepository, times(1)).findAll();
         verify(rentRepository, times(members.size())).countByMemberIdAndReturnedDateIsNull(anyLong());
     }
 
     @Test
-    @DisplayName("한 명의 회원 정보를 가져오는 테스트")
+    @DisplayName("getAllMembers 시, 한 명의 회원 정보를 가져오는 성공 사례")
     public void shouldGetOneMember() {
-        // 예상
+        // given
         Member member1 = new Member();
         member1.setId(1L);
         List<Member> members = Arrays.asList(member1);
         when(memberRepository.findAll()).thenReturn(members);
         when(rentRepository.countByMemberIdAndReturnedDateIsNull(anyLong())).thenReturn(0);
 
-        // 실제
+        // when
         List<AdminMemberDTO> result = memberService.getAllMembers();
 
-        // 결과
+        // then
         assertEquals(members.size(), result.size());
         verify(memberRepository, times(1)).findAll();
         verify(rentRepository, times(members.size())).countByMemberIdAndReturnedDateIsNull(anyLong());
     }
 
     @Test
-    @DisplayName("회원 정보가 하나도 없을 때")
+    @DisplayName("getAllMembers 시, 회원 정보가 하나도 없는 실패 사례")
     public void shouldNotGetAllMembers() {
-        // 예상
+        // given
         when(memberRepository.findAll()).thenReturn(Collections.emptyList());
 
-        // 실제
+        // when
         List<AdminMemberDTO> result = memberService.getAllMembers();
 
-        // 결과
+        // then
         assertEquals(0, result.size());
     }
 
     @Test
-    @DisplayName("존재하는 회원 ID로 정보를 가져오는 테스트")
+    @DisplayName("FindMemberInfoById 시, 존재하는 회원 ID로 정보를 가져오는 성공 사례")
     public void shouldFindMemberInfoByIdExists() {
-        // 예상
+        // given
         Member member = new Member();
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(member));
-        // 실제
+        // when
         MemberResponseDTO result = memberService.findMemberInfoById(1L);
-        // 결과
+        // then
         assertNotNull(result);
         verify(memberRepository, times(1)).findById(anyLong());
     }
 
     @Test
-    @DisplayName("존재하지 않는 회원 ID로 정보를 가져오는 테스트")
-    public void testFindMemberInfoByIdNotExists() {
-        // 예상
+    @DisplayName("FindMemberInfoById 시, 존재하지 않는 회원 ID로 정보를 가져오는 실패 사례")
+    public void shouldNotFindMemberInfoByIdNotExists() {
+        // given
         when(memberRepository.findById(anyLong())).thenReturn(Optional.empty());
-        // 실제 & 결과
+        // when & then
         assertThrows(RuntimeException.class, () -> memberService.findMemberInfoById(1L));
         verify(memberRepository, times(1)).findById(anyLong());
     }
 
     @Test
-    @DisplayName("신청자가 ADMIN이 아닌 경우")
+    @DisplayName("changeMemberType 시, ADMIN이 아닌 실패 사례")
     public void ShouldNotChangeMemberTypeIfNotAdmin() {
-        // 예상
+        // given
         // MEMBER로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
@@ -138,12 +138,12 @@ class MemberServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // 실제 및 결과
+        // when 및 then
         assertThrows(RuntimeException.class, () -> memberService.changeMemberType("a@a.com", "ab@a.com"));
     }
 
     @Test
-    @DisplayName("신청자가 본인의 회원 유형을 바꾸려 하는 경우")
+    @DisplayName("changeMemberType 시, 본인의 회원 권한 변경 실패 사례")
     public void ShouldNotChangeMemberTypeIfItsMine() {
         // ADMIN로 사용자로 설정
         Authentication authentication = mock(Authentication.class);
@@ -159,9 +159,10 @@ class MemberServiceTest {
     }
 
     @Test
-    @DisplayName("제공된 이메일로 회원 정보를 찾을 수 없는 경우")
+    @DisplayName("changeMemberType 시, 이메일로 회원 정보를 찾을 수 없는 실패 사례")
     public void ShouldNotChangeMemberTypeIfNotFound() {
         // ADMIN 사용자로 설정
+        // given
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
         doReturn(List.of(new SimpleGrantedAuthority("ADMIN"))).when(authentication).getAuthorities();
@@ -169,17 +170,20 @@ class MemberServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
+        // when
         String userEmail = "nonexistent@email.com";
         when(memberRepository.findByEmail(userEmail)).thenReturn(Optional.empty());
 
+        // then
         assertThrows(RuntimeException.class, () -> memberService.changeMemberType(userEmail, "admin@email.com"), "유저 정보가 없습니다.");
     }
 
     @Test
-    @DisplayName("정상적인 회원 유형 변경")
+    @DisplayName("changeMemberType 시, 회원 권한 변경 성공 사례")
     @Transactional
     public void ShouldChangeMemberType() {
         // ADMIN 사용자로 설정
+        // given
         Authentication authentication = mock(Authentication.class);
         when(authentication.getName()).thenReturn("1"); // 원하는 사용자 ID를 설정
         doReturn(List.of(new SimpleGrantedAuthority("ADMIN"))).when(authentication).getAuthorities();
@@ -194,9 +198,11 @@ class MemberServiceTest {
         member.setEmail(userEmail);
         member.setMemberType(MemberType.MEMBER);
 
+        // when
         when(memberRepository.findByEmail(userEmail)).thenReturn(Optional.of(member));
         String result = memberService.changeMemberType(userEmail, adminEmail);
 
+        // then
         assertEquals("Success", result);
         assertEquals(MemberType.ADMIN, member.getMemberType());
     }

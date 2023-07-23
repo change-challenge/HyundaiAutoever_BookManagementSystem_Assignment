@@ -94,8 +94,13 @@ export default function WishBook() {
   }, [])
 
   const onClickWishBook = () => {
-    if (!wishBookName || !wishBookAuthor || !wishBookPublisher) {
-      showAlert('희망도서명, 저자, 발행자는 필수 항목입니다.')
+    if (
+      !wishBookName ||
+      !wishBookAuthor ||
+      !wishBookPublisher ||
+      !wishBookISBN
+    ) {
+      showAlert('희망도서명, 저자, 발행자, ISBN은 필수 항목입니다.')
       return
     }
     showConfirm('희망도서를 신청하시겠습니까?', submitWishBook)
@@ -194,7 +199,7 @@ export default function WishBook() {
   return (
     user && (
       <S.InnerContainer>
-        <Title text="희망도서 정보" />
+        <Title text="희망도서 신청" />
         <S.ContentWrap>
           <Stack spacing={3}>
             <S.LabelWrapper>
@@ -263,6 +268,7 @@ export default function WishBook() {
             </S.LabelWrapper>
             <S.LabelWrapper>
               <S.LabelTitleWrapper>
+                <S.EssentialMark>*</S.EssentialMark>
                 <Text
                   text="ISBN"
                   color={({ theme }) => theme.colors.grey5}

@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @ToString
 @Getter
 @Setter
-public class BookDTO {
+public class BookRequestDTO {
 
     private Long id;
     private String title;
