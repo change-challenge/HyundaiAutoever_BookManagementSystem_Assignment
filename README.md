@@ -6,7 +6,7 @@
 </div>
   
 # ✨ 링크
-📌 **WIKI(산출물).** [https://github.com/change-challenge/HyundaiAutoever_BookManagementSystem_Assignment/wiki](https://github.com/change-challenge/HyundaiAutoever_BookManagementSystem_Assignment/wiki)
+📌 **WIKI(산출물).** [WIKI로 가기! 👋🏻](https://github.com/change-challenge/HyundaiAutoever_BookManagementSystem_Assignment/wiki)
 
 <br/>
 
