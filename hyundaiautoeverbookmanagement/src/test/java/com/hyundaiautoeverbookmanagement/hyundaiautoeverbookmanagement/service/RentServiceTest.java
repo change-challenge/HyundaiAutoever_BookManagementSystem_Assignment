@@ -164,10 +164,8 @@ class RentServiceTest {
         assertEquals(3, result.size());
     }
 
-
-
     @Test
-    @DisplayName("rent 시, Rent했던 경험이 전혀 없는 실패 사례")
+    @DisplayName("getHistoryRents 시, Rent했던 경험이 전혀 없는 실패 사례")
     public void ShouldNotGetHistoryRents() {
         // Given
         String email = "test@email.com";
@@ -188,31 +186,38 @@ class RentServiceTest {
     @Test
     @DisplayName("rent 시, 유저가 확인 되지 않는 실패 사례")
     public void ShouldNotRentIfMemberIdNotValid() {
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
+        // when
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
+        // then
         assertThrows(UserException.class, () -> rentService.rent(form));
     }
 
     @Test
     @DisplayName("rent 시, 세 권 이상 빌리려고 할 때 실패 사례")
     public void ShouldNotRentIfRent3Book() {
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
+        // when
         Member member = new Member();
         member.setRentCount(3);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
-
         String result = rentService.rent(form);
+
+        // then
         assertEquals("세권초과", result);
     }
 
     @Test
     @DisplayName("rent 시, 현재 빌린 도서 빌리려 할 때 실패 사례")
     public void ShouldNotRentIfRentSameBook() {
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
@@ -222,10 +227,12 @@ class RentServiceTest {
         Book book = new Book();
         book.setTitle("Book Title");
 
+        // when
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(copyRepository.findBookByCopyId(any())).thenReturn(book);
         when(rentRepository.findRentedBookTitlesByMemberId(any())).thenReturn(Collections.singletonList("Book Title"));
 
+        // then
         String result = rentService.rent(form);
         assertEquals("빌린도서", result);
     }
@@ -233,6 +240,7 @@ class RentServiceTest {
     @Test
     @DisplayName("rent 시, 성공 사례")
     public void ShouldRent() {
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
@@ -244,11 +252,13 @@ class RentServiceTest {
 
         Copy copy = new Copy();
 
+        // when
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(copyRepository.findBookByCopyId(any())).thenReturn(book);
         when(rentRepository.findRentedBookTitlesByMemberId(any())).thenReturn(Collections.emptyList());
         when(copyRepository.findById(any())).thenReturn(Optional.of(copy));
 
+        // then
         String result = rentService.rent(form);
         assertEquals("Success", result);
     }
@@ -257,7 +267,7 @@ class RentServiceTest {
     @Test
     @DisplayName("adminReturn 시, Admin 권한이 없어서 실패한 경우")
     public void ShouldNotAdminReturnBookIfNotAdmin() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
 
         // MEMBER로 사용자로 설정
@@ -268,14 +278,14 @@ class RentServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // 실제 및 결과
+        // when & then
         assertThrows(RuntimeException.class, () -> rentService.adminReturnBook(form));
     }
 
     @Test
     @DisplayName("adminReturn 시, 유저가 확인되지 않아 실패한 경우")
     public void ShouldNotAdminReturnBookIfMemberIdNotValid() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
@@ -287,7 +297,7 @@ class RentServiceTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         SecurityContextHolder.setContext(securityContext);
 
-        // 실제 및 결과
+        // when & then
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         assertThrows(UserException.class, () -> rentService.adminReturnBook(form));
@@ -296,7 +306,7 @@ class RentServiceTest {
     @Test
     @DisplayName("adminReturn 시, Rent가 확인되지 않아 실패한 경우")
     public void ShouldNotAdminReturnBookIfRentNotFound() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
@@ -310,7 +320,7 @@ class RentServiceTest {
 
         Member member = new Member();
 
-        // 실제 및 결과
+        // when & then
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.empty());
 
@@ -320,7 +330,7 @@ class RentServiceTest {
     @Test
     @DisplayName("adminReturn 시, Copy가 확인되지 않아 실패한 경우")
     public void ShouldNotAdminReturnBookIfCopyNotFound() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
@@ -335,7 +345,7 @@ class RentServiceTest {
         Member member = new Member();
         Rent rent = new Rent();
 
-        // 실제 및 결과
+        // when & then
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.of(rent));
         when(copyRepository.findById(any())).thenReturn(Optional.empty());
@@ -346,7 +356,7 @@ class RentServiceTest {
     @Test
     @DisplayName("adminReturn 시, 성공한 경우")
     public void ShouldAdminReturnBook() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
@@ -362,7 +372,7 @@ class RentServiceTest {
         Rent rent = new Rent();
         Copy copy = new Copy();
 
-        // 실제 및 결과
+        // when & then
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.of(rent));
         when(copyRepository.findById(any())).thenReturn(Optional.of(copy));
@@ -375,11 +385,11 @@ class RentServiceTest {
     @Test
     @DisplayName("returnBook 시, 유저가 확인되지 않아 실패한 경우")
     public void ShouldNotReturnBookIfMemberIdNotValid() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
-        // 실제 및 결과
+        // when & then
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
         assertThrows(UserException.class, () -> rentService.returnBook(form));
@@ -388,13 +398,13 @@ class RentServiceTest {
     @Test
     @DisplayName("returnBook 시, Rent가 확인되지 않아 실패한 경우")
     public void ShouldNotReturnBookIfRentNotFound() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
         Member member = new Member();
 
-        // 실제 및 결과
+        // when & then
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.empty());
 
@@ -404,14 +414,14 @@ class RentServiceTest {
     @Test
     @DisplayName("returnBook 시, Copy가 확인되지 않아 실패한 경우")
     public void ShouldNotReturnBookIfCopyNotFound() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
         Member member = new Member();
         Rent rent = new Rent();
 
-        // 실제 및 결과
+        // when & then
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.of(rent));
         when(copyRepository.findById(any())).thenReturn(Optional.empty());
@@ -422,7 +432,7 @@ class RentServiceTest {
     @Test
     @DisplayName("returnBook 시, 성공한 경우")
     public void ShouldReturnBook() {
-        // 예상
+        // given
         RentRequestDTO form = new RentRequestDTO();
         form.setEmail("test@email.com");
 
@@ -430,7 +440,7 @@ class RentServiceTest {
         Rent rent = new Rent();
         Copy copy = new Copy();
 
-        // 실제 및 결과
+        // when & then
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(member));
         when(rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(any(), any())).thenReturn(Optional.of(rent));
         when(copyRepository.findById(any())).thenReturn(Optional.of(copy));
