@@ -29,13 +29,11 @@ const App = () => {
   const location = useLocation()
 
   useEffect(() => {
-    console.log('user : ', user)
     const getUserInfo = async () => {
       const userInfo = await fetchUserInfo()
       setUser(userInfo)
     }
     getUserInfo()
-    console.log('APP의 USER다 ', user)
   }, [location])
 
   let HeaderComponent
@@ -47,7 +45,6 @@ const App = () => {
       ? HeaderWithSearchBarLogIn
       : HeaderWithSearchBarLogOut
   }
-  console.log('밖이다 APP의 USER다 ', user)
 
   return (
     <>

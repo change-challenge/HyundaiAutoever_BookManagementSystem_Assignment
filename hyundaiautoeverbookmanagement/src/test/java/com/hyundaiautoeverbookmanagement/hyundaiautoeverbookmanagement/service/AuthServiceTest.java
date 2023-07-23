@@ -58,13 +58,6 @@ class AuthServiceTest {
     @Mock
     private MemberRequestDTO memberRequestDto;
 
-
-//    @BeforeEach
-//    public void setUp() {
-//        MockitoAnnotations.openMocks(this);
-//        when(authenticationManagerBuilder.getObject()).thenReturn(authenticationManager);
-//    }
-
     @Test
     @DisplayName("signup 시, 이메일이 중복이면 가입 실패 테스트")
     public void ShouldNotSignUpIfExistingEmail() {
@@ -186,6 +179,4 @@ class AuthServiceTest {
             authService.logout(memberId);
         });
     }
-
-
 }

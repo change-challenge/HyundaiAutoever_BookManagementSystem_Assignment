@@ -6,7 +6,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Bo
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Copy;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Rent;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.NoSuchUserException;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.UserException;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -250,7 +250,7 @@ class RentServiceTest {
 
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchUserException.class, () -> rentService.rent(form));
+        assertThrows(UserException.class, () -> rentService.rent(form));
     }
 
     @Test
@@ -347,7 +347,7 @@ class RentServiceTest {
         // 실제 및 결과
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchUserException.class, () -> rentService.adminReturnBook(form));
+        assertThrows(UserException.class, () -> rentService.adminReturnBook(form));
     }
 
     @Test
@@ -439,7 +439,7 @@ class RentServiceTest {
         // 실제 및 결과
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchUserException.class, () -> rentService.returnBook(form));
+        assertThrows(UserException.class, () -> rentService.returnBook(form));
     }
 
     @Test
@@ -509,7 +509,7 @@ class RentServiceTest {
 
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.empty());
 
-        assertThrows(NoSuchUserException.class, () -> rentService.extendBook(form));
+        assertThrows(UserException.class, () -> rentService.extendBook(form));
     }
 
     @Test

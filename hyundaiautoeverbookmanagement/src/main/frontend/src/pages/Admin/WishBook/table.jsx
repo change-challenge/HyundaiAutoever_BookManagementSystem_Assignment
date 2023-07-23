@@ -99,7 +99,7 @@ export default function CustomizedTables({ wishBooks }) {
       })
     } catch (error) {
       if (error.response.status === 500) {
-        showAlert('당신은 Admin이 아닙니다.')
+        showAlert('해당 도서는 이미 존재합니다.')
       }
     }
   }

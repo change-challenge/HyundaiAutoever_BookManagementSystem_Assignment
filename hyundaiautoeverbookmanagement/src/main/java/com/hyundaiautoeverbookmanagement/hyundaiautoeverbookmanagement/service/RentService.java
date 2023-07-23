@@ -4,7 +4,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.RentRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.*;
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.NoSuchUserException;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.UserException;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.BookRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.CopyRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
@@ -31,10 +31,9 @@ public class RentService {
     private final BookRepository bookRepository;
 
     public String rent(RentRequestDTO form) {
-        log.info("form.getCopyId() : {} ", form.getCopyId());
         // 1. 유저인 지 체크
         Member member =  memberRepository.findByEmail(form.getEmail())
-                .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getEmail()));
+                .orElseThrow(() -> new UserException("No such user found with email: " + form.getEmail()));
 
         if (member.getRentCount() >= 3) {
             return "세권초과";
@@ -78,7 +77,7 @@ public class RentService {
 
         // 2. 유저인 지 체크
         Member member =  memberRepository.findByEmail(form.getEmail())
-                .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getEmail()));
+                .orElseThrow(() -> new UserException("No such user found with email: " + form.getEmail()));
 
         if (member.getRentCount() > 0) {
             member.setRentCount(member.getRentCount() - 1);
@@ -102,7 +101,7 @@ public class RentService {
     public String returnBook(RentRequestDTO form) {
         // 1. 유저인 지 체크
         Member member =  memberRepository.findByEmail(form.getEmail())
-                .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getEmail()));
+                .orElseThrow(() -> new UserException("No such user found with email: " + form.getEmail()));
 
         if (member.getRentCount() > 0) {
             member.setRentCount(member.getRentCount() - 1);
@@ -125,7 +124,7 @@ public class RentService {
 
     public String extendBook(RentRequestDTO form) {
         Member member =  memberRepository.findByEmail(form.getEmail())
-                .orElseThrow(() -> new NoSuchUserException("No such user found with email: " + form.getEmail()));
+                .orElseThrow(() -> new UserException("No such user found with email: " + form.getEmail()));
         Rent rent = rentRepository.findByMemberIdAndCopyIdAndReturnedDateIsNull(member.getId(), form.getCopyId())
                 .orElseThrow(() -> new RuntimeException("해당 rent 정보가 없습니다."));
         if(rent.getIsExtendable() == false) {

@@ -66,7 +66,8 @@ export default function CustomizedTables({ users }) {
         })
       })
       .catch(error => {
-        showAlert('당신은 Admin이 아닙니다.')
+        console.log(error)
+        showAlert('본인 스스로를 바꿀 수 없습니다.')
         console.log(error)
       })
   }

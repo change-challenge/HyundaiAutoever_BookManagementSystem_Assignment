@@ -28,6 +28,7 @@ public class AdminApiController {
 
 
     // GET 관련 메소드
+    // admim
     @GetMapping("/member")
     public ResponseEntity<List<AdminMemberDTO>> getMembers() {
         List<AdminMemberDTO> users = memberService.getAllMembers();
