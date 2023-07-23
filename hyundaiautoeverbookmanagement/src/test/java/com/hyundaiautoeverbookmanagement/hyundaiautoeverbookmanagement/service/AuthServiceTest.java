@@ -4,6 +4,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.Membe
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.TokenDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.RefreshToken;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.UserException;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.jwt.TokenProvider;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.RefreshTokenRepository;
@@ -66,7 +67,7 @@ class AuthServiceTest {
 
         when(memberRepository.existsByEmail(anyString())).thenReturn(true);
 
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(UserException.class, () -> {
             authService.signup(memberRequestDto);
         });
     }
@@ -175,7 +176,7 @@ class AuthServiceTest {
         when(refreshTokenRepository.findByKey(memberId.toString())).thenReturn(Optional.empty());
 
         // When & Then
-        assertThrows(RuntimeException.class, () -> {
+        assertThrows(UserException.class, () -> {
             authService.logout(memberId);
         });
     }

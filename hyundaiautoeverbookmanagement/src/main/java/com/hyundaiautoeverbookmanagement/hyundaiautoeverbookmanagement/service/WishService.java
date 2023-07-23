@@ -81,7 +81,7 @@ public class WishService {
 
         // 2. Wish Id로 Wish 찾기
         Wish wish = wishRepository.findById(wishId)
-                .orElseThrow(() -> new RuntimeException("해당 wish가 존재하지 않습니다."));
+                .orElseThrow(() -> new WishException("해당 wish가 존재하지 않습니다."));
 
         // 3. Wish Status 변경
         wish.setWishStatus(WishStatus.REJECTED);

@@ -123,7 +123,7 @@ class WishServiceTest {
     }
 
     @Test
-    @DisplayName("getWishByEmail 시, 해석할 수 없는 Email의 Wish가 없는 실패 사례")
+    @DisplayName("getWishByEmail 시, 유효하지 않는 Email의 Wish가 없는 실패 사례")
     void shouldNotGetWishByInvalidEmail() {
         // given
         when(wishRepository.findByMemberEmail("invalid")).thenReturn(Collections.emptyList());

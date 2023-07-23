@@ -7,6 +7,7 @@ import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.Membe
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.MemberResponseDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.RefreshToken;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.exception.UserException;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.jwt.TokenProvider;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.RefreshTokenRepository;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
@@ -31,7 +32,7 @@ public class AuthService {
     @Transactional
     public MemberResponseDTO signup(MemberRequestDTO memberRequestDto) {
         if (memberRepository.existsByEmail(memberRequestDto.getEmail())) {
-            throw new RuntimeException("이미 가입되어 있는 유저입니다");
+            throw new UserException("이미 가입되어 있는 유저입니다");
         }
 
         Member user = memberRequestDto.toUser(passwordEncoder);
@@ -65,7 +66,7 @@ public class AuthService {
     @Transactional
     public void logout(Long memberId) {
         RefreshToken refreshToken = refreshTokenRepository.findByKey(memberId.toString())
-                .orElseThrow(() -> new RuntimeException("존재하지 않는 사용자입니다."));
+                .orElseThrow(() -> new UserException("존재하지 않는 사용자입니다."));
         refreshTokenRepository.deleteByKey(memberId.toString());
     }
 
@@ -83,12 +84,6 @@ public class AuthService {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
         }
 
-//        // 2. Access Token 에서 Member ID 가져오기
-//        Authentication authentication = tokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
-
-//        // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
-//        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-//                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
 
         // 4. Refresh Token 일치하는지 검사
         if (!refreshToken.getValue().equals(refreshToken.toString())) {
