@@ -36,7 +36,6 @@ public class WishService {
     private final MemberRepository memberRepository;
 
     // 내 서재에서 나의 희망도서 Get Service
-
     public List<WishRequestDTO> getWishByEmail(String email) {
         List<Wish> wishBooks = wishRepository.findByMemberEmail(email);
         return wishListToWishRequestDTOList(wishBooks);
@@ -121,8 +120,6 @@ public class WishService {
         wishRepository.save(wish);
         return "Success";
     }
-
-
 
     // -----------------------------
     // |        내장 함수 관련         |
