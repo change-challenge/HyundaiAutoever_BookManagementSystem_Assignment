@@ -1,6 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.CopyDetailDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.BookStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Book;
@@ -64,7 +64,7 @@ class BookServiceTest {
         List<Book> expectedBooks = Arrays.asList(new Book(), new Book());
         when(bookRepository.findByTitleContaining("sampleTitle")).thenReturn(expectedBooks);
 
-        List<BookDTO> result = bookService.searchBooks("sampleTitle");
+        List<BookRequestDTO> result = bookService.searchBooks("sampleTitle");
 
         assertEquals(expectedBooks.size(), result.size());
     }
@@ -74,7 +74,7 @@ class BookServiceTest {
     public void ShouldReturnEmptyListWhenGivenTitleDoesNotMatch() {
         when(bookRepository.findByTitleContaining("wrongTitle")).thenReturn(Collections.emptyList());
 
-        List<BookDTO> result = bookService.searchBooks("wrongTitle");
+        List<BookRequestDTO> result = bookService.searchBooks("wrongTitle");
 
         assertTrue(result.isEmpty());
     }
@@ -85,7 +85,7 @@ class BookServiceTest {
         List<Book> expectedBooks = Arrays.asList(new Book(), new Book(), new Book());
         when(bookRepository.findAll()).thenReturn(expectedBooks);
 
-        List<BookDTO> result = bookService.getAllBooks();
+        List<BookRequestDTO> result = bookService.getAllBooks();
 
         assertEquals(expectedBooks.size(), result.size());
     }
@@ -96,7 +96,7 @@ class BookServiceTest {
         List<Book> expectedBooks = Arrays.asList(new Book());
         when(bookRepository.findAll()).thenReturn(expectedBooks);
 
-        List<BookDTO> result = bookService.getAllBooks();
+        List<BookRequestDTO> result = bookService.getAllBooks();
 
         assertEquals(expectedBooks.size(), result.size());
     }
@@ -106,7 +106,7 @@ class BookServiceTest {
     public void ShouldNotReturnAllBooks() {;
         when(bookRepository.findAll()).thenReturn(Collections.emptyList());
 
-        List<BookDTO> result = bookService.getAllBooks();
+        List<BookRequestDTO> result = bookService.getAllBooks();
 
         assertEquals(0, result.size());
     }
@@ -117,7 +117,7 @@ class BookServiceTest {
         Book expectedBook = new Book();
         when(bookRepository.findById(1L)).thenReturn(Optional.of(expectedBook));
 
-        BookDTO result = bookService.getBookDetail(1L);
+        BookRequestDTO result = bookService.getBookDetail(1L);
 
         assertNotNull(result);
     }

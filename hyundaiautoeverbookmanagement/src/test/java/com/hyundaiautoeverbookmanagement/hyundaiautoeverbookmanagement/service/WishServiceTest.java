@@ -1,6 +1,6 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.entity.Member;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.repository.MemberRepository;
 import org.junit.jupiter.api.AfterEach;
@@ -158,7 +158,7 @@ class WishServiceTest {
         member.setEmail("test@test.com");  // 이 부분을 추가합니다.
         WishRequestDTO form = new WishRequestDTO();
         form.setEmail(member.getEmail());
-        form.setBook(new BookDTO());
+        form.setBook(new BookRequestDTO());
         form.getBook().setIsbn("1234567890");
         when(bookRepository.existsByIsbn("1234567890")).thenReturn(false);
         when(memberRepository.findByEmail("test@test.com")).thenReturn(Optional.of(member));
@@ -179,7 +179,7 @@ class WishServiceTest {
     void shouldNotSaveWishIfBookExists() {
         // 예상
         WishRequestDTO form = new WishRequestDTO();
-        form.setBook(new BookDTO());
+        form.setBook(new BookRequestDTO());
         form.getBook().setIsbn("1234567890");
         when(bookRepository.existsByIsbn("1234567890")).thenReturn(true);
 
@@ -279,7 +279,7 @@ class WishServiceTest {
         // 실제
         WishRequestDTO wishDTO = new WishRequestDTO();
         wishDTO.setId(10L);
-        wishDTO.setBook(new BookDTO());
+        wishDTO.setBook(new BookRequestDTO());
         wishDTO.getBook().setIsbn("1234567890");
         when(wishRepository.findById(wishDTO.getId())).thenReturn(Optional.empty());
 
@@ -301,7 +301,7 @@ class WishServiceTest {
 
         WishRequestDTO wishDTO = new WishRequestDTO();
         wishDTO.setId(10L);
-        wishDTO.setBook(new BookDTO());
+        wishDTO.setBook(new BookRequestDTO());
         wishDTO.getBook().setIsbn("1234567890");
 
         when(wishRepository.findById(eq(10L))).thenReturn(Optional.of(new Wish()));
@@ -327,7 +327,7 @@ class WishServiceTest {
 
         WishRequestDTO wishDTO = new WishRequestDTO();
         wishDTO.setId(10L);
-        wishDTO.setBook(new BookDTO());
+        wishDTO.setBook(new BookRequestDTO());
         wishDTO.getBook().setIsbn("1234567890");
 
         when(wishRepository.findById(eq(10L))).thenReturn(Optional.of(new Wish()));

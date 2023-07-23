@@ -36,8 +36,8 @@ public class AdminApiController {
     }
 
     @GetMapping("/book")
-    public ResponseEntity<List<BookDTO>> getBooks() {
-        List<BookDTO> books = bookService.getAllBooks();
+    public ResponseEntity<List<BookRequestDTO>> getBooks() {
+        List<BookRequestDTO> books = bookService.getAllBooks();
         return new ResponseEntity<>(books, HttpStatus.OK);
     }
 

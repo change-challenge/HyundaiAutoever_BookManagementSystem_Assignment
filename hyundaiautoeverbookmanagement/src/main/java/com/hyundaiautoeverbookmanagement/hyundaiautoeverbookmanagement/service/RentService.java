@@ -189,6 +189,7 @@ public class RentService {
     // -----------------------------
     // |        내장 함수 관련         |
     // -----------------------------
+
     // Rent(ENTITY) -> RentRequestDTO(DTO)
     private List<RentResponseDTO> rentListToRentResponseDTOList(List<Rent> rents) {
         List<RentResponseDTO> rentResponseDTOS = new ArrayList<>();

@@ -19,7 +19,7 @@ public class WishRequestDTO {
     private LocalDate wishDate;
     private String status;
     private String email;
-    private BookDTO book;
+    private BookRequestDTO book;
 
     public Wish toEntity(Member member) {
         return new Wish(null, member, LocalDate.now(), WishStatus.PENDING, book.getTitle(), book.getAuthor(), book.getPublisher(), book.getIsbn(), CategoryType.ToEnglish(book.getCategory()), book.getInfo(), book.getCover(), book.getPubDate(), book.getRentCount());

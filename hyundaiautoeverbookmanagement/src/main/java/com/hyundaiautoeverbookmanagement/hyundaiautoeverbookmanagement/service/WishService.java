@@ -1,7 +1,7 @@
 package com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.service;
 
 
-import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookDTO;
+import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.BookRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.BookStatus;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.WishRequestDTO;
 import com.hyundaiautoeverbookmanagement.hyundaiautoeverbookmanagement.dto.type.WishStatus;
@@ -60,7 +60,6 @@ public class WishService {
         Wish saved = wishRepository.save(wish);
         return "Success";
     }
-
 
     // -----------------------------
     // |        Admin 권한관련        |
@@ -143,24 +142,24 @@ public class WishService {
         return wishRequestDTO;
     }
 
-    private BookDTO convertToBookDTO(Wish wish) {
-        BookDTO bookDTO = new BookDTO();
-        bookDTO.setId(null);
-        bookDTO.setTitle(wish.getTitle());
-        bookDTO.setAuthor(wish.getAuthor());
-        bookDTO.setPublisher(wish.getPublisher());
-        bookDTO.setIsbn(wish.getISBN());
-        bookDTO.setBookCount(0);
-        bookDTO.setCover(wish.getCover());
-        bookDTO.setBookStatus(false);
+    private BookRequestDTO convertToBookDTO(Wish wish) {
+        BookRequestDTO bookRequestDTO = new BookRequestDTO();
+        bookRequestDTO.setId(null);
+        bookRequestDTO.setTitle(wish.getTitle());
+        bookRequestDTO.setAuthor(wish.getAuthor());
+        bookRequestDTO.setPublisher(wish.getPublisher());
+        bookRequestDTO.setIsbn(wish.getISBN());
+        bookRequestDTO.setBookCount(0);
+        bookRequestDTO.setCover(wish.getCover());
+        bookRequestDTO.setBookStatus(false);
         try {
-            bookDTO.setCategory(wish.getCategory().getDescription());
+            bookRequestDTO.setCategory(wish.getCategory().getDescription());
         } catch (IllegalArgumentException e) {
             log.info("wish Category 문제");
         }
-        bookDTO.setPubDate(wish.getPubDate());
-        bookDTO.setInfo(wish.getInfo());
-        bookDTO.setRentCount(0);
-        return bookDTO;
+        bookRequestDTO.setPubDate(wish.getPubDate());
+        bookRequestDTO.setInfo(wish.getInfo());
+        bookRequestDTO.setRentCount(0);
+        return bookRequestDTO;
     }
 }

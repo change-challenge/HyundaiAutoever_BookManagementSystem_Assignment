@@ -9,12 +9,5 @@ public class WishException extends RuntimeException {
         super(message);
     }
 
-    public WishException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public WishException(Throwable cause) {
-        super(cause);
-    }
 }
 
